@@ -7,16 +7,154 @@ output:
     dev: 'svg'
 ---
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-
-library("ggplot2")
+library(ggplot2)
+library(devtools)
+library(gridExtra)
+library(ggpubr)
 
 knitr::opts_chunk$set(fig.width=16, fig.height=8)
-
 ```
 
 
 ```{r warning=FALSE, results='hide'}
+# Load existing data as `all_runs` file
+all_runs = read.csv("_ignore/AllRunsAvg.csv")
 
-
-
+# Set working directory to plots folder
+setwd("./plots/")
 ```
+
+```{r warning=FALSE, results='hide'}
+#' Organize data by splitting data file by Fragment and by Run number then create new dataframes representing each run for each fragment.
+
+#' 
+#' @param data: dataframe containing Fragment and Run columns.
+#' @param fragment: column name indicating sequence region names (column entry options are F1, F2, F3).
+#' @param run: column name indicating run number for sequencing (column entry options are `Run 1`, `Run 2`, `Run 3`).
+#' @return list of dataframes representing each combination of \code{fragment} and \code{run} variables.
+
+make_dataframes <- function(data, fragment, run) {
+    data_frags = split(data, fragment)
+    F1 <- data_frags$F1
+    F2 <- data_frags$F2
+    F3 <- data_frags$F3
+    data_runs = split(data, run)
+    Run1 <- data_runs$`Run 1`
+    Run2 <- data_runs$`Run 2`
+    Run3 <- data_runs$`Run 3`
+    data_split = split(data, list(fragment, run))
+    Run1F1 <- data_split$`F1.Run 1`
+    Run1F2 <- data_split$`F2.Run 1`
+    Run1F3 <- data_split$`F3.Run 1`
+    Run2F1 <- data_split$`F1.Run 2`
+    Run2F2 <- data_split$`F2.Run 2`
+    Run2F3 <- data_split$`F3.Run 2`
+    Run3F1 <- data_split$`F1.Run 3`
+    Run3F2 <- data_split$`F2.Run 3`
+    Run3F3 <- data_split$`F3.Run 3`
+    return(list(F1, F2, F3, Run1, Run2, Run3, Run1F1, Run1F2, Run1F3, Run2F1, Run2F2, Run2F3, Run3F1, Run3F2, Run3F3))
+}
+```
+
+```{r warning=FALSE, results='hide'}
+#' Creates plot title given input variables.
+#' 
+#' @param apd: integer -- average pairwise diversity value for sequences filtered various ways (options 1, 5, 10)
+#' @param fragment: string -- fragment to be plotted (options F1, F2, F3, all)
+#' @param run: string -- sequence run to be plotted (options 1, 2, 3, all)
+#' @param facet: string -- what variable for the plot to be facetted by (options  Fragment or Run)
+#' @return string to be used as plot title
+
+title <- function(apd, fragment, run, facet) {
+    title_name = paste0("Average ETI vs. Actual TI by ", facet, " for APD-",apd, ", Fragment-", fragment, ", and Run-", run)
+    return(title_name)
+}
+```
+
+
+```{r warning=FALSE, results='hide'}
+#' Creates plot file name given input variables. 
+#' 
+#' @param apd: integer -- average pairwise diversity value for sequences filtered various ways (options 1, 5, 10)
+#' @param fragment: string -- fragment to be plotted (options F1, F2, F3, all)
+#' @param run: string -- sequence run to be plotted (options 1, 2, 3, all)
+#' @param facet: string -- what variable for the plot to be facetted by (options  Fragment or Run)
+#' @return string to be used as file name
+
+file <- function(apd, fragment, run, facet) {
+    file_name = paste0("AverageETI_ActualTI_by_",facet,"_for_APD",apd, "_Fragment", fragment, "_Run", run)
+    return(file_name)
+}
+```
+
+```{r warning=FALSE, results='hide'}
+#' Plot Average Estimated Time of Infection (AvgETI) versus actual time of infection by fragment for each APD category.
+#' 
+#' @param data: dataframe containing Fragment and Run columns.
+#' @param apd: integer -- average pairwise diversity value for sequences filtered various ways (options 1, 5, 10)
+#' @param fragment: string -- fragment to be plotted (options F1, F2, F3, all)
+#' @param run: string -- sequence run to be plotted (options 1, 2, 3, all)
+#' @param facet: string -- what variable for the plot to be facetted by (options  Fragment or Run)
+#' @param points: string -- what variable for the plot points to be shaped by (options Fragment or Run)
+#' @return Plot for average ETI vs. actual TI for specified Fragment, Run, APD, and facet
+
+plot_ETI_TI_regression <- function(data, fragment, apd, run, facet, points) {
+    # Set title and file name 
+    title_name = title(apd, fragment, run, facet)
+    file_name = file(apd, fragment, run, facet)
+
+    # Execute above function to create a list of new dataframes
+    dataframe_list = make_dataframes(data, data$Fragment, data$Run)
+
+    # Rename dataframe list entries by Run and Fragment numbers
+    names(dataframe_list) = c("F1", "F2", "F3", "Run1", "Run2", "Run3", "Run1F1", "Run1F2", "Run1F3", "Run2F1",  "Run2F2", "Run2F3", "Run3F1", "Run3F2", "Run3F3")
+
+    # Split list of dataframes into individual dataframes
+    list2env(dataframe_list ,.GlobalEnv)
+
+    # Set variables
+    avgETI = paste0("AvgTOI",apd, collapse = NULL)
+
+    if (fragment == "all" && run == "all"){
+        data_arg = data
+    } else if (fragment != "all" && run == "all"){
+        data_arg = get(fragment)
+    } else if (fragment == "all" && run != "all"){
+        data_arg = get(paste0("Run",run))
+    } else {
+        data_arg = get(paste0("Run",run,fragment))
+    }
+
+    # Create plot
+    ggplot(data=data_arg,aes(data_arg[[avgETI]],x=ActualTOI..year.))+geom_point(aes(shape=get(paste(points))))+stat_smooth(method="lm",se=TRUE, color="red", fill="red")+labs(x="Actual Time of Infection (years)", y="Average Estimated Time of Infection (years)")+ xlim(0,2) + ylim(0,6) + facet_wrap(as.formula(paste("~", facet))) + ggtitle(title_name) + stat_regline_equation(label.x = 0, label.y = 6) + labs(shape = points)
+
+    path = paste(file_name,".pdf",sep="")
+    ggsave(path, plot = last_plot())
+}
+```
+
+```{r warning=FALSE, results='hide'}
+#' Plot Average Estimated Time of Infection (AvgETI) versus actual time of infection for all fragment and run combinations for each APD status
+#' 
+#' @param none
+#' @return Lots of plots found in the /plots/ directory!
+
+make_all_plots <- function(){
+    # Create a plot for ETI vs. actual TI for APD1 for all runs facetted by fragment
+    for (diversity in c(1, 5, 10)){
+        for (frag in c("F1", "F2", "F3", "all")){
+            plot_ETI_TI_regression(all_runs, fragment = frag, apd = diversity, run = "all", facet = "Run", points = "Fragment")
+        }
+        for (r in c(1, 2, 3, "all")){
+            plot_ETI_TI_regression(all_runs, fragment = "all", apd = diversity, run = r, facet = "Fragment", points = "Run")
+        }
+    }
+}
+```
+
+```{r warning=FALSE, results='hide'}
+make_all_plots()
+```
+
+
+
