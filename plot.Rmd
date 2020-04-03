@@ -64,10 +64,17 @@ make_dataframes <- function(data, fragment, run) {
 #' @param fragment: string -- fragment to be plotted (options F1, F2, F3, all)
 #' @param run: string -- sequence run to be plotted (options 1, 2, 3, all)
 #' @param facet: string -- what variable for the plot to be facetted by (options  Fragment or Run)
+#' @param y: string -- what variable to plot on the y axis (options apd or eti)
 #' @return string to be used as plot title
 
-title <- function(apd, fragment, run, facet1, facet2) {
-    title_name = paste0("Average ETI vs. Actual TI by ", facet1, " for APD-",apd, ", Fragment-", fragment, ", and Run-", run)
+title <- function(apd, fragment, run, facet1, facet2, y) {
+    if (y == "eti"){
+        title_name = paste0("Average ETI vs. Actual TI by ", facet1, " for APD-",apd, ", Fragment-", fragment, ", and Run-", run)
+    } else if (y == "apd"){
+        title_name = paste0("Average APD vs. Actual TI by ", facet1, " for APD-",apd, ", Fragment-", fragment, ", and Run-", run)
+    } else if (y == "vl"){
+        title_name = paste0("Log Viral Load vs. Average APD by Patient for APD-",apd) 
+    }   
     return(title_name)
 }
 ```
@@ -80,10 +87,17 @@ title <- function(apd, fragment, run, facet1, facet2) {
 #' @param fragment: string -- fragment to be plotted (options F1, F2, F3, all)
 #' @param run: string -- sequence run to be plotted (options 1, 2, 3, all)
 #' @param facet: string -- what variable for the plot to be facetted by (options  Fragment or Run)
+#' @param y: string -- what variable to plot on the y axis (options apd or eti or vl)
 #' @return string to be used as file name
 
-file <- function(apd, fragment, run, facet1, facet2) {
-    file_name = paste0("AverageETI_ActualTI_by_",facet1,"_for_APD",apd, "_Fragment", fragment, "_Run", run)
+file <- function(apd, fragment, run, facet1, facet2, y) {
+    if (y == "eti"){
+        file_name = paste0("AverageETI_ActualTI_by_",facet1,"_for_APD",apd, "_Fragment", fragment, "_Run", run)
+    } else if (y == "apd"){
+        file_name = paste0("AverageAPD_ActualTI_by_",facet1,"_for_APD",apd, "_Fragment", fragment, "_Run", run)
+    } else if (y == "vl"){
+        file_name = paste0("LogVL_AverageAPD_by_patient","_for_APD",apd) 
+    }      
     return(file_name)
 }
 ```
@@ -95,14 +109,17 @@ file <- function(apd, fragment, run, facet1, facet2) {
 #' @param apd: integer -- average pairwise diversity value for sequences filtered various ways (options 1, 5, 10)
 #' @param fragment: string -- fragment to be plotted (options F1, F2, F3, all)
 #' @param run: string -- sequence run to be plotted (options 1, 2, 3, all)
-#' @param facet: string -- what variable for the plot to be facetted by (options  Fragment or Run)
-#' @param points: string -- what variable for the plot points to be shaped by (options Fragment or Run)
+#' @param facet1: string -- what variable for the plot to be facetted by (options  Fragment or Run)
+#' @param facet2: string -- what variable for the plot to be facetted by (options  Fragment or Run or none)
+#' @param points: string -- what variable for the plot points to be shaped by (options Fragment or Run or Sample)
+#' @param color_points: string -- what variable for the plot points to be shaped by (options Fragment or Run or Sample)
+#' @param y: string -- what variable to plot on the y axis (options apd or eti)
 #' @return Plot for average ETI vs. actual TI for specified Fragment, Run, APD, and facet
 
-plot_ETI_TI_regression <- function(data, fragment, apd, run, facet1, facet2, points) {
+plot_ETI_TI_regression <- function(data, fragment, apd, run, facet1, facet2, points, color_points, y) {
     # Set title and file name 
-    title_name = title(apd, fragment, run, facet1, facet2)
-    file_name = file(apd, fragment, run, facet1, facet2)
+    title_name = title(apd, fragment, run, facet1, facet2, y)
+    file_name = file(apd, fragment, run, facet1, facet2, y)
 
     # Execute above function to create a list of new dataframes
     dataframe_list = make_dataframes(data, data$Fragment, data$Run)
@@ -113,9 +130,14 @@ plot_ETI_TI_regression <- function(data, fragment, apd, run, facet1, facet2, poi
     # Split list of dataframes into individual dataframes
     list2env(dataframe_list ,.GlobalEnv)
 
-    # Set variables
-    avgETI = paste0("AvgTOI",apd, collapse = NULL)
+    # Assign facetting variables
+    if (facet2 == "none"){
+        facet_wrap = as.formula(paste("~", facet1))
+    } else {
+        facet_wrap = as.formula(paste(facet1, "~", facet2))
+    }
 
+    # Assign dataframe to use!
     if (fragment == "all" && run == "all"){
         data_arg = data
     } else if (fragment != "all" && run == "all"){
@@ -129,13 +151,28 @@ plot_ETI_TI_regression <- function(data, fragment, apd, run, facet1, facet2, poi
     # Perfect correlation (ETI = Actual TI) function: 
     func <- function(x){x}
 
-    if (facet2 == "none"){
-        # Create plot
-        p <- ggplot(data=data_arg,aes(data_arg[[avgETI]],x=ActualTOI..year.))+geom_point(aes(shape=get(paste(points))), size = 3)+stat_smooth(method="lm",    se=TRUE, color= apd, fill= apd) + labs(x="Actual Time of Infection (years)", y="Average Estimated Time of Infection (years)")+ xlim(0,2)    + ylim(0,6) + facet_wrap(as.formula(paste("~", facet1))) + ggtitle(title_name) + stat_regline_equation(label.x = 0, label.y = 6, size = 7)   + labs(shape = points, color = "Exact timing correlation") + stat_function(fun = func, color = "blue", linetype="dashed", size=1) + theme_bw() + theme(text = element_text(size = 22)) 
-    } else {
-        # Create plot
-        p <- ggplot(data=data_arg,aes(data_arg[[avgETI]],x=ActualTOI..year.))+geom_point(aes(shape=get(paste(points))), size = 2)+stat_smooth(method="lm",    se=TRUE, color= apd, fill= apd) + labs(x="Actual Time of Infection (years)", y="Average Estimated Time of Infection (years)")+ xlim(0,2)    + ylim(0,6) + facet_wrap(as.formula(paste(facet1, "~", facet2))) + ggtitle(title_name) + stat_regline_equation(label.x = 0, label.y = 5, size = 5) + labs(shape = points, color = "Exact timing correlation") + stat_function(fun = func, color = "blue", linetype="dashed", size=1) + theme_bw() + theme(legend.position = "none", text = element_text(size = 18)) 
+    if (y == "eti"){
+        yvar = paste0("AvgTOI",apd, collapse = NULL)
+        ylab = "Average Estimated Time of Infection (years)"
 
+        # Create plot
+        p <- ggplot(data=data_arg,aes(data_arg[[yvar]],x=ActualTOI..year.))+geom_point(aes(shape=get(paste(points)), color=get(paste(color_points))), size = 2) + stat_smooth(method="lm", se=TRUE, color= apd, fill= apd) + labs(x="Actual Time of Infection (years)", y=paste(ylab))+ xlim(0,2) + ylim(0,6) + facet_wrap(facet_wrap) + ggtitle(title_name) + stat_regline_equation(label.x = 0, label.y = 5, size = 5) + labs(shape = points, color = color_points) + stat_function(fun = func, color = "blue", linetype="dashed", size=1) + theme_bw() + theme(text = element_text(size = 18)) 
+    } else if (y == "apd"){
+        yvar = paste0("AvgAPD",apd, collapse = NULL)
+        ylab = "Average Average Pairwise Diversity (APD)"
+
+        # Create plot
+        p <- ggplot(data=data_arg,aes(y = data_arg[[yvar]],x=ActualTOI..year., color= get(paste(color_points)))) + geom_point(aes(color=get(paste(color_points))), size = 2)  + geom_smooth(se = FALSE, method = "lm")+ labs(x="Actual Time of Infection (years)", y=paste(ylab)) + facet_wrap(facet_wrap) + ggtitle(title_name) + labs(color = color_points) + theme_bw() + theme(text = element_text(size = 18)) 
+    } else if (y == "vl"){
+        data_arg$vl_log = log10(data_arg$VL)
+        yvar = "vl_log"
+        ylab = "log(Viral Load)"
+
+        xvar = paste0("AvgAPD",apd, collapse = NULL)
+        xlab = "Average Average Pairwise Diversity (APD)"
+
+        # Create plot
+        p <- ggplot(data=data_arg,aes(y = data_arg[[yvar]],x=data_arg[[xvar]], color = get(paste(color_points)), group = get(paste(color_points)))) + geom_point(aes(color=get(paste(color_points))), size = 2)+ geom_smooth(se = FALSE, method = "loess") + labs(x=paste(xlab), y=paste(ylab)) + ggtitle(title_name) + labs(color = color_points) + theme_bw() + theme(text = element_text(size = 18)) 
     }
 
     print(p)
@@ -145,29 +182,52 @@ plot_ETI_TI_regression <- function(data, fragment, apd, run, facet1, facet2, poi
 }
 ```
 
+
 ```{r warning=FALSE, results='hide'}
-#' Plot Average Estimated Time of Infection (AvgETI) versus actual time of infection for all fragment and run combinations for each APD status
+#' Plot Average Estimated Time of Infection (AvgETI) versus actual time of infection for all fragment and run combinations for each APD status. The shape of the plot points are by patient ID (Sample) or by Run.
 #' 
-#' @param none
+#' @param variable: string -- variable that we are plotting (options apd, eti)
 #' @return Lots of plots found in the /plots/ directory!
 
-make_all_plots <- function(){
-    # Create a plot for ETI vs. actual TI for APD1 for all runs facetted by fragment
-    for (diversity in c(1, 5, 10)){
-        plot_ETI_TI_regression(all_runs, fragment = "all", apd = diversity, run = "all", facet1 = "Fragment", facet2 = "Run", points = "Run")
-        plot_ETI_TI_regression(all_runs, fragment = "all", apd = diversity, run = "all", facet1 = "Fragment", facet2 = "none", points = "Run")
+make_all_plots <- function(variable){
+    # Create a plot for ETI vs. actual TI for APD for all runs facetted by fragment
+    if (variable == "vl"){
+        for (diversity in c(1, 5, 10)){
+            plot_ETI_TI_regression(all_runs, fragment = "all", apd = diversity, run = "all", facet1 = "none", facet2 = "none",points="none",    color_point = "Sample", y = paste(variable))
+        }
+    } else {
+        for (diversity in c(1, 5, 10)){
+            for (fac in c("Run", "none")){
+                plot_ETI_TI_regression(all_runs, fragment = "all", apd = diversity, run = "all", facet1 = "Fragment", facet2 = fac, points  ="Run",  color_point = "Sample", y = paste(variable))
+            }
+        }
     }
 }
 ```
-# The following plots show the estimated time of infection(ETI) (as calculated using the Neher equation) versus the actual time of infection (TI) (time since birth). Note that average pairwise diversity (APD) parameters change for each plot (color of regression line indicates different APD cutoff). Note that we are also varying runs analyzed and fragments analyzed. The blue dotted line for each plot represents the exact timing correlation (i.e. ETI = TI)...
+The following plots show the estimated time of infection(ETI) (as calculated using the Neher equation) versus the actual time of infection (TI) (time since birth). Note that average pairwise diversity (APD) parameters change for each plot (color of regression line indicates different APD cutoff). Note that we are also varying runs analyzed and fragments analyzed. The points are shaped either by Run number or by patient ID (Sample). The blue dotted line for each plot represents the exact timing correlation (i.e. ETI = TI)...
 
 ```{r warning=FALSE, results='hide'}
 # Set working directory to plots folder
 setwd("./plots/")
 
 # Make plots!
-make_all_plots()
+make_all_plots(variable = "eti")
+```
+The following plots show the average pairwise diversity by fragment for each patient (Sample). The facetted plots (3X3) are showing individual runs whereas others (1X3) are showing all runs combined. Note that average pairwise diversity (APD) parameters change for each plot.
+
+```{r warning=FALSE, results='hide'}
+# Set working directory to plots folder
+setwd("./plots/")
+
+# Make plots!
+make_all_plots(variable = "apd")
 ```
 
+```{r warning=FALSE, results='hide'}
+# Set working directory to plots folder
+setwd("./plots/")
 
+# Make plots!
+make_all_plots(variable = "vl")
+```
 
