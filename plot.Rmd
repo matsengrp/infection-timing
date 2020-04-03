@@ -6,6 +6,7 @@ output:
     toc_depth: 2
     dev: 'svg'
 ---
+
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 library(ggplot2)
 library(devtools)
@@ -13,15 +14,15 @@ library(gridExtra)
 library(ggpubr)
 
 knitr::opts_chunk$set(fig.width=16, fig.height=8)
+
 ```
 
-
 ```{r warning=FALSE, results='hide'}
+# Set working directory
+setwd("/Users/magdalenarussell/Documents/Matsen_group/infection-timing")
+
 # Load existing data as `all_runs` file
 all_runs = read.csv("_ignore/AllRunsAvg.csv")
-
-# Set working directory to plots folder
-setwd("./plots/")
 ```
 
 ```{r warning=FALSE, results='hide'}
@@ -65,8 +66,8 @@ make_dataframes <- function(data, fragment, run) {
 #' @param facet: string -- what variable for the plot to be facetted by (options  Fragment or Run)
 #' @return string to be used as plot title
 
-title <- function(apd, fragment, run, facet) {
-    title_name = paste0("Average ETI vs. Actual TI by ", facet, " for APD-",apd, ", Fragment-", fragment, ", and Run-", run)
+title <- function(apd, fragment, run, facet1, facet2) {
+    title_name = paste0("Average ETI vs. Actual TI by ", facet1, " for APD-",apd, ", Fragment-", fragment, ", and Run-", run)
     return(title_name)
 }
 ```
@@ -81,8 +82,8 @@ title <- function(apd, fragment, run, facet) {
 #' @param facet: string -- what variable for the plot to be facetted by (options  Fragment or Run)
 #' @return string to be used as file name
 
-file <- function(apd, fragment, run, facet) {
-    file_name = paste0("AverageETI_ActualTI_by_",facet,"_for_APD",apd, "_Fragment", fragment, "_Run", run)
+file <- function(apd, fragment, run, facet1, facet2) {
+    file_name = paste0("AverageETI_ActualTI_by_",facet1,"_for_APD",apd, "_Fragment", fragment, "_Run", run)
     return(file_name)
 }
 ```
@@ -98,10 +99,10 @@ file <- function(apd, fragment, run, facet) {
 #' @param points: string -- what variable for the plot points to be shaped by (options Fragment or Run)
 #' @return Plot for average ETI vs. actual TI for specified Fragment, Run, APD, and facet
 
-plot_ETI_TI_regression <- function(data, fragment, apd, run, facet, points) {
+plot_ETI_TI_regression <- function(data, fragment, apd, run, facet1, facet2, points) {
     # Set title and file name 
-    title_name = title(apd, fragment, run, facet)
-    file_name = file(apd, fragment, run, facet)
+    title_name = title(apd, fragment, run, facet1, facet2)
+    file_name = file(apd, fragment, run, facet1, facet2)
 
     # Execute above function to create a list of new dataframes
     dataframe_list = make_dataframes(data, data$Fragment, data$Run)
@@ -125,8 +126,19 @@ plot_ETI_TI_regression <- function(data, fragment, apd, run, facet, points) {
         data_arg = get(paste0("Run",run,fragment))
     }
 
-    # Create plot
-    ggplot(data=data_arg,aes(data_arg[[avgETI]],x=ActualTOI..year.))+geom_point(aes(shape=get(paste(points))))+stat_smooth(method="lm",se=TRUE, color="red", fill="red")+labs(x="Actual Time of Infection (years)", y="Average Estimated Time of Infection (years)")+ xlim(0,2) + ylim(0,6) + facet_wrap(as.formula(paste("~", facet))) + ggtitle(title_name) + stat_regline_equation(label.x = 0, label.y = 6) + labs(shape = points)
+    # Perfect correlation (ETI = Actual TI) function: 
+    func <- function(x){x}
+
+    if (facet2 == "none"){
+        # Create plot
+        p <- ggplot(data=data_arg,aes(data_arg[[avgETI]],x=ActualTOI..year.))+geom_point(aes(shape=get(paste(points))), size = 3)+stat_smooth(method="lm",    se=TRUE, color= apd, fill= apd) + labs(x="Actual Time of Infection (years)", y="Average Estimated Time of Infection (years)")+ xlim(0,2)    + ylim(0,6) + facet_wrap(as.formula(paste("~", facet1))) + ggtitle(title_name) + stat_regline_equation(label.x = 0, label.y = 6, size = 7)   + labs(shape = points, color = "Exact timing correlation") + stat_function(fun = func, color = "blue", linetype="dashed", size=1) + theme_bw() + theme(text = element_text(size = 22)) 
+    } else {
+        # Create plot
+        p <- ggplot(data=data_arg,aes(data_arg[[avgETI]],x=ActualTOI..year.))+geom_point(aes(shape=get(paste(points))), size = 2)+stat_smooth(method="lm",    se=TRUE, color= apd, fill= apd) + labs(x="Actual Time of Infection (years)", y="Average Estimated Time of Infection (years)")+ xlim(0,2)    + ylim(0,6) + facet_wrap(as.formula(paste(facet1, "~", facet2))) + ggtitle(title_name) + stat_regline_equation(label.x = 0, label.y = 5, size = 5) + labs(shape = points, color = "Exact timing correlation") + stat_function(fun = func, color = "blue", linetype="dashed", size=1) + theme_bw() + theme(legend.position = "none", text = element_text(size = 18)) 
+
+    }
+
+    print(p)
 
     path = paste(file_name,".pdf",sep="")
     ggsave(path, plot = last_plot())
@@ -142,17 +154,18 @@ plot_ETI_TI_regression <- function(data, fragment, apd, run, facet, points) {
 make_all_plots <- function(){
     # Create a plot for ETI vs. actual TI for APD1 for all runs facetted by fragment
     for (diversity in c(1, 5, 10)){
-        for (frag in c("F1", "F2", "F3", "all")){
-            plot_ETI_TI_regression(all_runs, fragment = frag, apd = diversity, run = "all", facet = "Run", points = "Fragment")
-        }
-        for (r in c(1, 2, 3, "all")){
-            plot_ETI_TI_regression(all_runs, fragment = "all", apd = diversity, run = r, facet = "Fragment", points = "Run")
-        }
+        plot_ETI_TI_regression(all_runs, fragment = "all", apd = diversity, run = "all", facet1 = "Fragment", facet2 = "Run", points = "Run")
+        plot_ETI_TI_regression(all_runs, fragment = "all", apd = diversity, run = "all", facet1 = "Fragment", facet2 = "none", points = "Run")
     }
 }
 ```
+# The following plots show the estimated time of infection(ETI) (as calculated using the Neher equation) versus the actual time of infection (TI) (time since birth). Note that average pairwise diversity (APD) parameters change for each plot (color of regression line indicates different APD cutoff). Note that we are also varying runs analyzed and fragments analyzed. The blue dotted line for each plot represents the exact timing correlation (i.e. ETI = TI)...
 
 ```{r warning=FALSE, results='hide'}
+# Set working directory to plots folder
+setwd("./plots/")
+
+# Make plots!
 make_all_plots()
 ```
 
