@@ -172,7 +172,7 @@ plot_ETI_TI_regression <- function(data, fragment, apd, run, facet1, facet2, poi
         xlab = "Average Average Pairwise Diversity (APD)"
 
         # Create plot
-        p <- ggplot(data=data_arg,aes(y = data_arg[[yvar]],x=data_arg[[xvar]], color = get(paste(color_points)), group = get(paste(color_points)))) + geom_point(aes(color=get(paste(color_points))), size = 2)+ geom_smooth(se = FALSE, method = "loess") + labs(x=paste(xlab), y=paste(ylab)) + ggtitle(title_name) + labs(color = color_points) + theme_bw() + theme(text = element_text(size = 18)) 
+        p <- ggplot(data=data_arg,aes(y = data_arg[[yvar]],x=data_arg[[xvar]], color = get(paste(color_points)), group = get(paste(color_points)))) + geom_point(aes(color=get(paste(color_points))), size = 2)+ facet_wrap(facet_wrap)+ geom_smooth(se = FALSE, method = "lm") + labs(x=paste(xlab), y=paste(ylab)) + ggtitle(title_name) + labs(color = color_points) + theme_bw() + theme(text = element_text(size = 18)) 
     }
 
     print(p)
@@ -193,7 +193,7 @@ make_all_plots <- function(variable){
     # Create a plot for ETI vs. actual TI for APD for all runs facetted by fragment
     if (variable == "vl"){
         for (diversity in c(1, 5, 10)){
-            plot_ETI_TI_regression(all_runs, fragment = "all", apd = diversity, run = "all", facet1 = "none", facet2 = "none",points="none",    color_point = "Sample", y = paste(variable))
+            plot_ETI_TI_regression(all_runs, fragment = "all", apd = diversity, run = "all", facet1 = "Fragment", facet2 = "none",points="none", color_point = "Sample", y = paste(variable))
         }
     } else {
         for (diversity in c(1, 5, 10)){
