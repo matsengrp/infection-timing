@@ -14,6 +14,7 @@ library(gridExtra)
 library(ggpubr)
 library(data.table)
 library(Metrics)
+library(tidyverse)
 
 source("common_plot.R")
 
@@ -27,6 +28,9 @@ setwd("/Users/magdalenarussell/Documents/Matsen_group/infection-timing")
 
 # Load existing data as `all_runs` file
 all_runs = read.csv("_ignore/AllRunsAvg.csv")
+
+# Load Neher paper test data as `Neher_data` file
+neher_data = read.csv("_ignore/Neher_test_data_time_vl_df.tsv", sep = "\t")
 ```
 
 The following plots show the estimated time of infection(ETI) (as calculated using the Neher equation) versus the actual time of infection (TI) (time since birth). Note that average pairwise diversity (APD) parameters change for each plot (color of regression line indicates different APD cutoff). Note that we are also varying runs analyzed and fragments analyzed. The points are shaped either by Run number or by patient ID (Sample). The blue dotted line for each plot represents the exact timing correlation (i.e. ETI = TI)...
@@ -50,7 +54,7 @@ The following plots show the log viral load versus average pairwise diversity by
 
 ```{r warning=FALSE, results='hide'}
 # Make plots!
-make_all_plots(x = "apd", y = "vl")
+make_all_plots(y = "apd", x = "vl")
 ```
 
 The following plots show the log viral load versus mean absolute error (estimated TI - actual TI) by fragment and patient (Sample). The plots are showing all runs combined. Note that average pairwise diversity (APD) parameters change for each plot.
@@ -58,6 +62,13 @@ The following plots show the log viral load versus mean absolute error (estimate
 
 ```{r warning=FALSE, results='hide'}
 # Make plots!
-make_all_plots(x = "mae", y = "vl")
+make_all_plots(y = "mae", x = "vl")
+```
+
+The following plot compares the viral load over time for our data and the Neher test cohort data.
+
+```{r warning=FALSE, results='hide'}
+# Make plots for Neher comparison!
+plot_model_compare(data = all_runs, test_data = neher_data)
 ```
 

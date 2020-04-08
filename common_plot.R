@@ -51,9 +51,9 @@ title <- function(apd, fragment, run, facet1, facet2, x, y) {
         title_name = paste0("Average ETI vs. Actual TI by ", facet1, " for APD-",apd, ", Fragment-", fragment, ", and Run-", run)
     } else if (y == "apd" && x == "ti"){
         title_name = paste0("Average APD vs. Actual TI by ", facet1, " for APD-",apd, ", Fragment-", fragment, ", and Run-", run)
-    } else if (y == "vl" && x == "apd"){
+    } else if (x == "vl" && y == "apd"){
         title_name = paste0("Log Viral Load vs. Average APD by Patient for APD-",apd) 
-    } else if (y == "vl" && x == "mae"){
+    } else if (x == "vl" && y == "mae"){
         title_name = paste0("Log Viral Load vs. Mean Absolute Error for APD-",apd) 
     } else {
         print("ERROR: incompatible x and y variables")
@@ -76,9 +76,9 @@ file <- function(apd, fragment, run, facet1, facet2, x, y) {
         file_name = paste0("AverageETI_ActualTI_by_",facet1,"_for_APD",apd, "_Fragment", fragment, "_Run", run)
     } else if (y == "apd" && x == "ti"){
         file_name = paste0("AverageAPD_ActualTI_by_",facet1,"_for_APD",apd, "_Fragment", fragment, "_Run", run)
-    } else if (y == "vl" && x == "apd"){
+    } else if (x == "vl" && y == "apd"){
         file_name = paste0("LogVL_AverageAPD_by_patient","_for_APD",apd) 
-    } else if (y == "vl" && x == "mae"){
+    } else if (x == "vl" && y == "mae"){
         file_name = paste0("LogVL_MAE_for_APD",apd) 
     } else {
         print("ERROR: incompatible x and y variables")
@@ -145,7 +145,7 @@ plot_ETI_TI_regression <- function(data, fragment, apd, run, facet1, facet2, poi
         xlab = "Actual Time of Infection (years)"
 
         # Create plot
-        p <- ggplot(data=data_arg,aes(data_arg[[yvar]],x=data_arg[[xvar]]))+geom_point(aes(shape=get(paste(points)), color=get(paste(color_points))), size = 2.5) + stat_smooth(method="lm", se=TRUE, color= apd, fill= apd) + xlim(0,2) + ylim(0,6) + facet_wrap(facet_wrap) + ggtitle(title_name) + labs(x=paste(xlab), y=paste(ylab), shape = points, color = color_points)+ stat_regline_equation(label.x = 0, label.y = 5, size = 5) + stat_function(fun = func, color = "blue", linetype="dashed", size=1) + theme_bw() + theme(text = element_text(size = 18)) 
+        p <- ggplot(data=data_arg,aes(data_arg[[yvar]],x=data_arg[[xvar]]))+geom_point(aes(shape=get(paste(points)), color=get(paste(color_points))), size = 2.5) + stat_smooth(method="lm", se=TRUE, color= apd, fullrange=TRUE) + xlim(0,2) + ylim(0,6) + facet_wrap(facet_wrap) + ggtitle(title_name) + labs(x=paste(xlab), y=paste(ylab), shape = points, color = color_points)+ stat_regline_equation(label.x = 0, label.y = 5, size = 5) + stat_function(fun = func, color = "blue", linetype="dashed", size=1) + theme_bw() + theme(text = element_text(size = 18)) 
     } else if (y == "apd" && x == "ti"){
         yvar = paste0("AvgAPD",apd, collapse = NULL)
         ylab = "Average Average Pairwise Diversity (APD)"
@@ -154,25 +154,25 @@ plot_ETI_TI_regression <- function(data, fragment, apd, run, facet1, facet2, poi
         xlab = "Actual Time of Infection (years)"
 
         # Create plot
-        p <- ggplot(data=data_arg,aes(y = data_arg[[yvar]],x=data_arg[[xvar]], color= get(paste(color_points)))) + geom_point(aes(color=get(paste(color_points))), size = 2.5)  + geom_smooth(se = FALSE, method = "lm")+ facet_wrap(facet_wrap) + ggtitle(title_name) + labs(x=paste(xlab), y=paste(ylab), color = color_points) + theme_bw() + theme(text = element_text(size = 18)) 
-    } else if (y == "vl" && x == "apd"){
-        yvar = "vl_log"
-        ylab = "log10(Viral Load)"
+        p <- ggplot(data=data_arg,aes(y = data_arg[[yvar]],x=data_arg[[xvar]])) + geom_point(aes(color=get(paste(color_points))), size = 2.5) + facet_wrap(facet_wrap) + geom_smooth(method="lm", se=TRUE, color= apd, fullrange=TRUE) + ggtitle(title_name) + labs(x=paste(xlab), y=paste(ylab), color = color_points) + stat_cor(method = "pearson", label.x = 1, label.y = 0, size = 5) + theme_bw() + theme(text = element_text(size = 18)) 
+    } else if (x == "vl" && y == "apd"){
+        xvar = "vl_log"
+        xlab = "log10(Viral Load)"
 
-        xvar = paste0("AvgAPD",apd, collapse = NULL)
-        xlab = "Average Average Pairwise Diversity (APD)"
-
-        # Create plot
-        p <- ggplot(data=data_arg,aes(data_arg[[yvar]],x=data_arg[[xvar]]))+geom_point(aes(color=get(paste(color_points))), size = 2.5) + facet_wrap(facet_wrap) + stat_smooth(method="lm", se=TRUE, color= apd, fill= apd) + stat_cor(method = "pearson", label.x = 0, label.y = 2.5, size = 5) + ggtitle(title_name) + labs(x=paste(xlab), y=paste(ylab), color = color_points) + theme_bw() + theme(text = element_text(size = 18)) 
-    } else if (y == "vl" && x == "mae"){
-        yvar = "vl_log"
-        ylab = "log10(Viral Load)"
-
-        xvar = paste0("MAE",apd, collapse = NULL)
-        xlab = "ETI - TI Mean Absolute Error"
+        yvar = paste0("AvgAPD",apd, collapse = NULL)
+        ylab = "Average Average Pairwise Diversity (APD)"
 
         # Create plot
-        p <- ggplot(data=data_arg,aes(data_arg[[yvar]],x=data_arg[[xvar]]))+geom_point(aes(color=get(paste(color_points))), size = 2.5) + facet_wrap(facet_wrap) + stat_smooth(method="lm", se=TRUE, color= apd, fill= apd) + stat_cor(method = "pearson", label.x = 1, label.y = 2.5, size = 5) + ggtitle(title_name) + labs(x=paste(xlab), y=paste(ylab), color = color_points) + theme_bw() + theme(text = element_text(size = 18)) 
+        p <- ggplot(data=data_arg,aes(data_arg[[yvar]],x=data_arg[[xvar]]))+geom_point(aes(color=get(paste(color_points))), size = 2.5) + facet_wrap(facet_wrap) + geom_smooth(method="lm", se=TRUE, color= apd, fullrange=TRUE) + ggtitle(title_name) + labs(x=paste(xlab), y=paste(ylab), color = color_points) + stat_cor(method = "pearson", label.x = 0, label.y = 0, size = 5)+ theme_bw() + theme(text = element_text(size = 18)) 
+    } else if (y == "mae" && x == "vl"){
+        xvar = "vl_log"
+        xlab = "log10(Viral Load)"
+
+        yvar = paste0("MAE",apd, collapse = NULL)
+        ylab = "ETI - TI Mean Absolute Error"
+
+        # Create plot
+        p <- ggplot(data=data_arg,aes(data_arg[[yvar]],x=data_arg[[xvar]]))+geom_point(aes(color=get(paste(color_points))), size = 2.5) + facet_wrap(facet_wrap) + geom_smooth(method="lm", se=TRUE, color= apd, fullrange=TRUE) + stat_cor(method = "pearson", label.x = 0, label.y = 0, size = 5) + ggtitle(title_name) + labs(x=paste(xlab), y=paste(ylab), color = color_points) + theme_bw() + theme(text = element_text(size = 18)) 
     } else {
         print("ERROR: incompatible x and y variables")
     }
@@ -193,15 +193,59 @@ make_all_plots <- function(x, y){
     setwd("./plots/")
 
     # Create a plot for ETI vs. actual TI for APD for all runs facetted by fragment
-    if ((y == "vl" && x == "apd") | (y == "vl" && x == "mae")){
+    if ((x == "vl" && y == "apd") | (x == "vl" && y == "mae")){
         for (diversity in c(1, 5, 10)){
             plot_ETI_TI_regression(all_runs, fragment = "all", apd = diversity, run = "all", facet1 = "Fragment", facet2 = "none",points="none", color_point = "Sample", x = paste(x), y = paste(y))
         }
     } else {
         for (diversity in c(1, 5, 10)){
-            for (fac in c("Run", "none")){
+            fac = "none"
+#            for (fac in c("Run", "none")){
                 plot_ETI_TI_regression(all_runs, fragment = "all", apd = diversity, run = "all", facet1 = "Fragment", facet2 = fac, points  ="Run",  color_point = "Sample", x = paste(x), y = paste(y))
-            }
+#            }
         }
     }
+}
+#' Format all_runs data to contain only patient names, viral load, and actual time of infection
+#' 
+#' @param variable: data -- dataframe containing columns named `Sample`, `VL`, and `ActualTOI..year.` (among others)
+#' @return all_runs_vl -- dataframe containing only columns for `patient`, `time`, and `viral_load`
+
+simplify_df_viral_load <- function(data) {
+    if ('Sample' %in% colnames(data)){
+        data_simple = data %>% select(Sample, ActualTOI..year., VL)
+        colnames(data_simple) = c("patient", "time", "viral_load")
+        data_simple_cond = unique(data_simple)
+        return(data_simple_cond)
+    } else {
+        return(data)
+    }
+}
+
+#' Plot comparison between our data and the Neher test data...specifically patient viral load over time and patient viral load versus apd.
+#' 
+#' @param variable: string -- variable that we are plotting (options apd, eti)
+#' @return Lots of plots found in the /plots/Neher_compare/ directory!
+
+plot_model_compare <- function(data, test_data) {
+    setwd("./plots/Neher_compare/")
+
+    data_simple = simplify_df_viral_load(data)
+    test_data_simple = simplify_df_viral_load(test_data)
+    data_simple$cohort = "Infant"
+    test_data_simple$cohort = "Neher"
+    data_simple$vl_log = log10(data_simple$viral_load)
+    test_data_simple$vl_log = log10(test_data_simple$viral_load)
+    both = rbind(data_simple, test_data_simple)
+    file_name = "VL_time_Neher_comparison"
+    title = "Viral load vs. Time by Sample Cohort"
+    xlab = "Time (years)"
+    ylab = "log10(Viral Load)"
+
+    p <- ggplot(both, aes(x=time, y=vl_log, color=cohort)) + geom_point(size = 2.5) + geom_smooth(method=lm, se=TRUE, fullrange=TRUE) + ggtitle(title) + labs(x=paste(xlab), y=paste(ylab), color = "Sample Cohort") + theme_bw() + theme(text = element_text(size = 18)) + xlim(0, 2) + stat_cor(method = "pearson", size = 5, label.x = 1.6)
+
+    print(p)
+
+    path = paste(file_name,".pdf",sep="")
+    ggsave(path, plot = last_plot())
 }

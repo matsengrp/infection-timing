@@ -1,5 +1,6 @@
 # Hide data files
 _ignore/
+Neher_Code/
 
 # Custom
 *.html
