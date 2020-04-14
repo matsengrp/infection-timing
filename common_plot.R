@@ -6,48 +6,9 @@ library(data.table)
 library(Metrics)
 library(GGally)
 
+source("common_regression.R")
+
 knitr::opts_chunk$set(fig.width=16, fig.height=8)
-
-#' Organize data by splitting data file by Fragment and by Run number then create new dataframes representing each run for each fragment.
-#' 
-#' @param data: dataframe containing Fragment and Run columns.
-#' @param fragment: column name indicating sequence region names (column entry options are F1, F2, F3).
-#' @param run: column name indicating run number for sequencing (column entry options are `Run 1`, `Run 2`, `Run 3`).
-#' @return list of dataframes representing each combination of \code{fragment} and \code{run} variables.
-
-make_dataframes <- function(data, fragment, run) {
-    data_frags = split(data, fragment)
-    F1 <- data_frags$F1
-    F2 <- data_frags$F2
-    F3 <- data_frags$F3
-    data_runs = split(data, run)
-    Run1 <- data_runs$`Run 1`
-    Run2 <- data_runs$`Run 2`
-    Run3 <- data_runs$`Run 3`
-    data_split = split(data, list(fragment, run))
-    Run1F1 <- data_split$`F1.Run 1`
-    Run1F2 <- data_split$`F2.Run 1`
-    Run1F3 <- data_split$`F3.Run 1`
-    Run2F1 <- data_split$`F1.Run 2`
-    Run2F2 <- data_split$`F2.Run 2`
-    Run2F3 <- data_split$`F3.Run 2`
-    Run3F1 <- data_split$`F1.Run 3`
-    Run3F2 <- data_split$`F2.Run 3`
-    Run3F3 <- data_split$`F3.Run 3`
-    return(list(F1, F2, F3, Run1, Run2, Run3, Run1F1, Run1F2, Run1F3, Run2F1, Run2F2, Run2F3, Run3F1, Run3F2, Run3F3))
-}
-
-#' Add regression lines by fragment to GGPairs plot...
-#' 
-#' @param data: dataframe with Fragment column
-#' @param fragment: column name indicating sequence region names (column entry options are F1, F2, F3).
-#' @return regression lines by Fragment to add to plot
-regress_by_frag <- function(data, mapping){
-  p <- ggplot(data = data, mapping=mapping) + 
-    geom_point() + 
-    geom_smooth(method=lm, se=TRUE, fullrange=TRUE, alpha = 0.1)
-  p
-}
 
 #' Creates plot title given input variables.
 #' 
@@ -67,9 +28,11 @@ title <- function(apd, fragment, run, facet1, facet2, x, y) {
     } else if (x == "vl" && y == "apd"){
         title_name = paste0("Log Viral Load vs. Average APD by Patient for APD-",apd) 
     } else if (x == "vl" && y == "mae"){
-        title_name = paste0("Log Viral Load vs. Mean Absolute Error for APD-",apd) 
+        title_name = paste0("Log Viral Load vs. Average Mean Absolute Error for APD-",apd) 
     } else if (x == "none" && y == "none"){
         title_name = paste0("Variable comparison APD",apd) 
+    }else if (x == "sp_vl"&& y == "apd_time"){
+        title_name = paste0("Set Point Log Viral Load vs. APD Rate of Change for APD-",apd) 
     }else {
         print("ERROR: incompatible x and y variables")
     }     
@@ -94,9 +57,11 @@ file <- function(apd, fragment, run, facet1, facet2, x, y) {
     } else if (x == "vl" && y == "apd"){
         file_name = paste0("LogVL_AverageAPD_by_patient","_for_APD",apd) 
     } else if (x == "vl" && y == "mae"){
-        file_name = paste0("LogVL_MAE_for_APD",apd) 
+        file_name = paste0("LogVL_AvgMAE_for_APD",apd) 
     } else if (x == "none" && y == "none"){
         file_name = paste0("Variable_comparison_APD",apd) 
+    } else if (x == "sp_vl"&& y == "apd_time"){
+        file_name = paste0("SetPtVL_APD_rate_for_APD_",apd) 
     } else {
         print("ERROR: incompatible x and y variables")
     }     
@@ -122,15 +87,6 @@ plot_ETI_TI_regression <- function(data, fragment, apd, run, facet1, facet2, poi
     title_name = title(apd, fragment, run, facet1, facet2, x, y)
     file_name = file(apd, fragment, run, facet1, facet2, x, y)
 
-    # Execute above function to create a list of new dataframes
-    dataframe_list = make_dataframes(data, data$Fragment, data$Run)
-
-    # Rename dataframe list entries by Run and Fragment numbers
-    names(dataframe_list) = c("F1", "F2", "F3", "Run1", "Run2", "Run3", "Run1F1", "Run1F2", "Run1F3", "Run2F1",  "Run2F2", "Run2F3", "Run3F1", "Run3F2", "Run3F3")
-
-    # Split list of dataframes into individual dataframes
-    list2env(dataframe_list ,.GlobalEnv)
-
     # Assign facetting variables
     if (facet2 == "none"){
         facet_wrap = as.formula(paste("~", facet1))
@@ -138,72 +94,26 @@ plot_ETI_TI_regression <- function(data, fragment, apd, run, facet1, facet2, poi
         facet_wrap = as.formula(paste(facet1, "~", facet2))
     }
 
-    # Assign dataframe to use!
-    if (fragment == "all" && run == "all"){
-        data_arg = data
-    } else if (fragment != "all" && run == "all"){
-        data_arg = get(fragment)
-    } else if (fragment == "all" && run != "all"){
-        data_arg = get(paste0("Run",run))
-    } else {
-        data_arg = get(paste0("Run",run,fragment))
-    }
-
+    data_arg = data
     data_arg$vl_log = log10(data_arg$VL)
 
     # Perfect correlation (ETI = Actual TI) function: 
     func <- function(x){x}
 
-    if (y == "eti" && x == "ti"){
-        yvar = paste0("AvgTOI",apd, collapse = NULL)
-        ylab = "Average Estimated Time of Infection (years)"
+    yvar = paste0("AvgTOI",apd, collapse = NULL)
+    ylab = "Average Estimated Time of Infection (years)"
+    xvar = "ActualTOI..year."
+    xlab = "Actual Time of Infection (years)"
 
-        xvar = "ActualTOI..year."
-        xlab = "Actual Time of Infection (years)"
-
-        # Create plot
-        p <- ggplot(data=data_arg,aes(data_arg[[yvar]],x=data_arg[[xvar]]))+geom_point(aes(shape=get(paste(points)), color=get(paste(color_points))), size = 2.5) + stat_smooth(method="lm", se=TRUE, color= apd, fullrange=TRUE) + xlim(0,2) + ylim(0,6) + facet_wrap(facet_wrap) + ggtitle(title_name) + labs(x=paste(xlab), y=paste(ylab), shape = points, color = color_points)+ stat_regline_equation(label.x = 0, label.y = 5, size = 5) + stat_function(fun = func, color = "blue", linetype="dashed", size=1) + theme_bw() + theme(text = element_text(size = 18)) 
-    } else if (y == "apd" && x == "ti"){
-        yvar = paste0("AvgAPD",apd, collapse = NULL)
-        ylab = "Average Average Pairwise Diversity (APD)"
-    
-        xvar = "ActualTOI..year."
-        xlab = "Actual Time of Infection (years)"
-
-        # Create plot
-        p <- ggplot(data=data_arg,aes(y = data_arg[[yvar]],x=data_arg[[xvar]])) + geom_point(aes(color=get(paste(color_points))), size = 2.5) + facet_wrap(facet_wrap) + geom_smooth(method="lm", se=TRUE, color= apd, fullrange=TRUE) + ggtitle(title_name) + labs(x=paste(xlab), y=paste(ylab), color = color_points) + stat_cor(method = "pearson", label.x = 1, label.y = 0, size = 5) + theme_bw() + theme(text = element_text(size = 18)) 
-    } else if (x == "vl" && y == "apd"){
-        xvar = "vl_log"
-        xlab = "log10(Viral Load)"
-
-        yvar = paste0("AvgAPD",apd, collapse = NULL)
-        ylab = "Average Average Pairwise Diversity (APD)"
-
-        # Create plot
-        p <- ggplot(data=data_arg,aes(y = data_arg[[yvar]],x=data_arg[[xvar]]))+geom_point(aes(color=get(paste(color_points))), size = 2.5) + facet_wrap(facet_wrap) + geom_smooth(method="lm", se=TRUE, color= apd, fullrange=TRUE) + ggtitle(title_name) + labs(x=paste(xlab), y=paste(ylab), color = color_points) + stat_cor(method = "pearson", label.x = 0, label.y = 0, size = 5)+ theme_bw() + theme(text = element_text(size = 18)) 
-    } else if (y == "mae" && x == "vl"){
-        xvar = "vl_log"
-        xlab = "log10(Viral Load)"
-
-        yvar = paste0("MAE",apd, collapse = NULL)
-        ylab = "ETI - TI Mean Absolute Error"
-
-        # Create plot
-        p <- ggplot(data=data_arg,aes(data_arg[[yvar]],x=data_arg[[xvar]]))+geom_point(aes(color=get(paste(color_points))), size = 2.5) + facet_wrap(facet_wrap) + geom_smooth(method="lm", se=TRUE, color= apd, fullrange=TRUE) + stat_cor(method = "pearson", label.x = 0, label.y = 0, size = 5) + ggtitle(title_name) + labs(x=paste(xlab), y=paste(ylab), color = color_points) + theme_bw() + theme(text = element_text(size = 18)) 
-    } else if (y == "none" && x == "none") {
-        apd_ = paste0("AvgAPD",apd, collapse = NULL)
-        mae_ = paste0("MAE",apd, collapse = NULL)
-        p <- ggpairs(data=data_arg[,c("ActualTOI..year.", "vl_log", apd_, mae_, "Fragment")], columns = 1:4, title="Actual Infection Time (years) vs. log10(Viral Load) and APD", columnLabels = c("Actual TI (years)", "log10(Viral Load)", apd_, mae_), size = 2.5, ggplot2::aes(colour=Fragment, alpha = 0.5), upper = list(continuous = wrap("cor", size=6)), lower = list(continuous = regress_by_frag)) + theme_bw() + theme(text = element_text(size = 18)) 
-    } 
-    else {
-        print("ERROR: incompatible x and y variables")
-    } 
+    # Create plot
+    p <- ggplot(data=data_arg,aes(data_arg[[yvar]],x=data_arg[[xvar]]))+geom_point(aes(shape=get(paste(points)), color=get(paste(color_points))), size = 2.5) + stat_smooth(method="lm", se=TRUE, color= apd, fullrange=TRUE) + xlim(0,2) + ylim(0,6) + facet_wrap(facet_wrap) + ggtitle(title_name) + labs(x=paste(xlab), y=paste(ylab), shape = points, color = color_points)+ stat_regline_equation(label.x = 0, label.y = 5, size = 5) + stat_function(fun = func, color = "blue", linetype="dashed", size=1) + theme_bw() + theme(text = element_text(size = 18)) 
 
     print(p)
 
     path = paste(file_name,".pdf",sep="")
     ggsave(path, plot = last_plot())
 }
+
 
 #' Plot regressions between different variables (to assess relationships)
 #' 
@@ -239,32 +149,67 @@ plot_compare_regression <- function(data, fragment, apd, run, facet1, facet2, po
     if (y == "apd" && x == "ti"){
         yvar = paste0("AvgAPD",apd, collapse = NULL)
         ylab = "Average Average Pairwise Diversity (APD)"
+        ypos1 = 0.021
+        ypos2 = 0.022
     
         xvar = "ActualTOI..year."
         xlab = "Actual Time of Infection (years)"
+        xpos = 1
     } else if (x == "vl" && y == "apd"){
         xvar = "vl_log"
         xlab = "log10(Viral Load)"
+        xpos = 4
 
         yvar = paste0("AvgAPD",apd, collapse = NULL)
         ylab = "Average Average Pairwise Diversity (APD)"
+        ypos1 = 0.04
+        ypos2 = 0.038   
     } else if (y == "mae" && x == "vl"){
         xvar = "vl_log"
         xlab = "log10(Viral Load)"
-
-        yvar = paste0("MAE",apd, collapse = NULL)
+        xpos = 4
+        yvar = paste0("AvgMAE",apd, collapse = NULL)
         ylab = "ETI - TI Mean Absolute Error"
+        ypos1 = 2.25
+        ypos2 = 2.35
+    } else if (x == "sp_vl"&& y == "apd_time"){
+        data_arg = regress_apd_time(data, apd)
+        data_arg$sp_vl_log = log10(data_arg$set_point_VL)
+        xvar = "sp_vl_log"
+        xlab = "log10(Set Point Viral Load)"
+        xpos = 6
+        yvar = "apd_time_lm"
+        ylab = "APD Rate of Change (diversity/year)"
+        ypos1 = 0.017
+        ypos2 = 0.018     
     } else {
         print("ERROR: incompatible x and y variables")
     } 
     
     # Create plot
-    p <- ggplot(data=data_arg,aes(y = data_arg[[yvar]],x=data_arg[[xvar]])) + geom_point(aes(color=get(paste(color_points))), size = 2.5) + facet_wrap(facet_wrap) + geom_smooth(method="lm", se=TRUE, color= apd, fullrange=TRUE) + ggtitle(title_name) + labs(x=paste(xlab), y=paste(ylab), color =color_points) + stat_cor(method = "pearson", size = 5) + theme_bw() + theme(text = element_text(size = 18)) 
+    p <- ggplot(data=data_arg,aes(y = data_arg[[yvar]],x=data_arg[[xvar]])) + geom_point(aes(color=get(paste(color_points))), size = 2.5) + facet_wrap(facet_wrap) + geom_smooth(method="lm", se=TRUE, color= apd, fullrange=TRUE) + ggtitle(title_name) + labs(x=paste(xlab), y=paste(ylab), color =color_points) + stat_cor(method = "pearson", size = 5, label.x = xpos, label.y = ypos1) + stat_regline_equation(label.x = xpos, label.y = ypos2, size = 5) + theme_bw() + theme(text = element_text(size = 18))
+
+    # plot residuals
+    #regression = lm(data_arg[[yvar]] ~ data_arg[[xvar]])
+    #r <- ggplot(regression, aes(x = .fitted, y = .resid)) + geom_point() + labs(x=paste(xlab), y="Regression Residuals") + ggtitle(paste(title_name, " #Regression Residuals"))
 
     print(p)
+    #print(r)
 
     path = paste(file_name,".pdf",sep="")
     ggsave(path, plot = last_plot())
+}
+
+#' Add regression lines by fragment to GGPairs plot...
+#' 
+#' @param data: dataframe with Fragment column
+#' @param fragment: column name indicating sequence region names (column entry options are F1, F2, F3).
+#' @return regression lines by Fragment to add to plot
+regress_by_frag <- function(data, mapping){
+  p <- ggplot(data = data, mapping=mapping) + 
+    geom_point() + 
+    geom_smooth(method=lm, se=TRUE, fullrange=TRUE, alpha = 0.1)
+  p
 }
 
 #' Plot scatter matrix to compare relationships between Actual Infection time, APD, and Mean absolute error (MAE)
@@ -278,7 +223,7 @@ plot_scatter_matrix <- function(data, apd) {
     data$vl_log = log10(data$VL)
     file_name = file(apd, "none", "none", "none", "none", "none", "none")
     apd_ = paste0("AvgAPD",apd, collapse = NULL)
-    mae_ = paste0("MAE",apd, collapse = NULL)
+    mae_ = paste0("AvgMAE",apd, collapse = NULL)
     p <- ggpairs(data=data[,c("ActualTOI..year.", "vl_log", apd_, mae_, "Fragment")], columns = 1:4, title="Actual Infection Time (years) vs. log(Viral Load) and APD", columnLabels = c("Actual TI (years)", "log10(Viral Load)", apd_, mae_), size = 2.5, ggplot2::aes(colour=Fragment, alpha = 0.5),upper = list(continuous = wrap("cor", size=6)), lower = list(continuous = regress_by_frag)) + theme_bw() + theme(text = element_text(size = 18)) 
 
     print(p)
@@ -290,24 +235,26 @@ plot_scatter_matrix <- function(data, apd) {
 
 #' Plot Average Estimated Time of Infection (AvgETI) versus actual time of infection for all fragment and run combinations for each APD status. The shape of the plot points are by patient ID (Sample) or by Run.
 #' 
-#' @param variable: string -- variable that we are plotting (options apd, eti)
+#' @param dataframe: data to plot
+#' @param x: string -- variable that we are plotting (options apd, eti)
+#' @param y: string -- variable that we are plotting (options apd, eti)
 #' @return Lots of plots found in the /plots/ directory!
 
-make_all_plots <- function(x, y){
+make_all_plots <- function(data, x, y){
     # Set working directory to plots folder
     setwd("./plots/")
 
     if (x == "ti" & y == "eti"){
         for (diversity in c(1, 5, 10)){
-            plot_ETI_TI_regression(all_runs, fragment = "all", apd = diversity, run = "all", facet1 = "Fragment", facet2 = "none", points  ="Run",  color_point= "Sample", x = paste(x), y = paste(y))
+            plot_ETI_TI_regression(data, fragment = "all", apd = diversity, run = "all", facet1 = "Fragment", facet2 = "none", points  ="Run",  color_point= "Sample", x = paste(x), y = paste(y))
         }
     } else if (x == "none"& y == "none"){
         for (diversity in c(1, 5, 10)){
-            plot_scatter_matrix(all_runs, apd = diversity)
+            plot_scatter_matrix(data, apd = diversity)
         }
     } else {
         for (diversity in c(1, 5, 10)){
-            plot_compare_regression(all_runs, fragment = "all", apd = diversity, run = "all", facet1 = "Fragment", facet2 = "none", points = "none",  color_point = "Sample", x = paste(x), y = paste(y))
+            plot_compare_regression(data, fragment = "all", apd = diversity, run = "all", facet1 = "Fragment", facet2 = "none", points = "none",  color_point = "Sample", x = paste(x), y = paste(y))
         }
     }
 }

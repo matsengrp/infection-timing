@@ -30,6 +30,7 @@ setwd("/Users/magdalenarussell/Documents/Matsen_group/infection-timing")
 
 # Load existing data as `all_runs` file
 all_runs = read.csv("_ignore/AllRunsAvg.csv")
+all_runs_m = calc_mae(all_runs)
 
 # Load Neher paper test data as `Neher_data` file
 neher_data = read.csv("_ignore/Neher_test_data_time_vl_df.tsv", sep = "\t")
@@ -40,7 +41,7 @@ The following plots show the estimated time of infection(ETI) (as calculated usi
 
 ```{r warning=FALSE, results='hide', message = FALSE}
 # Make plots!
-make_all_plots(x = "ti", y = "eti")
+make_all_plots(data = all_runs_m, x = "ti", y = "eti")
 ```
 
 The following plot compares the viral load over time for our data and the Neher test cohort data.
@@ -55,7 +56,7 @@ The following plots show the average pairwise diversity by fragment for each pat
 
 ```{r warning=FALSE, results='hide', message = FALSE}
 # Make plots!
-make_all_plots(x = "ti", y = "apd")
+make_all_plots(data = all_runs_m, x = "ti", y = "apd")
 ```
 
 The following plots show the log viral load versus average pairwise diversity by fragment and patient (Sample). The plots are showing all runs combined. Note that average pairwise diversity (APD) parameters change for each plot.
@@ -63,7 +64,7 @@ The following plots show the log viral load versus average pairwise diversity by
 
 ```{r warning=FALSE, results='hide', message = FALSE}
 # Make plots!
-make_all_plots(y = "apd", x = "vl")
+make_all_plots(data = all_runs_m, y = "apd", x = "vl")
 ```
 
 The following plots show the log viral load versus mean absolute error (estimated TI - actual TI) by fragment and patient (Sample). The plots are showing all runs combined. Note that average pairwise diversity (APD) parameters change for each plot.
@@ -71,19 +72,19 @@ The following plots show the log viral load versus mean absolute error (estimate
 
 ```{r warning=FALSE, results='hide', message = FALSE}
 # Make plots!
-make_all_plots(y = "mae", x = "vl")
+make_all_plots(data = all_runs_m, y = "mae", x = "vl")
 ```
 The following plots show the relationship between Actual Time of Infection, log10(Viral Load), and ADP...
 
 ```{r warning=FALSE, results='hide', message = FALSE}
 # Make plots!
-make_all_plots(x = "none", y = "none")
+make_all_plots(data = all_runs_m, x = "none", y = "none")
 ```
 
 The following plots show the relationship between rate of apd change over time and set point viral load (average viral load across time points) along with the regression coefficient and pvalue for the regression. 
 
 ```{r warning=FALSE, results='hide', message = FALSE}
 # Make plots!
-make_all_plots(x = "none", y = "none")
+make_all_plots(data = all_runs_m, x = "sp_vl", y ="apd_time")
 ```
 
