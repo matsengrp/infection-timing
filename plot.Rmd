@@ -44,7 +44,7 @@ The following plots show the estimated time of infection(ETI) (as calculated usi
 
 ```{r warning=FALSE, results='hide', message = FALSE}
 # Make plots!
-make_all_plots(data = all_runs_m, x = "ti", y = "eti", compare = FALSE)
+make_all_plots(data = all_runs_m, x = "ti", y = "eti", compare = FALSE, apd = "all")
 ```
 
 The following plot compares the viral load over time for our data and the Neher test cohort data.
@@ -59,7 +59,7 @@ The following plots show the average pairwise diversity by fragment for each pat
 
 ```{r warning=FALSE, results='hide', message = FALSE}
 # Make plots!
-make_all_plots(data = all_runs_m, x = "ti", y = "apd", compare = FALSE)
+make_all_plots(data = all_runs_m, x = "ti", y = "apd", compare = FALSE, apd = "all")
 ```
 
 The following plots show the log viral load versus average pairwise diversity by fragment and patient (Sample). The plots are showing all runs combined. Note that average pairwise diversity (APD) parameters change for each plot.
@@ -67,7 +67,7 @@ The following plots show the log viral load versus average pairwise diversity by
 
 ```{r warning=FALSE, results='hide', message = FALSE}
 # Make plots!
-make_all_plots(data = all_runs_m, y = "apd", x = "vl", compare = FALSE)
+make_all_plots(data = all_runs_m, y = "apd", x = "vl", compare = FALSE, apd = "all")
 ```
 
 The following plots show the log viral load versus mean absolute error (estimated TI - actual TI) by fragment and patient (Sample). The plots are showing all runs combined. Note that average pairwise diversity (APD) parameters change for each plot.
@@ -75,20 +75,20 @@ The following plots show the log viral load versus mean absolute error (estimate
 
 ```{r warning=FALSE, results='hide', message = FALSE}
 # Make plots!
-make_all_plots(data = all_runs_m, y = "mae", x = "vl", compare = FALSE)
+make_all_plots(data = all_runs_m, y = "mae", x = "vl", compare = FALSE, apd = "all")
 ```
 The following plots show the relationship between Actual Time of Infection, log10(Viral Load), and ADP...
 
 ```{r warning=FALSE, results='hide', message = FALSE}
 # Make plots!
-#make_all_plots(data = all_runs_m, x = "none", y = "none", compare = FALSE)
+make_all_plots(data = all_runs_m, x = "none", y = "none", compare = FALSE, apd = "all")
 ```
 
 The following plots show the relationship between rate of apd change over time and set point viral load (average viral load across time points) along with the regression coefficient and pvalue for the regression. 
 
 ```{r warning=FALSE, results='hide', message = FALSE}
 # Make plots!
-make_all_plots(data = all_runs_m, x = "sp_vl", y ="apd_time", compare = FALSE)
+make_all_plots(data = all_runs_m, x = "sp_vl", y ="apd_time", compare = FALSE, apd = "all")
 ```
 
 The following plots show the average pairwise diversity by fragment for each patient (Sample) versus time for both the Infant data and the Neher data. Note that average pairwise diversity (APD) parameters change for each plot.
@@ -96,7 +96,7 @@ The following plots show the average pairwise diversity by fragment for each pat
 
 ```{r warning=FALSE, results='hide', message = FALSE}
 # Make plots!
-make_all_plots(data = all_runs_m, x = "ti", y = "apd", compare = TRUE)
+make_all_plots(data = all_runs_m, x = "ti", y = "apd", compare = TRUE, apd = "all")
 ```
 
 The following plots show the log viral load versus average pairwise diversity by fragment and patient (Sample) for both the Infant data and the Neher data. The plots are showing all runs combined. Note that average pairwise diversity (APD) parameters change for each plot.
@@ -104,13 +104,19 @@ The following plots show the log viral load versus average pairwise diversity by
 
 ```{r warning=FALSE, results='hide', message = FALSE}
 # Make plots!
-make_all_plots(data = all_runs_m, y = "apd", x = "vl", compare = TRUE)
+make_all_plots(data = all_runs_m, y = "apd", x = "vl", compare = TRUE, apd = "all")
 ```
 
 The following plots show the relationship between rate of apd change over time and set point viral load (average viral load across time points) along with the regression coefficient and pvalue for the regression for both the Infant data and the Neher data. 
 
 ```{r warning=FALSE, results='hide', message = FALSE}
 # Make plots!
-make_all_plots(data = all_runs_m, x = "sp_vl", y ="apd_time", compare = TRUE)
+make_all_plots(data = all_runs_m, x = "sp_vl", y ="apd_time", compare = TRUE, apd = "all")
+```
+The following plot shows the distribution of apd rates by sample cohort
+```{r warning=FALSE, results='hide', message = FALSE}
+for (apd in c(1,5,10)){
+    variable_hist(data = all_runs_m, test_data = neher_data, compare_var = "apd_time_lm", apd = paste(apd))
+}
 ```
 

@@ -1,0 +1,41 @@
+---
+title: "Infection timing analysis"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    dev: 'svg'
+---
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(devtools)
+library(gridExtra)
+library(ggpubr)
+library(data.table)
+library(Metrics)
+library(tidyverse)
+library(GGally)
+
+source("Infant_functions.R")
+source("Infant_predict.R")
+source("Infant_plotting.R")
+
+knitr::opts_chunk$set(fig.width=16, fig.height=8)
+
+```
+
+```{r warning=FALSE, results='hide'}
+# Set working directory
+setwd("/Users/magdalenarussell/Documents/Matsen_group/infection-timing/Infant_Model")
+
+# Load existing data
+training_data = read.csv("../_ignore/AllRunsAvg.csv")
+testing_data = read.csv("../_ignore/AllRunsAvg.csv")
+```
+
+```{r warning=FALSE, results='hide', message = FALSE}
+for (cutoff in c(1, 5, 10)){
+    plot_ETI_TI_regression(train_data = training_data, new_data = testing_data, apd = cutoff)
+}
+```
