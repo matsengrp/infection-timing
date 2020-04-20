@@ -292,23 +292,37 @@ plot_scatter_matrix <- function(data, apd) {
 #' @param x: string -- variable that we are plotting (options apd, eti)
 #' @param y: string -- variable that we are plotting (options apd, eti)
 #' @param  compare: boolean -- whether to compare with test data (neher_data here) with added regression line for test data
+#' @param apd: either all, 1, 5, 10 (indicates which apd cutoff to analyze, if all, then all will be plotted)
 #' @return Lots of plots found in the /plots/ directory!
 
-make_all_plots <- function(data, x, y, compare){
+make_all_plots <- function(data, x, y, compare, apd){
     # Set working directory to plots folder
     setwd("./plots/")
 
     if (x == "ti" & y == "eti"){
-        for (diversity in c(1, 5, 10)){
-            plot_ETI_TI_regression(data, fragment = "all", apd = diversity, run = "all", facet1 = "Fragment", facet2 = "none", points  ="Run",  color_point= "Sample", x = paste(x), y = paste(y))
+        if (apd == "all"){
+            for (diversity in c(1, 5, 10)){
+                plot_ETI_TI_regression(data, fragment = "all", apd = diversity, run = "all", facet1 = "Fragment", facet2 = "none", points  ="Run",  color_point= "Sample", x = paste(x), y = paste(y))
+            }
+        } else {
+            plot_ETI_TI_regression(data, fragment = "all", apd = paste(apd), run = "all", facet1 = "Fragment", facet2 = "none", points  ="Run",  color_point= "Sample", x = paste(x), y = paste(y))
         }
+
     } else if (x == "none"& y == "none"){
-        for (diversity in c(1, 5, 10)){
-            plot_scatter_matrix(data, apd = diversity)
+        if (apd == "all"){
+            for (diversity in c(1, 5, 10)){
+                plot_scatter_matrix(data, apd = diversity)
+            }
+        } else{
+            plot_scatter_matrix(data, apd = paste(apd))
         }
     } else {
-        for (diversity in c(1, 5, 10)){
-            plot_compare_regression(data, fragment = "all", apd = diversity, run = "all", facet1 = "Fragment", facet2 = "none", points = "none",  color_point = "Sample", x = paste(x), y = paste(y), compare = compare)
+        if (apd == "all"){
+            for (diversity in c(1, 5, 10)){
+                plot_compare_regression(data, fragment = "all", apd = diversity, run = "all", facet1 = "Fragment", facet2 = "none", points = "none",  color_point ="Sample", x = paste(x), y = paste(y), compare = compare)
+            }
+        } else{
+            plot_compare_regression(data, fragment = "all", apd = paste(apd), run = "all", facet1 = "Fragment", facet2 = "none", points = "none",  color_point ="Sample", x = paste(x), y = paste(y), compare = compare)
         }
     }
 }
@@ -363,6 +377,30 @@ plot_model_compare <- function(data, test_data, compare_var) {
     print(p)
 
     path = paste(file_name,".pdf",sep="")
+    ggsave(path, plot = last_plot())
+}
+
+#' Value comparison via histogram
+#' 
+#' @param data -- infant dataframe
+#' @param test_data -- dataframe for comparison
+#' @param compare_var -- variable for comparison (need to change to add any variable, not it is just the "apd_time_lm": "APD Rate of Change (diversity/year)"
+#' @param apd -- apd cutoff value
+#' @return Histogram comparing compare_var between data and test_data
+
+variable_hist <- function(data, test_data, compare_var, apd){
+    data = process_data(data)
+    test_data = process_data(neher_data)
+    test_data$cohort = "Neher"
+    data$cohort = "Infant"
+    data_arg = rbind(data, test_data)
+    data_arg = regress_apd_time(data_arg, apd)
+    data_arg$sp_vl_log = log10(data_arg$set_point_VL)
+    xvar = "apd_time_lm"
+    p <- ggplot(data_arg, aes(x=data_arg[[xvar]], fill=cohort)) + geom_histogram(alpha=0.6, position = 'identity') + labs(x = "APD Rate of Change(diversity/year)", fill = "Sample Cohort") + ggtitle(paste0("APD", apd, " Rate of Change Histogram by Sample Cohort"))+ theme_bw() +  theme(text = element_text(size = 18))
+    
+    print(p)
+    path = paste("apd_rate_histogram.pdf",sep="")
     ggsave(path, plot = last_plot())
 }
 
