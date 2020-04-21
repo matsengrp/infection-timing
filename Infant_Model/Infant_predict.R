@@ -27,10 +27,10 @@ data_clean_new_data <- function(data, fragment){
 
 ## ADD CAPABILITY TO JUST SUBMIT the FOLLWoing!!!!
 # needs apd with cutoff of 1, 5, or 10, fragment
-predict_infection_time <- function(data, apd_cutoff, fragment, output_filename){
-    model = get(paste0("model", apd_cutoff, fragment))
+predict_infection_time <- function(data, apd_cutoff, fragment, output_filename, type){
+    model = get(paste0(type,"_model", apd_cutoff, fragment))
     new_data = data_clean_new_data(data, fragment)
-    new_data$estimated_ti = predict(model, newdata = new_data)
+    new_data$estimated_ti = predict(model, newdata = new_data, na.action = na.pass)
     write.csv(new_data, output_filename, row.names = FALSE)
     return(new_data)
 }
