@@ -7,6 +7,7 @@ library(data.table)
 library(ggplot2)
 library(caret)
 library(tidyverse)
+library(L1pack)
 
 data = read.csv("../_ignore/AllRunsAvg.csv")
 
@@ -19,12 +20,8 @@ data_clean <- function(data){
     return(data_avg)
 }
 
-create_model <- function(data, cutoff, fragment){
+create_model_lm <- function(data, cutoff, fragment){
     data_cleaned = data_clean(data)
-    #cut_arg = paste0('avg_apd', cutoff)
-    #cutoffs = c("avg_apd1", "avg_apd5", "avg_apd10")
-    #cutoffs2 = cutoffs[!cutoffs == cut_arg]
-    #data_cleaned_cutoff = data_cleaned[, !(..cutoffs2)]
     
     # Subset data by indicated fragment
     if (fragment == "F1"){
@@ -41,19 +38,52 @@ create_model <- function(data, cutoff, fragment){
 
     # Train the model
     model1 <- train(actual_ti ~ avg_apd1, data = data_cleaned, method = "lm", trControl = train.control, na.action = na.pass)
-    model5 <- train(actual_ti ~ avg_apd5, data = data_cleaned, method = "lm", trControl = train.control)
-    model10 <- train(actual_ti ~ avg_apd10, data = data_cleaned, method = "lm", trControl = train.control)
+    model5 <- train(actual_ti ~ avg_apd5, data = data_cleaned, method = "lm", trControl = train.control, na.action = na.pass)
+    model10 <- train(actual_ti ~ avg_apd10, data = data_cleaned, method = "lm", trControl = train.control, na.action = na.pass)
     
     # Summarize the results
     return(get(paste0("model", cutoff)))
 }
 
-model1F1 = create_model(data, 1, 'F1')
-model5F1 = create_model(data, 5, 'F1')
-model10F1 = create_model(data, 10, 'F1')
-model1F2 = create_model(data, 1, 'F2')
-model5F2 = create_model(data, 5, 'F2')
-model10F2 = create_model(data, 10, 'F2')
-model1F3 = create_model(data, 1, 'F3')
-model5F3 = create_model(data, 5, 'F3')
-model10F3 = create_model(data, 10, 'F3')
+create_model_lad <- function(data, cutoff, fragment){
+    data_cleaned = data_clean(data)
+    
+    # Subset data by indicated fragment
+    if (fragment == "F1"){
+        data_cleaned = data_cleaned[fragment == "F1"]
+    } else if (fragment == "F2"){
+        data_cleaned = data_cleaned[fragment == "F2"]
+    } else if (fragment == "F3"){
+        data_cleaned = data_cleaned[fragment == "F3"]
+    }
+
+    # Train the model
+    model1 <- lad(actual_ti ~ avg_apd1, data = data_cleaned, na.action = na.pass)
+    model5 <- lad(actual_ti ~ avg_apd5, data = data_cleaned, na.action = na.pass)
+    model10 <- lad(actual_ti ~ avg_apd10, data = data_cleaned, na.action = na.pass)
+    
+    # Summarize the results
+    return(get(paste0("model", cutoff)))
+}
+
+
+LM_model1F1 = create_model_lm(data, 1, 'F1')
+LM_model5F1 = create_model_lm(data, 5, 'F1')
+LM_model10F1 = create_model_lm(data, 10, 'F1')
+LM_model1F2 = create_model_lm(data, 1, 'F2')
+LM_model5F2 = create_model_lm(data, 5, 'F2')
+LM_model10F2 = create_model_lm(data, 10, 'F2')
+LM_model1F3 = create_model_lm(data, 1, 'F3')
+LM_model5F3 = create_model_lm(data, 5, 'F3')
+LM_model10F3 = create_model_lm(data, 10, 'F3')
+
+LAD_model1F1 = create_model_lad(data, 1, 'F1')
+LAD_model5F1 = create_model_lad(data, 5, 'F1')
+LAD_model10F1 = create_model_lad(data, 10, 'F1')
+LAD_model1F2 = create_model_lad(data, 1, 'F2')
+LAD_model5F2 = create_model_lad(data, 5, 'F2')
+LAD_model10F2 = create_model_lad(data, 10, 'F2')
+LAD_model1F3 = create_model_lad(data, 1, 'F3')
+LAD_model5F3 = create_model_lad(data, 5, 'F3')
+LAD_model10F3 = create_model_lad(data, 10, 'F3')
+

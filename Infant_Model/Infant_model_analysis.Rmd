@@ -36,6 +36,8 @@ testing_data = read.csv("../_ignore/AllRunsAvg.csv")
 
 ```{r warning=FALSE, results='hide', message = FALSE}
 for (cutoff in c(1, 5, 10)){
-    plot_ETI_TI_regression(train_data = training_data, new_data = testing_data, apd = cutoff)
+    for (ty in c("LM", "LAD")){
+        plot_ETI_TI_regression(train_data = training_data, new_data = testing_data, apd = cutoff, type = ty)
+    }
 }
 ```
