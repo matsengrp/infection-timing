@@ -1,5 +1,5 @@
 ---
-title: "Infection timing analysis"
+title: "Infection Timing Infant Model"
 output:
   html_document:
     toc: true
@@ -34,10 +34,12 @@ training_data = read.csv("../_ignore/AllRunsAvg.csv")
 testing_data = read.csv("../_ignore/AllRunsAvg.csv")
 ```
 
-```{r warning=FALSE, results='hide', message = FALSE}
+```{r warning=FALSE}
 for (cutoff in c(1, 5, 10)){
-    for (ty in c("LM", "LAD")){
-        plot_ETI_TI_regression(train_data = training_data, new_data = testing_data, apd = cutoff, type = ty)
+    for (ty in c("LM_origin", "LM", "LAD_origin", "LAD")){
+        for (imp in c('FALSE')){
+            plot_ETI_TI_regression(train_data = training_data, new_data = testing_data, apd = cutoff, type = ty, impute = imp)
+        }
     }
 }
 ```
