@@ -1,5 +1,5 @@
 ---
-title: "Infection Timing Infant Models"
+title: "Infection Timing Infant Models with Model analysis"
 output:
   html_document:
     toc: true
@@ -64,6 +64,16 @@ for (ty in c("LM", "LM_origin", "LAD", "LAD_origin", "LM_GEE")){
     plot_APD_TI_regression(together, apd = 10, type = ty)
     plot_ETI_TI_regression(together, apd = 10, type = ty)
     show_model_statistics(apd = 10, type= ty)
+}
+```
+Here are some plots that strive to get at model effectiveness and model selection. I think the major takeaways are that, almost universally, the fragment F3 and the apd cutoff of 1 show the most promising results for all models in terms of limiting error. 
+
+```{r echo=TRUE, message=TRUE, warning=FALSE}
+for (apd in c(1, 5, 10)){
+    for (ty in c("LM_origin", "LM", "LAD_origin", "LAD", "LM_GEE")){
+        together = compile_data(train_data = training_data, new_data = testing_data, apd = apd, type = ty)
+        plot_model_evaluation(together, apd = apd, type = ty)
+    }
 }
 ```
 

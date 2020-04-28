@@ -6,9 +6,13 @@ library(data.table)
 library(Metrics)
 library(GGally)
 library(ggfortify)
+library(insight)
+library(lme4)
+library(ggiraphExtra)
 
 source("Infant_functions.R")
 source("Infant_predict.R")
+
 
 #' Create plot title given apd cutoff, x and y variables, and regression type
 #' 
@@ -50,61 +54,19 @@ file <- function(apd, x, y, type) {
 #' @param type: regression model type (options: "LM", "LM_origin", "LAD", "LAD_origin")
 #' 
 
-plot_ETI_TI_regression <- function(train_data, new_data, apd, type) {
+plot_ETI_TI_regression <- function(together, apd, type) {
     # Set title and file name 
     title_name = title(apd, 'ti', 'eti', type)
     file_name = file(apd,'ti', 'eti', type)
-
-    actual_data = data_clean(train_data)
-
-    # Subset data by indicated fragment
-    if (type == "LM_GEE"){
-        estimated_together = predict_infection_time(new_data, apd, fragment = "all", '../_ignore/train_data_predictions.csv', type)
-    } else{
-        estimate_together = data.table()
-        for (frag in c('F1', 'F2','F3')){
-            estimated_data = predict_infection_time(new_data, apd, frag, '../_ignore/train_data_predictions.csv', type)
-            estimate_together = rbind(estimate_together, estimated_data)
-        }
-    }
-
-    together = actual_data[estimate_together, on = c('sample', 'fragment', 'time', 'avg_apd1', 'avg_apd5', 'avg_apd10', 'pos_start', 'pos_end')]    
-    # Create plot
+  
     avg_apd = paste0("avg_apd", apd)
-    if (type == 'LM'){
-        form = 'y ~ x'
-    } else if (type == 'LM_origin'){
-        form = 'y ~ x + 0'
-    } else {
-        form = NULL
-    }
-    
-    # Plot regression between apd and time since infection 
 
-    #w <- ggplot(data=together,aes(y = actual_ti,x= together[[avg_apd]]))+geom_point(aes(shape=fragment, color= sample), size = 2.5) + facet_wrap(~fragment) + #ggtitle(paste0("APD vs. Actual TI for APD", apd, " ", type, " Regression")) + geom_smooth(method = "lm", formula = form, color= apd) + stat_regline_equation#(formula = form, size = 5, label.y = 2.5) + stat_cor(method = "pearson", size = 5, label.y = 2.25) +labs(y='Actual Infection Time', x= #'APD', shape = "Sequence Fragment", color = "Patient")+ theme_bw() + theme(text = element_text(size = 18)) 
-
-    #print(w)
-    #path = paste(paste0("ActualTI_vs_APD_for_APD",apd, "_Infant_Model"),".pdf",sep="")
-    #ggsave(path, plot = last_plot())
-
-    # Print model statistics: 
-
-    #for (frag in c('F1', 'F2', 'F3')){
-    #    model = model_stats(apd = apd, fragment = frag, type = type)
-    #    print(paste0(type, " Model for APD", apd, " and Fragment ", frag, " Summary Statistics:"))
-    #    if (type == 'LM' | type == 'LM_origin'){
-    #        print(model$finalModel)
-    #    } else if (type == 'LAD' | type == 'LAD_origin'){
-    #        print(model)
-    #    }
-    #    print(summary(model))
-    #}
 
     # Perfect correlation (ETI = Actual TI) function: 
     func <- function(x){x}
 
     # Create plot comparing estimated time since infection and actual time since infection with a regression line for all patients together
-    p <- ggplot(data=together,aes(y = estimated_ti,x= actual_ti))+geom_point(aes(shape=fragment, color= sample), size = 2.5) + facet_wrap(~fragment) + stat_smooth(method="lm", se=TRUE, color= apd, fullrange=TRUE) + ggtitle(title_name) + labs(x='Actual time since infection', y= 'Estimated time since Infection', shape = "Sequence Fragment", color = "Patient")+ stat_regline_equation(size = 5, label.y = 2.5) + stat_cor(method = "pearson", size = 5, label.y = 2.25) + stat_function(fun = func, color = "blue", linetype="dashed", size=1) + theme_bw() + theme(text = element_text(size = 18)) + xlim(-0.25, 2.75) + ylim(-0.25, 2.75)
+    p <- ggplot(data=together,aes(y = estimated_ti,x= actual_ti))+geom_point(aes(shape=fragment, color= sample), size = 2.5) + facet_wrap(~fragment) + stat_smooth(method="lm", se=TRUE, fullrange=TRUE) + ggtitle(title_name) + labs(x='Actual time since infection', y= 'Estimated time since Infection', shape = "Sequence Fragment", color = "Patient")+ stat_regline_equation(size = 5, label.y = 2.5) + stat_function(fun = func, color = "blue", linetype="dashed", size=1) + theme_bw() + theme(text = element_text(size = 18)) + xlim(-0.25, 2.75) + ylim(-0.25, 2.75)
 
     print(p)
 
@@ -116,8 +78,94 @@ plot_ETI_TI_regression <- function(train_data, new_data, apd, type) {
     a <- ggplot(data=together,aes(y = estimated_ti,x= actual_ti, group = sample, color = sample))+geom_point(aes(shape=fragment, color= sample), size = 2.5) + facet_wrap(~fragment) + stat_smooth(method="lm", se=FALSE, fullrange=FALSE) + ggtitle(title_name) + labs(x='Actual time since infection', y= 'Estimated time since Infection', shape = "Sequence Fragment", color = "Patient")+ stat_function(fun = func, color = "blue", linetype="dashed", size=1) + theme_bw() + theme(text = element_text(size = 18)) + xlim(-0.25, 2.75) + ylim(-0.25, 2.75)
 
     print(a)
+}
 
 
+plot_APD_TI_regression <- function(together, apd, type) {
+ 
+    # Create plot
+    avg_apd = paste0("avg_apd", apd)
+
+    if (type == 'LM'){
+        form = 'y ~ x'
+    } else if (type == 'LM_origin'){
+        form = 'y ~ x + 0'
+    } else {
+        form = NULL
+    }
+    
+    # Print model statistics: 
+    if (type == "LM_GEE"){
+        model = model_stats(apd = apd, fragment = frag, type = type)
+        eqF1 = function(x){coef(model)[2]*x+coef(model)[1]}
+        eqF2 = function(x){coef(model)[2]*x+coef(model)[1]+coef(model)[3]}
+        eqF3 = function(x){coef(model)[2]*x+coef(model)[1]+coef(model)[4]}
+        a = as.numeric(round(coef(model)[1], digits = 3))
+        b = as.numeric(round(coef(model)[2], digits = 3))
+        c = as.numeric(round(coef(model)[3], digits = 3))
+        d = as.numeric(round(coef(model)[4], digits = 3))
+        modelF1 = paste0("y = ", a, " + " , b ,"x")
+        modelF2 = paste0("y = ", a, " + " , c, " + " ,b ,"x")
+        modelF3 = paste0("y = ", a, " + " , d, " + " ,b ,"x")
+    } else{
+        for (frag in c('F1', 'F2', 'F3')){
+            model = model_stats(apd = apd, fragment = frag, type = type)
+            if (type == 'LM'){
+                a = as.numeric(round(coef(model$finalModel)[1], digits = 3))
+                b = as.numeric(round(coef(model$finalModel)[2], digits = 3))
+            } else if (type == 'LM_origin'){
+                a = as.numeric(0)
+                b = as.numeric(round(coef(model$finalModel)[1], digits = 3))
+            } else if (type == 'LAD'){
+                a = as.numeric(round(coef(model)[1], digits = 3))
+                b = as.numeric(round(coef(model)[2], digits = 3))
+            } else if (type == 'LAD_origin'){
+                a = as.numeric(0)
+                b = as.numeric(round(coef(model)[1], digits = 3))
+            }
+            assign(paste0('model', frag), paste0("y = ", a, " + " , b ,"x"))
+        }
+    }
+
+    # Plot regression between apd and time since infection (no CI)
+    together[fragment == 'F1', labs := paste(modelF1)]
+    together[fragment == 'F2', labs := paste(modelF2)]
+    together[fragment == 'F3', labs := paste(modelF3)]
+
+    if (type == 'LM'| type == 'LM_origin'){
+        w <- ggplot(data=together,aes(y = actual_ti,x= together[[avg_apd]]))+geom_point(aes(shape=fragment, color= sample), size = 2.5) + facet_wrap(~fragment) + ggtitle(paste0("APD vs. Actual TI for APD", apd, " ", type, " Regression")) + geom_smooth(method = "lm", formula = form)  + geom_text(aes(label = labs), x = 0.015, y = 0.3, size = 5) + labs(y='Actual Time Since Infection', x= paste0('APD', apd), shape = "Fragment", color = "Patient")+ theme_bw() + theme(text = element_text(size = 18)) 
+    } else {
+        w <- ggplot(data=together,aes(y = actual_ti,x= together[[avg_apd]]))+geom_point(aes(shape=fragment, color = sample), size = 3) + ggtitle(paste0("APD vs. Actual TI for APD", apd, " ", type, " Regression")) + facet_wrap(~fragment) + geom_line(aes(x=together[[avg_apd]], y = estimated_ti), size = 1)+ geom_text(aes(label = labs), x = 0.015, y = 0.3, size = 5)+ labs(y='Actual Time Since Infection', x= paste0('APD', apd) , shape = "Fragment", color = "Patient")+ theme_bw() + theme(text = element_text(size = 18))
+    }
+    
+    print(w)
+
+    path = paste(paste0("ActualTI_vs_APD_for_APD",apd, "_Infant_Model_", type, "_regression"),".pdf",sep="")
+    ggsave(path, plot = last_plot())
+}
+
+show_model_statistics <- function(apd, type){
+    # Print model statistics: 
+    if (type == "LM_GEE"){
+        model = model_stats(apd = apd, fragment = 'all', type = type)
+        print(paste0(type, " Model for APD", apd, " Summary Statistics:"))
+        print(summary(model)$coeff)
+        p_vals = gee_model_p_val(apd)
+        print(p_vals)
+    } else{
+        for (frag in c('F1', 'F2', 'F3')){
+            model = model_stats(apd = apd, fragment = frag, type = type)
+            print(paste0(type, " Model for APD", apd, " and Fragment ", frag, " Summary Statistics:"))
+            print(summary(model)$coeff)
+        }
+    }
+}
+
+
+plot_model_evaluation <- function(together, apd, type) {
+   
+    # Create plot
+    avg_apd = paste0("avg_apd", apd)
     # Create density plot comparing the Distribution of the Estimation Error by APD for each fragment
     together$time_difference = together$estimated_ti - together$actual_ti
     z <- ggplot(together, aes(x=time_difference, fill=fragment)) + facet_wrap(~fragment) + geom_histogram(alpha=0.8, position = 'identity', bins = 10) + labs(x = "ETI-TI [years]", fill = "Fragment") + ggtitle(paste0("Distribution of the Estimation Error by APD", apd, " Model"))+ theme_bw() +  theme(text = element_text(size = 18))

@@ -188,12 +188,5 @@ for (cut in c(1, 5, 10)){
 }
 
 
-#gee_model_p_val <- function(apd){
-#    model = get(paste0('LM_GEE_model', apd))    
-#    # Calculate regressor p-values  
-#    beta = model$coef # Extract coefficients
-#    se = sqrt(diag(model$robust.variance)) # Extract covariance matrix, take diagonal elements, and square root
-#    p = 2*(1-pnorm(abs(beta)/se)) 
-#    return(p)
-#}
+
 
