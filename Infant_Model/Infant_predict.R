@@ -45,13 +45,14 @@ data_clean_new_data <- function(data, fragment){
 #' @return new_data: Data.table containing the following columns: "sample", "time", "fragment", "avg_apd1", "avg_apd5", "avg_apd10", "pos_start", "pos_end", and "estimated_ti"
 #' 
 predict_infection_time <- function(data, apd_cutoff, fragment, output_filename, type){
+    new_data = data_clean_new_data(data, fragment)
     if (type == 'LM_GEE'){
         model = get(paste0(type,"_model", apd_cutoff))
+        new_data$estimated_ti = predict(model, data = new_data)
     } else{
         model = get(paste0(type,"_model", apd_cutoff, fragment))
+        new_data$estimated_ti = predict(model, newdata = new_data, na.action = na.pass)
     }
-    new_data = data_clean_new_data(data, fragment)
-    new_data$estimated_ti = predict(model, newdata = new_data, na.action = na.pass)
     write.csv(new_data, output_filename, row.names = FALSE)
     return(new_data)
 }
@@ -65,6 +66,36 @@ predict_infection_time <- function(data, apd_cutoff, fragment, output_filename, 
 #' @return model: regression model object
 #' 
 model_stats <- function(apd_cutoff, fragment, type){
-    model = get(paste0(type,"_model", apd_cutoff, fragment))
+    if (type == "LM_GEE"){
+        model = get(paste0('LM_GEE_model', apd))
+    } else {
+        model = get(paste0(type,"_model", apd_cutoff, fragment))
+    }
     return(model)
 }
+
+gee_model_p_val <- function(apd){
+    model = get(paste0('LM_GEE_model', apd))    
+    # Calculate regressor p-values  
+    beta = model$coef # Extract coefficients
+    se = sqrt(diag(model$robust.variance)) # Extract covariance matrix, take diagonal elements, and square root
+    p = 2*(1-pnorm(abs(beta)/se)) 
+    return(p)
+}
+
+compile_data <- function(train_data, new_data, apd, type){
+    actual_data = data_clean(train_data)
+
+    # Subset data by indicated fragment
+    if (type == "LM_GEE"){
+        estimate_together = predict_infection_time(new_data, apd, fragment = "all", '../_ignore/train_data_predictions.csv', type)
+    } else{
+        estimate_together = data.table()
+        for (frag in c('F1', 'F2','F3')){
+            estimated_data = predict_infection_time(new_data, apd, frag, '../_ignore/train_data_predictions.csv', type)
+            estimate_together = rbind(estimate_together, estimated_data)
+        }
+    }
+    together = actual_data[estimate_together, on = c('sample', 'fragment', 'time', 'avg_apd1', 'avg_apd5', 'avg_apd10', 'pos_start', 'pos_end')]  
+    return(together)
+}     
