@@ -23,8 +23,8 @@ data = read.csv("../_ignore/AllRunsAvg.csv")
 #' 
 data_clean <- function(data){
     data = data.table(data)
-    data_avg = data[APD_1 != 'NA', .(mean(APD_1), mean(APD_5), mean(APD_10), mean(HXB2nt_start), mean(HXB2nt_end)), by = .(Sample, ActualTOI..year., Fragment, VL)]
-    colnames(data_avg) = c("sample", "time", "fragment", "vload","avg_apd1", "avg_apd5", "avg_apd10", "pos_start", "pos_end")
+    data_avg = data[APD_1 != 'NA', .(mean(APD_1), mean(APD_5), mean(APD_10)), by = .(Sample, ActualTOI..year., Fragment, VL)]
+    colnames(data_avg) = c("sample", "time", "fragment", "vload","avg_apd1", "avg_apd5", "avg_apd10")
     data_avg$actual_ti = data_avg$time +0.125
     return(data_avg)
 }

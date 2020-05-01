@@ -1,10 +1,11 @@
 ---
-title: "Infection Timing Infant Models"
-output:
-  html_document:
+title: "Infant Infection Timing Models"
+output: 
+    html_document:
     toc: true
     toc_depth: 2
     dev: 'svg'
+
 ---
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE, results='hide'}
@@ -34,36 +35,38 @@ training_data = read.csv("../_ignore/AllRunsAvg.csv")
 testing_data = read.csv("../_ignore/AllRunsAvg.csv")
 ```
 
-The following plots show the models created for the data using an APD cutoff of 0.01. First you will see the actual time since infection versus APD regression (using the indicated new modelling strategy). Second you will see the relationship between the estimated time since infection and the actual time since infection. The perfect correlation (show as the blue spotted line) depicts the y = x line where actual time since infection = estimated time since infection. For these plots, I am showing a LM regression through the points with a confidence interval to show the trend of these estimated times. However, these estimated times were calculated using the indicated new modelling strategy (not always LM regression). Lastly, you will see the model statistics (i.e. model equation coefficients (also show on the plots in the form of an equation) and p values for each coefficient).
+Note: for all of the following analyses, I have assigned the actual time since infection for all patients to be the midpoint of the third trimester (i.e. we are assigning birth to be time zero, so the actual infection time here is -0.125 years.)
+
+The following plots show the models created for the data using an APD cutoff of 0.01. First you will see the actual time since infection versus APD regression (using the indicated new modelling strategy). You will see the model statistics below these plots (i.e. model equation coefficients (also show on the plots in the form of an equation) and p values for each coefficient). Second you will see the relationship between the estimated time since infection and the actual time since infection. The perfect correlation (show as the blue spotted line) depicts the y = x line where actual time since infection = estimated time since infection. For these plots, I am showing a LM regression through the points with a confidence interval to show the trend of these estimated times. However, these estimated times were calculated using the indicated new modelling strategy (not always LM regression). Lastly, you will see, again, a plot comparing the estimated time since infection and the actual time since infection. Here, the plots show the trends per individual. 
 
 ```{r echo=TRUE, message=TRUE, warning=FALSE}
-for (ty in c("LM", "LM_origin", "LAD", "LAD_origin", "LM_GEE")){
+for (ty in c("LM", "LAD", "LM_origin", "LAD_origin", "LM_GEE")){
     together = compile_data(train_data = training_data, new_data = testing_data, apd = 1, type = ty)
     plot_APD_TI_regression(together, apd = 1, type = ty)
-    plot_ETI_TI_regression(together, apd = 1, type = ty)
     show_model_statistics(apd = 1, type= ty)
+    plot_ETI_TI_regression(together, apd = 1, type = ty)
 }
 ```
 
 Here you will see the same plotting scheme except, now, the following plots show the models created for the data using an APD cutoff of 0.05.
 
 ```{r echo=TRUE, message=TRUE, warning=FALSE}
-for (ty in c("LM", "LM_origin", "LAD", "LAD_origin", "LM_GEE")){
+for (ty in c("LM", "LAD", "LM_origin", "LAD_origin", "LM_GEE")){
     together = compile_data(train_data = training_data, new_data = testing_data, apd = 5, type = ty)
     plot_APD_TI_regression(together, apd = 5, type = ty)
-    plot_ETI_TI_regression(together, apd = 5, type = ty)
     show_model_statistics(apd = 5, type= ty)
+    plot_ETI_TI_regression(together, apd = 5, type = ty)
 }
 ```
 
 Here, again, you will see the same plotting scheme except, now, the following plots show the models created for the data using an APD cutoff of 0.1.
 
 ```{r echo=TRUE, message=TRUE, warning=FALSE}
-for (ty in c("LM", "LM_origin", "LAD", "LAD_origin", "LM_GEE")){
+for (ty in c("LM", "LAD", "LM_origin", "LAD_origin", "LM_GEE")){
     together = compile_data(train_data = training_data, new_data = testing_data, apd = 10, type = ty)
     plot_APD_TI_regression(together, apd = 10, type = ty)
-    plot_ETI_TI_regression(together, apd = 10, type = ty)
     show_model_statistics(apd = 10, type= ty)
+    plot_ETI_TI_regression(together, apd = 10, type = ty)
 }
 ```
 

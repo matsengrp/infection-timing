@@ -18,8 +18,8 @@ source("Infant_functions.R")
 #' 
 data_clean_new_data <- function(data, fragment){
     data = data.table(data)
-    data_avg = data[APD_1 != 'NA', .(mean(APD_1), mean(APD_5), mean(APD_10), mean(HXB2nt_start), mean(HXB2nt_end)), by = .(Sample, ActualTOI..year., Fragment)]
-    colnames(data_avg) = c("sample", "time", "fragment", "avg_apd1", "avg_apd5", "avg_apd10", "pos_start", "pos_end")
+    data_avg = data[APD_1 != 'NA', .(mean(APD_1), mean(APD_5), mean(APD_10)), by = .(Sample, ActualTOI..year., Fragment, VL)]
+    colnames(data_avg) = c("sample", "time", "fragment", "vload", "avg_apd1", "avg_apd5", "avg_apd10")
     if (fragment == "F1"){
         data_avg = data_avg[fragment == "F1"]
     } else if (fragment == "F2"){
@@ -67,7 +67,7 @@ predict_infection_time <- function(data, apd_cutoff, fragment, output_filename, 
 #' 
 model_stats <- function(apd_cutoff, fragment, type){
     if (type == "LM_GEE"){
-        model = get(paste0('LM_GEE_model', apd))
+        model = get(paste0('LM_GEE_model', apd_cutoff))
     } else {
         model = get(paste0(type,"_model", apd_cutoff, fragment))
     }
@@ -96,6 +96,6 @@ compile_data <- function(train_data, new_data, apd, type){
             estimate_together = rbind(estimate_together, estimated_data)
         }
     }
-    together = actual_data[estimate_together, on = c('sample', 'fragment', 'time', 'avg_apd1', 'avg_apd5', 'avg_apd10', 'pos_start', 'pos_end')]  
+    together = actual_data[estimate_together, on = c('sample', 'fragment', 'time', 'avg_apd1', 'avg_apd5', 'avg_apd10')]  
     return(together)
 }     
