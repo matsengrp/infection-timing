@@ -110,7 +110,7 @@ plot_APD_TI_regression <- function(together, apd, type) {
     } else{
         for (frag in c('F1', 'F2', 'F3')){
             model = model_stats(apd = apd, fragment = frag, type = type)
-            if (type == 'LM'){
+            if (type == 'LM' | type == 'LM_neher'){
                 a = as.numeric(round(coef(model$finalModel)[1], digits = 3))
                 b = as.numeric(round(coef(model$finalModel)[2], digits = 3))
             } else if (type == 'LM_origin'){
@@ -122,7 +122,7 @@ plot_APD_TI_regression <- function(together, apd, type) {
             } else if (type == 'LAD_origin'){
                 a = as.numeric(0)
                 b = as.numeric(round(coef(model)[1], digits = 3))
-            }
+            } 
             assign(paste0('model', frag), paste0("y = ", a, " + " , b ,"x"))
         }
     }
@@ -132,7 +132,7 @@ plot_APD_TI_regression <- function(together, apd, type) {
     together[fragment == 'F2', labs := paste(modelF2)]
     together[fragment == 'F3', labs := paste(modelF3)]
 
-    if (type == 'LM'| type == 'LM_origin'){
+    if (type == 'LM'| type == 'LM_origin' | type == 'LM_neher'){
         w <- ggplot(data=together,aes(y = actual_ti,x= together[[avg_apd]]))+geom_point(aes(shape=fragment, color= sample), size = 2.5) + facet_wrap(~fragment) + ggtitle(paste0("APD vs. Actual TI for APD", apd, " ", type, " Regression")) + geom_smooth(method = "lm", formula = form)  + geom_text(aes(label = labs), x = 0.015, y = 0.3, size = 5) + labs(y='Actual Time Since Infection', x= paste0('APD', apd), shape = "Fragment", color = "Patient")+ theme_bw() + theme(text = element_text(size = 18)) 
     } else {
         w <- ggplot(data=together,aes(y = actual_ti,x= together[[avg_apd]]))+geom_point(aes(shape=fragment, color = sample), size = 3) + ggtitle(paste0("APD vs. Actual TI for APD", apd, " ", type, " Regression")) + facet_wrap(~fragment) + geom_line(aes(x=together[[avg_apd]], y = estimated_ti), size = 1)+ geom_text(aes(label = labs), x = 0.015, y = 0.3, size = 5)+ labs(y='Actual Time Since Infection', x= paste0('APD', apd) , shape = "Fragment", color = "Patient")+ theme_bw() + theme(text = element_text(size = 18))
