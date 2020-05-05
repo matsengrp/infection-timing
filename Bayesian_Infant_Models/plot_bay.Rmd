@@ -1,0 +1,56 @@
+---
+title: "Bayesian Infection timing analysis"
+output:
+  html_document:
+    fig_crop: no
+    toc: true
+    toc_depth: 2
+    dev: 'svg'
+---
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+library(rethinking)
+library(data.table)
+
+setwd('/Users/magdalenarussell/Documents/Matsen_group/infection-timing/Bayesian_Infant_Models')
+source("Bayesian_Infant_plotting.R")
+
+knitr::opts_chunk$set(fig.width=8, fig.height=6)
+
+```
+```{r,include=FALSE}
+par(mar=c(5,5,5,5))
+``` 
+
+```{r warning=FALSE, results='hide'}
+# Load existing data as `all_runs` file
+all_runs = read.csv("../_ignore/AllRunsAvg.csv")
+```
+
+Below, you will see the bayesian LM linear regression plots for each fragment for apd1 cutoff:
+
+```{r warning=FALSE, results='hide', message = FALSE}
+for (frag in c('F1', 'F2', 'F3')){
+    for (meth in c('quad', 'HMC')){
+        if (meth == 'HMC' & frag == 'F2'){
+            break
+        }
+        plot_regression(all_runs, 'LM', apd_cut = 1, frag, meth)
+        plot_ETI_TI(all_runs, 'LM', apd_cut = 1, frag, meth)
+    }
+}
+```
+
+Below, you will see the bayesian LAD linear regression plots for each fragment for apd1 cutoff:
+
+```{r warning=FALSE, results='hide', message = FALSE}
+for (frag in c('F1', 'F2', 'F3')){
+    for (meth in c('quad', 'HMC')){
+        if (meth == 'HMC' & frag == 'F2'){
+            break
+        }
+        plot_regression(all_runs, 'LAD', apd_cut = 1, frag, meth)
+        plot_ETI_TI(all_runs, 'LAD', apd_cut = 1, frag, meth)
+    }
+}
+```
