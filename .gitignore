@@ -1,6 +1,7 @@
 # Hide data files
 _ignore/
 Neher_Code/
+rethinking_tutorials/
 
 # Custom
 *.html
