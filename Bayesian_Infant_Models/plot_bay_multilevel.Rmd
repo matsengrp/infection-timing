@@ -1,0 +1,39 @@
+---
+title: "Multilevel Bayesian Infection timing analysis"
+output:
+  html_document:
+    fig_crop: no
+    toc: true
+    toc_depth: 2
+    dev: 'svg'
+---
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+library(rethinking)
+library(rstan)
+library(data.table)
+library(dplyr)
+library(RColorBrewer)
+
+setwd('/Users/magdalenarussell/Documents/Matsen_group/infection-timing/Bayesian_Infant_Models')
+source("multilevel_infant_plotting.R")
+
+knitr::opts_chunk$set(fig.width=8, fig.height=6)
+
+```
+
+The following is a list of the multilevel models I have created so far...
+
+```{r warning=FALSE, results='hide', message = FALSE}
+models = c("multilevel_subject_var_int_model", "multilevel_subject_fragment_var_int_model", "multilevel_subject_var_int_fragment_var_slope_model", "multilevel_subject_var_int_subject_var_slope_model", "multilevel_subject_var_int_fragment_subject_var_slope_model")
+```
+
+Here, we can plot the estimated time since infection and the actual time since infection to assess model accuracy. 
+
+```{r warning=FALSE, results='hide', message = FALSE}
+for (model in models){
+    data = get(paste0("results_", model))
+    plot_ETI_TI(data, model)
+    plot_ETI_TI_by_subject(data, model)
+}
+```

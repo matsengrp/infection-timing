@@ -128,6 +128,49 @@ for (frag in c('F1', 'F2', 'F3')){
     }
 }
 
+fit_regression_model_frag_apd <- function(data, apd, fragment, type, standardize){
+    data1 = preprocess_noavg(data)
+    if (fragment == "F1"){
+        data_frag = data1[fragment == "F1"]
+    } else if (fragment == "F2"){
+        data_frag = data1[fragment == "F2"]
+    } else if (fragment == "F3"){
+        data_frag = data1[fragment == "F3"]
+    }
+    if (standardize == 'FALSE'){
+        data_frag$apd = data_frag[[paste0('avg_apd', apd)]]
+    } else if (standardize == 'TRUE'){
+        data_frag$apd = (data_frag[[paste0('avg_apd', apd)]]- mean(data_frag[[paste0('avg_apd', apd)]]))/sd(data_frag[[paste0('avg_apd', apd)]])
+    }
+    if (type == 'LM'){
+        model_fit_reg <- map(
+        alist(
+            time ~ dnorm(mu, sigma), 
+            mu <- a +b*apd, 
+            a ~ dunif(0, 0.75), 
+            b ~ dunif(0,100), 
+            sigma ~ dunif(0, 0.75)
+            ), 
+        data = data_frag, 
+        method = 'Nelder-Mead', 
+        control = list(maxit = 1e4)
+        ) 
+    } else if (type == 'LAD') {
+        model_fit_reg <- map(
+        alist(
+            time ~ dlaplace(mu, sigma), 
+            mu <- a +b*apd, 
+            a ~ dunif(0, 0.75), 
+            b ~ dunif(0,100), 
+            sigma ~ dunif(0, 0.75)
+            ), 
+        data = data_frag, 
+        method = 'Nelder-Mead', 
+        control = list(maxit = 1e4)
+        ) 
+    }
+    return(model_fit_reg)
+}
 
 
 
