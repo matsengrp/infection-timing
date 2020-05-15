@@ -23,7 +23,8 @@ preprocess_noavg <- function(data){
     data_avg2$run = sample_name_list_updated
     data_avg2$run[data_avg2$run == 'R2'] <- 2
     data_avg2$run[data_avg2$run == 'R1'] <- 1
-#    data_avg2$time = data_avg2$time + 0.125
+#    data_avg3 = data_avg2[, multiple_run_index := .GRP, by = .(run, fragment)]
+    data_avg2$time = data_avg2$time + 0.125
     return(data_avg2)
 }
 
@@ -43,6 +44,9 @@ save_models_plots_stats <- function(model, type){
     } else if (type == "subject_varying_intercepts_fragment_subject_varying_slopes"){
         intercepts = c('subject_intercept','population_avg_intercept')
         slopes = c('subject_slope','fragment_slope','population_avg_slope')
+    } else if (type == "subject_varying_intercepts_fragment_subject_run_varying_slopes"){
+        intercepts = c('subject_intercept','population_avg_intercept')
+        slopes = c('subject_slope','fragment_slope','run_slope','population_avg_slope')
     } else {
         print('ERROR')
     }
@@ -51,7 +55,7 @@ save_models_plots_stats <- function(model, type){
     plot(precis(get(model), depth = 2, pars= paste(intercepts)))
     dev.off()
 
-    if (type == "subject_varying_intercepts_slopes" | type == "subject_varying_intercepts_fragment_subject_varying_slopes"){
+    if (type == "subject_varying_intercepts_slopes" | type == "subject_varying_intercepts_fragment_subject_varying_slopes"| type == "subject_varying_intercepts_fragment_subject_run_varying_slopes"){
         print("no pairs plot")
     } else {
         pdf(paste0("plots/",model,"/pairs_plot.pdf"))
@@ -109,3 +113,7 @@ indexed_infant_data_cleaned = index_data_subjects_frags(infant_data, apd = 1)
 # Make data.table with only necessary columns
 necessary_columns <- c("time", "apd", "subject_index", "frag_index", "run")
 indexed_infant_data_cleaned_subset = indexed_infant_data_cleaned[, ..necessary_columns]
+
+indexed_infant_data_cleaned_subject_subset = index_data_subjects_frags(data.table(infant_data)[!(Sample %in% c('pt485', 'pt258', 'pt313'))], apd = 1)
+
+indexed_infant_data_cleaned_subset_subject_subset = indexed_infant_data_cleaned_subject_subset[, ..necessary_columns]

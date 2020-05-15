@@ -10,24 +10,49 @@ source("multilevel_infant_functions.R")
 infant_data = read.csv("../_ignore/AllRunsAvg.csv")
 setwd("/Users/magdalenarussell/Documents/Matsen_group/infection-timing/Bayesian_Infant_Models/models")
 
-models = c("multilevel_subject_var_int_model", "multilevel_subject_fragment_var_int_model", "multilevel_subject_var_int_fragment_var_slope_model", "multilevel_subject_var_int_subject_var_slope_model", "multilevel_subject_var_int_fragment_subject_var_slope_model")
-types = c("subject_varying_intercepts", "subject_fragment_varying_intercepts", "subject_varying_intercepts_fragment_varying_slopes", "subject_varying_intercepts_slopes", "subject_varying_intercepts_fragment_subject_varying_slopes")
+models = c("multilevel_subject_var_int_model", "multilevel_subject_var_int_fragment_var_slope_model", "multilevel_subject_var_int_fragment_subject_var_slope_model", "multilevel_subject_var_int_fragment_subject_run_var_slope_model")
+types = c("subject_varying_intercepts", "subject_varying_intercepts_fragment_varying_slopes", "subject_varying_intercepts_fragment_subject_varying_slopes","subject_varying_intercepts_fragment_subject_run_varying_slopes")
+
+models = c("multilevel_subject_var_int_model", "multilevel_subject_var_int_fragment_var_slope_model", "multilevel_subject_var_int_fragment_subject_var_slope_model")
+types = c("subject_varying_intercepts", "subject_varying_intercepts_fragment_varying_slopes", "subject_varying_intercepts_fragment_subject_varying_slopes")
 
 index = 0
 for (model in models){
     index = index + 1
     assign(paste0(model), readRDS(paste0(model,".rds")))
     assign(paste0("posterior_", model), extract.samples(get(model)))
-    assign(paste0("results_", model), compute_predictions(indexed_infant_data_cleaned, types[index], get(paste0("posterior_", model))))
+    assign(paste0("results_", model), compute_predictions_existing_data(indexed_infant_data_cleaned, types[index], get(paste0("posterior_", model))))
+}
+
+plot_APD_TI <- function(data, model){
+    # the following is great!!!!
+    apd = seq(0.0001, 0.03, by = 0.0003)
+    simulation = c()
+    for (j in apd){
+        for (i in 1:50) simulation = c(simulation, simulate_apd_time(model, i, j))
+    }
+    apd_sim = rep(apd, each = 50)
+    par(mar=c(5,6,4,4)+.1)
+    palette(brewer.pal(n = 11, name = 'Set3'))
+    col = setNames(palette(), levels(data$subject))
+    plot(apd_sim, simulation, col = alpha("black", 0.075), pch = 1, xlab = 'Average Pairwise Diversity (APD1)', ylab = 'Actual Time Since Infection (years)', main = paste0('APD versus Actual Time Since Infection by Patient using \n', model), xlim = c(0,0.03), ylim = c(0, 3))
+    points(data$apd, data$time, col = alpha(col, 0.95), pch=19, cex = 1.25)
+    for (samp in unique(data$subject)){
+            data_s = data[with(data, subject ==   samp)]
+            abline(lm(data_s$time ~ data_s$apd), col = alpha(col[[samp]], 0.95), lwd = 2.5)
+        }
+    abline(lm(simulation~apd_sim), col="black", lw = 4)
+    legend("topleft", legend=c(levels(factor(data$subject)), "Simulation", "Time ~ APD"), col=c(unique(factor(data$subject)),"black", "black"), lty=c(rep(NA, 12), 1), lwd = c(rep(NA, 12), 2), pch=c(rep(16, 11), 1, NA), ncol = 2, cex = 0.75)
 }
 
 plot_ETI_TI <- function(data, model){ 
     par(mar=c(5,6,4,4)+.1)
     palette(brewer.pal(n = 11, name = 'Set3'))
-    plot(data$pred_time, data$time, col = c(factor(data$subject), alpha = 0.6), pch=19, cex = 1.25, ylim = c(0, 2), xlim = c(-.1, 2.5), ylab = 'Observed Time since infection', xlab = 'Estimated Time since infection', main = paste0('Estimated versus Observed Time Since Infection by Patient using \n', model), cex.main = 1, cex.lab = 1, cex.axis = 1, panel.first = grid())
+    col = setNames(palette(), levels(data$subject))
+    plot(data$time, data$pred_time, col = c(factor(data$subject), alpha = 0.6), pch=19, cex = 1.25, ylim = c(0, 2.5), xlim = c(0, 2.5), ylab = 'Estimated time since infection (ETI)', xlab = 'Observed time since infection (OTI)', main = paste0('Estimated versus Observed Time Since Infection by Patient using \n', model), cex.main = 1, cex.lab = 1, cex.axis = 1, panel.first = grid())
     abline(a = 0, b = 1, lty = 2, lwd = 4)
-    abline(lm(data$time ~ data$pred_time), col = 'red', lty = 2, lwd = 4)
-    legend("topleft", legend=levels(factor(data$subject)), pch=16, col=unique(factor(data$subject)), ncol = 2, cex = 0.75)
+    abline(lm(data$pred_time ~ data$time), col = 'red', lty = 2, lwd = 4)
+    legend("topleft", legend=c(levels(factor(data$subject)), "ETI = OTI", "ETI ~ OTI"), col=c(unique(factor(data$subject)), "black", "red"), lty=c(rep(NA, 11), 2, 2), lwd = c(rep(NA, 11), 2, 2), pch=c(rep(16, 11), NA, NA), ncol = 2, cex = 0.75)
 }
 
 
@@ -35,11 +60,11 @@ plot_ETI_TI_by_subject <- function(data, model){
     par(mar=c(5,6,4,4)+.1)
     palette(brewer.pal(n = 11, name = 'Set3'))
     col = setNames(palette(), levels(data$subject))
-    plot(data$pred_time, data$time, col = c(factor(data$subject), alpha = 0.6), pch=19, cex = 1.25, ylim = c(0, 2), xlim = c(-1, 2.5), ylab = 'Observed Time since infection', xlab = 'Estimated Time since infection', main = paste0('Estimated versus Observed Time Since Infection by Patient using \n', model), cex.main = 1, cex.lab = 1, cex.axis = 1, panel.first = grid())
+    plot(data$time, data$pred_time, col = c(factor(data$subject), alpha = 0.6), pch=19, cex = 1.25, ylim = c(0, 2.5), xlim = c(0, 2.5), ylab = 'Estimated time since infection', xlab = 'Observed time since infection', main = paste0('Estimated versus Observed Time Since Infection by Patient using \n', model), cex.main = 1, cex.lab = 1, cex.axis = 1, panel.first = grid())
     for (samp in unique(data$subject)){
         data_s = data[with(data, subject == samp)]
-        abline(lm(data_s$time ~ data_s$pred_time), col = c(col[[samp]], alpha = 0.5), lwd = 2.5)
+        abline(lm(data_s$pred_time ~ data_s$time), col = c(col[[samp]], alpha = 0.5), lwd = 2.5)
     }
     abline(a = 0, b = 1, lty = 2, lwd = 4)
-    legend("topleft", legend=levels(factor(data$subject)), pch=16, col=unique(factor(data$subject)), ncol = 2, cex = 0.75)
+    legend("topleft", legend=c(levels(factor(data$subject)), "ETI = OTI"), col=c(unique(factor(data$subject)), "black"), lty=c(rep(NA, 11), 2), lwd = c(rep(NA, 11), 2), pch=c(rep(16, 11), NA), ncol = 2, cex = 0.75)
 }
