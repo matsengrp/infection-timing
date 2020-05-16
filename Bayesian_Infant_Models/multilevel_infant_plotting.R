@@ -24,6 +24,19 @@ for (model in models){
     assign(paste0("results_", model), compute_predictions_existing_data(indexed_infant_data_cleaned, types[index], get(paste0("posterior_", model))))
 }
 
+plot_APD_TI_no_sim <- function(data){
+    par(mar=c(5,6,4,4)+.1)
+    palette(brewer.pal(n = 11, name = 'Set3'))
+    col = setNames(palette(), levels(data$subject))
+    plot(0, type = 'n', xlab = 'Average Pairwise Diversity (APD1)', ylab = 'Time (years)', main = paste0('APD versus Time by Patient'), xlim = c(0,0.03), ylim = c(0, 3))
+    for (samp in unique(data$subject)){
+            data_s = data[with(data, subject == samp)]
+            points(data_s$apd, data_s$time, col = col[[samp]], pch=19, cex = 1.25)
+            abline(lm(data_s$time ~ data_s$apd), col = col[[samp]], lwd = 2.5)
+        }
+    legend("topleft", legend=c(levels(factor(data$subject))), col=c(unique(factor(data$subject))), lty=c(rep(NA, 11)), lwd = c(rep(NA, 11)), pch=c(rep(19, 11)), ncol = 2, cex = 0.75)
+}
+
 plot_APD_TI <- function(data, model){
     # the following is great!!!!
     apd = seq(0.0001, 0.03, by = 0.0003)
@@ -36,9 +49,9 @@ plot_APD_TI <- function(data, model){
     palette(brewer.pal(n = 11, name = 'Set3'))
     col = setNames(palette(), levels(data$subject))
     plot(apd_sim, simulation, col = alpha("black", 0.075), pch = 1, xlab = 'Average Pairwise Diversity (APD1)', ylab = 'Actual Time Since Infection (years)', main = paste0('APD versus Actual Time Since Infection by Patient using \n', model), xlim = c(0,0.03), ylim = c(0, 3))
-    points(data$apd, data$time, col = alpha(col, 0.95), pch=19, cex = 1.25)
     for (samp in unique(data$subject)){
             data_s = data[with(data, subject ==   samp)]
+            points(data_s$apd, data_s$time, col = alpha(col[[samp]], 0.95), pch=19, cex = 1.25)
             abline(lm(data_s$time ~ data_s$apd), col = alpha(col[[samp]], 0.95), lwd = 2.5)
         }
     abline(lm(simulation~apd_sim), col="black", lw = 4)
