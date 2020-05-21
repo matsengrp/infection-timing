@@ -18,6 +18,14 @@ posterior_link_existing_data <- function(apd, frag_index, subject_index, posteri
         time <- with(posterior, population_avg_intercept + subject_intercept[,subject_index] + (subject_slope[,subject_index] + population_avg_slope) * apd)
     } else if (type == "subject_varying_intercepts_fragment_subject_varying_slopes"){
         time <- with(posterior, population_avg_intercept + subject_intercept[,subject_index] + (subject_slope[,subject_index] + fragment_slope[,frag_index] + population_avg_slope) * apd)
+    } else if (type == "fragment_subject_varying_slopes"){
+        time <- with(posterior, total_intercept + (subject_slope[,subject_index] + fragment_slope[,frag_index] + population_avg_slope) * apd)
+    } else if (type == "fragment_subject_varying_slopes_no_int"){
+        time <- with(posterior, (subject_slope[,subject_index] + fragment_slope[,frag_index] + population_avg_slope) * apd)
+    } else if (type == "fragment_subject_varying_slopes_no_int_time_error"){
+        time_since_infection <- with(posterior, (subject_slope[,subject_index] + fragment_slope[,frag_index] + population_avg_slope) * apd)
+        time_error <- with(posterior, time_error)
+        time  <- time_since_infection - time_error
     }
     return(time)
 }
@@ -57,6 +65,19 @@ simulate_apd_time = function(model, i, apd){
         simulate_intercept_subject = rnorm(1,0, post$subject_sd[i,1])
         simulate_fragment = rnorm(1,post$fragment_slope_mean[i], post$fragment_slope_sd[i])
         time = post$population_avg_intercept[i] + simulate_intercept_subject + (simulate_slope_subject + simulate_fragment + post$population_avg_slope[i]) * apd
-    } 
+    } else if (model == "multilevel_fragment_subject_var_slope_model_new" | model == "multilevel_fragment_subject_var_slope_model_new2" ) {
+        simulate_subject = rnorm(1,post$subject_slope_mean[i], post$subject_slope_sd[i])
+        simulate_fragment = rnorm(1,post$fragment_slope_mean[i], post$fragment_slope_sd[i])
+        time = post$total_intercept[i] + (simulate_subject + simulate_fragment + post$population_avg_slope[i]) * apd
+    } else if (model == "multilevel_fragment_subject_var_slope_model_new_no_int") {
+        simulate_subject = rnorm(1,post$subject_slope_mean[i], post$subject_slope_sd[i])
+        simulate_fragment = rnorm(1,post$fragment_slope_mean[i], post$fragment_slope_sd[i])
+        time = (simulate_subject + simulate_fragment + post$population_avg_slope[i]) * apd
+    } else if (model == "multilevel_fragment_subject_var_slope_model_new_no_int_time_error") {
+        simulate_subject = rnorm(1,post$subject_slope_mean[i], post$subject_slope_sd[i])
+        simulate_fragment = rnorm(1,post$fragment_slope_mean[i], post$fragment_slope_sd[i])
+        time_since_infection = (simulate_subject + simulate_fragment + post$population_avg_slope[i]) * apd
+        time = rnorm(1, time_since_infection, post$time_error[i])
+    }
     return(time)
 }

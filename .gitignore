@@ -5,6 +5,7 @@ rethinking_tutorials/
 
 # Custom
 *.html
+*.key
 
 # History files
 .Rhistory

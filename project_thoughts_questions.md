@@ -9,14 +9,15 @@
 2. Time zero is birth (NO 1.5 month shift as before).
 3. Individuals are infected in-utero, at birth, or through breastfeeding.
 4. Individuals could have been infected at different times. 
-5. "Training data" individuals were infected in-utero
-5. Infection time is defined as the time (age) at which average pairwise sequence diversity is zero.
+5. "Training data" individuals were infected in-utero.
+5. Infection time is defined as the time (age) at which average pairwise sequence diversity is zero (y-intercept).
 6. Estimated infection time (age) for each individual can not be greater than the first time point at which we have an average pairwise sequence diversity measure greater than zero.
 7. **Average pairwise diversity of the sequence increases with time.**
 8. The rate of average pairwise diversity change over time may be different for each individual.
 9. The rate of average pairwise diversity change over time may be different for each sequence fragment.
-10. Each "sequence run" (for each individual) was sequenced independently.
+10. Each "sequence replicate" (for each individual) was sequenced independently.
 11. APD1 is defined to be the measure of average pairwise diversity at the third codon position using only sites at which the sum of all minor variants is greater than 0.01.
+
 
 #### About the model: 
 
@@ -32,7 +33,7 @@
 
 #### Some questions to think about: 
 
-1. How do we want to limit the y-intercept (time (age) for APD = 0)?
+1. How do we want to limit the y-intercept (time (age) for APD = 0)? **Should we allow intercept to vary by individual?**
     * Should we restrict the y-intercept to be between 0 to -0.75 years (9 months before birth)*--as it is written now*? 
     * OR should we be more restrictive (i.e. y-intercept in the third trimester)?
     * OR should we be less restrictive (i.e. y-intercept between -0.75 to 0.75)?
@@ -43,3 +44,12 @@
 4. It seems like one of the reasons we could be getting zero diversity is because we aren't sampling all of the diversity of an individual. 
 Is there a way in which you could report a type of possibility that this was the case, per sequencing run? 
 How likely do you think it is the case?
+
+
+Meeting notes: 
+
+If someone is infected with more than one virus strain, then we would expect the diversity measure to be higher at the time of infection (perhaps an explanation for the "gray line" on the APD vs. Time plot).
+Restricting slope to be positive is fine. 
+Question to think about: Is there a different change in rate of APD in children that were infected earlier (before birth) vs. later (after birth)?
+Fix y-intercept to be zero until we get more data (i.e. individuals that are infected after birth)
+?TIME! 
