@@ -2,6 +2,9 @@
 _ignore/
 Neher_Code/
 rethinking_tutorials/
+Bayesian_Infant_Models/old_scripts/
+Bayesian_Infant_Models/plots/
+Bayesian_Infant_Models/models/
 
 # Custom
 *.html

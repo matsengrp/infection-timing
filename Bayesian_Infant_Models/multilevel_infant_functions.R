@@ -29,40 +29,21 @@ preprocess_noavg <- function(data){
 }
 
 save_models_plots_stats <- function(model, type){
-    if (type == "subject_varying_intercepts"){
-        intercepts = c('subject_intercept','population_avg_intercept')
-        slopes = c('population_avg_slope')
-    } else if (type == "subject_fragment_varying_intercepts"){
-        intercepts = c('subject_intercept','fragment_intercept', 'population_avg_intercept')
-        slopes = c('population_avg_slope')
-    } else if (type == "subject_varying_intercepts_fragment_varying_slopes"){
-        intercepts = c('subject_intercept','population_avg_intercept')
-        slopes = c('fragment_slope','population_avg_slope')
-    } else if (type == "subject_varying_intercepts_slopes"){
-        intercepts = c('subject_intercept','population_avg_intercept')
-        slopes = c('subject_slope','population_avg_slope')
-    } else if (type == "subject_varying_intercepts_fragment_subject_varying_slopes"){
-        intercepts = c('subject_intercept','population_avg_intercept')
-        slopes = c('subject_slope','fragment_slope','population_avg_slope')
-    } else if (type == "subject_varying_intercepts_fragment_subject_run_varying_slopes"){
-        intercepts = c('subject_intercept','population_avg_intercept')
-        slopes = c('subject_slope','fragment_slope','run_slope','population_avg_slope')
-    } else if (type == "fragment_subject_varying_slopes"){
+    if (type == "fragment_subject_varying_slopes"){
         intercepts = c('total_intercept')
         slopes = c('subject_slope','fragment_slope','population_avg_slope')
     } else if (type == "fragment_subject_varying_slopes_no_int"){
         slopes = c('subject_slope','fragment_slope','population_avg_slope')
-    } else if (type == "fragment_subject_varying_slopes_no_int_time_error"){
+    } else if (type == "time_error"){
         slopes = c('subject_slope','fragment_slope','population_avg_slope')
-    }else {
+    } else if (type == "time_error_int"){
+        intercepts = c('total_intercept')
+        slopes = c('subject_slope','fragment_slope','population_avg_slope')
+    } else {
         print('ERROR')
     }
 
-    #pdf(paste0("plots/",model,"/intercept_plots.pdf"))
-    #plot(precis(get(model), depth = 2, pars= paste(intercepts)))
-    #dev.off()
-
-    if (type == "subject_varying_intercepts_slopes" | type == "subject_varying_intercepts_fragment_subject_varying_slopes"| type == "subject_varying_intercepts_fragment_subject_run_varying_slopes"){
+    if (type == "subject_varying_intercepts_slopes" | type == "subject_varying_intercepts_fragment_subject_varying_slopes"| type == "subject_varying_intercepts_fragment_subject_run_varying_slopes" | type == "time_error"| type == "time_error_int"){
         print("no pairs plot")
     } else {
         pdf(paste0("plots/",model,"/pairs_plot.pdf"))
