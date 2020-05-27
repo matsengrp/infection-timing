@@ -10,15 +10,13 @@ source("multilevel_infant_functions.R")
 infant_data = read.csv("../_ignore/AllRunsAvg.csv")
 setwd("/Users/magdalenarussell/Documents/Matsen_group/infection-timing/Bayesian_Infant_Models/models")
 
-models = c("multilevel_subject_var_int_model", "multilevel_subject_var_int_fragment_var_slope_model", "multilevel_subject_var_int_fragment_subject_var_slope_model", "multilevel_subject_var_int_fragment_subject_run_var_slope_model", "multilevel_fragment_subject_var_slope_model_new"
-)
-types = c("subject_varying_intercepts", "subject_varying_intercepts_fragment_varying_slopes", "subject_varying_intercepts_fragment_subject_varying_slopes","subject_varying_intercepts_fragment_subject_run_varying_slopes", "fragment_subject_varying_slopes")
+models = c("multilevel_fragment_subject_var_slope_model_new_no_int", "multilevel_fragment_subject_var_slope_model_time_error", "multilevel_fragment_subject_var_slope_model_time_error2")
 
-models = c("multilevel_subject_var_int_model", "multilevel_subject_var_int_fragment_var_slope_model", "multilevel_subject_var_int_fragment_subject_var_slope_model")
-types = c("subject_varying_intercepts", "subject_varying_intercepts_fragment_varying_slopes", "subject_varying_intercepts_fragment_subject_varying_slopes")
+types = c("fragment_subject_varying_slopes_no_int", "time_error", "time_error")
 
-models = c("multilevel_fragment_subject_var_slope_model_new", "multilevel_fragment_subject_var_slope_model_new2", "multilevel_fragment_subject_var_slope_model_new_no_int", "multilevel_fragment_subject_var_slope_model_new_time_error")
-types = c("fragment_subject_varying_slopes", "fragment_subject_varying_slopes", "fragment_subject_varying_slopes_no_int", "fragment_subject_varying_slopes_no_int_time_error")
+models = c("multilevel_fragment_subject_var_slope_model_new2", "multilevel_fragment_subject_var_slope_model_new_no_int", "multilevel_fragment_subject_var_slope_model_time_error2", "multilevel_fragment_subject_var_slope_model_time_error2_var_int")
+
+types = c("fragment_subject_varying_slopes", "fragment_subject_varying_slopes_no_int", "time_error", "time_error_int")
 
 index = 0
 for (model in models){
@@ -38,7 +36,7 @@ plot_APD_TI_no_sim <- function(data, model){
             points(data_s$apd, data_s$time, col = col[[samp]], pch=19, cex = 1.25)
             abline(lm(data_s$time ~ data_s$apd), col = col[[samp]], lwd = 2.5)
         }
-    #legend("topleft", legend=c(levels(factor(data$subject))), col=c(unique(factor(data$subject))), lty=c(rep(NA, 11)), lwd = c(rep(NA, 11)), pch=c(rep(19, 11)), ncol = 2, cex = 0.75)
+    legend("topleft", legend=c(levels(factor(data$subject))), col=c(unique(factor(data$subject))), lty=c(rep(NA, 11)), lwd = c(rep(NA, 11)), pch=c(rep(19, 11)), ncol = 2, cex = 0.75)
 }
 
 plot_APD_TI_no_sim2 <- function(data, model){
@@ -63,7 +61,7 @@ plot_APD_TI_no_sim2 <- function(data, model){
     } else if (model == "ALL"){
         abline(lm(data$apd ~ 0+data$time), lty = 2, lwd = 4)
     }
-    #legend("topleft", legend=c(levels(factor(data$subject))), col=c(unique(factor(data$subject))), lty=c(rep(NA, 11)), lwd = c(rep(NA, 11)), pch=c(rep(19, 11)), ncol = 2, cex = 0.75)
+    legend("topleft", legend=c(levels(factor(data$subject))), col=c(unique(factor(data$subject))), lty=c(rep(NA, 11)), lwd = c(rep(NA, 11)), pch=c(rep(19, 11)), ncol = 2, cex = 0.75)
 }
 
 plot_APD_TI <- function(data, model){
@@ -114,7 +112,7 @@ plot_ETI_TI <- function(data, model){
     plot(data$time, data$pred_time, col = c(factor(data$subject), alpha = 0.6), pch=19, cex = 1.25, ylim = c(0, 2.5), xlim = c(0,2.5), ylab = 'Estimated time since infection (ETI)', xlab = 'Observed time since infection (OTI)', main = paste0('Estimated versus Observed Time Since Infection by Patient using \n', model), cex.main = 1, cex.lab = 1, cex.axis = 1, panel.first = grid())
     abline(a = 0, b = 1, lty = 2, lwd = 4)
     abline(lm(data$pred_time ~ data$time), col = 'red', lty = 2, lwd = 4)
-    #legend("topleft", legend=c(levels(factor(data$subject)), "ETI = OTI", "ETI ~ OTI"), col=c(unique(factor(data$subject)), "black", "red"), lty=c(rep(NA, 11), 2, 2), lwd = c(rep(NA, 11), 2, 2), pch=c(rep(16, 11), NA, NA), ncol = 2, cex = 0.75)
+    legend("topleft", legend=c(levels(factor(data$subject)), "ETI = OTI", "ETI ~ OTI"), col=c(unique(factor(data$subject)), "black", "red"), lty=c(rep(NA, 11), 2, 2), lwd = c(rep(NA, 11), 2, 2), pch=c(rep(16, 11), NA, NA), ncol = 2, cex = 0.75)
 }
 
 
