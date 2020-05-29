@@ -10,13 +10,10 @@ source("multilevel_infant_functions.R")
 infant_data = read.csv("../_ignore/AllRunsAvg.csv")
 setwd("/Users/magdalenarussell/Documents/Matsen_group/infection-timing/Bayesian_Infant_Models/models")
 
-models = c("multilevel_fragment_subject_var_slope_model_new_no_int", "multilevel_fragment_subject_var_slope_model_time_error", "multilevel_fragment_subject_var_slope_model_time_error2")
 
-types = c("fragment_subject_varying_slopes_no_int", "time_error", "time_error")
+models = c("multilevel_fragment_subject_var_slope_model_time_error2", "multilevel_fragment_subject_var_slope_model_time_error2_var_int", "multilevel_fragment_subject_var_slope_model_time_error2_var_int_multivar_norm")
 
-models = c("multilevel_fragment_subject_var_slope_model_new2", "multilevel_fragment_subject_var_slope_model_new_no_int", "multilevel_fragment_subject_var_slope_model_time_error2", "multilevel_fragment_subject_var_slope_model_time_error2_var_int")
-
-types = c("fragment_subject_varying_slopes", "fragment_subject_varying_slopes_no_int", "time_error", "time_error_int")
+types = c("time_error", "time_error_int", "time_error_int")
 
 index = 0
 for (model in models){
@@ -66,12 +63,12 @@ plot_APD_TI_no_sim2 <- function(data, model){
 
 plot_APD_TI <- function(data, model){
     # the following is great!!!!
-    apd = seq(0.0001, 0.03, by = 0.0003)
+    apd = seq(0.0001, 0.03, by = 0.0004)
     simulation = c()
     for (j in apd){
-        for (i in 1:50) simulation = c(simulation, simulate_apd_time(model, i, j))
+        for (i in 1:30) simulation = c(simulation, simulate_apd_time(model, i, j))
     }
-    apd_sim = rep(apd, each = 50)
+    apd_sim = rep(apd, each = 30)
     par(mar=c(5,6,4,4)+.1)
     palette(brewer.pal(n = 11, name = 'Set3'))
     col = setNames(palette(), levels(data$subject))
@@ -79,9 +76,12 @@ plot_APD_TI <- function(data, model){
     for (samp in unique(data$subject)){
             data_s = data[with(data, subject ==   samp)]
             points(data_s$apd, data_s$time, col = alpha(col[[samp]], 0.95), pch=19, cex = 1.25)
-            abline(lm(data_s$time ~ data_s$apd), col = alpha(col[[samp]], 0.95), lwd = 2.5)
+            #abline(lm(data_s$time ~ data_s$apd), col = alpha(col[[samp]], 0.95), lwd = 2.5)
         }
     abline(lm(simulation~apd_sim), col="black", lw = 4)
+    cf <- round(coef(lm(simulation~apd_sim)), 2)
+    eq <- paste0("time = ", cf[1], "+", cf[2],"* APD")
+    mtext(eq, 1, line=-2)
     legend("topleft", legend=c(levels(factor(data$subject)), "Simulation", "Time ~ APD"), col=c(unique(factor(data$subject)),"black", "black"), lty=c(rep(NA, 12), 1), lwd = c(rep(NA, 12), 2), pch=c(rep(16, 11), 1, NA), ncol = 2, cex = 0.75)
 }
 
@@ -128,3 +128,6 @@ plot_ETI_TI_by_subject <- function(data, model){
     abline(a = 0, b = 1, lty = 2, lwd = 4)
     legend("topleft", legend=c(levels(factor(data$subject)), "ETI = OTI"), col=c(unique(factor(data$subject)), "black"), lty=c(rep(NA, 11), 2), lwd = c(rep(NA, 11), 2), pch=c(rep(16, 11), NA), ncol = 2, cex = 0.75)
 }
+
+
+

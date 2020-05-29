@@ -60,6 +60,10 @@ simulate_apd_time = function(model, i, apd){
         simulate_subject = rnorm(1,post$subject_slope_mean[i], post$subject_slope_sd[i])
         simulate_fragment = rnorm(1,post$fragment_slope_mean[i], post$fragment_slope_sd[i])
         time = post$total_intercept[i] + (simulate_subject + simulate_fragment + post$population_avg_slope[i]) * apd
+    } else if (model == "multilevel_fragment_subject_var_slope_model_time_error2_var_int_multivar_norm"){
+        simulate_subject = rnorm(1,post$subject_slope_mean[i], post$subject_sd[i,2])
+        simulate_fragment = rnorm(1,post$fragment_slope_mean[i], post$fragment_slope_sd[i])
+        time = post$total_intercept[i] + (simulate_subject + simulate_fragment + post$population_avg_slope[i]) * apd
     }
     return(time)
 }
