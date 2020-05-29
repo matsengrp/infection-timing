@@ -9,6 +9,7 @@ Bayesian_Infant_Models/models/
 # Custom
 *.html
 *.key
+*.pdf
 
 # History files
 .Rhistory
