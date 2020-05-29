@@ -71,6 +71,11 @@ save_models_plots_stats <- function(model, type){
     print(precis(get(model), depth = 2))
 }
 
+save_models <- function(model){
+    # Save model
+    saveRDS(get(model), paste0("models/", model, ".rds"))
+}
+
 ## Clean data and index subjects and fragments
 index_data_subjects_frags <- function(data, apd){
     data_cleaned = preprocess_noavg(data)
