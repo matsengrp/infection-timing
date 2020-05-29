@@ -40,7 +40,7 @@
     * OR something else entirely...
 2. If we think that average APD increases with time, should we restrict slope values to always be positive? 
 3. If we decide to restrict slope values to be positive, what do you make of the gray line in the following plot showing APD versus time by patient? 
-![APD versus Time by patient](apd_time_by_patient.png)
+![APD versus Time by patient](/_ignore/plots/apd_time_by_patient.png)
 4. It seems like one of the reasons we could be getting zero diversity is because we aren't sampling all of the diversity of an individual. 
 Is there a way in which you could report a type of possibility that this was the case, per sequencing run? 
 How likely do you think it is the case?
