@@ -12,7 +12,7 @@ parameters{
     real<lower=0> time_since_infection[N];    // outcome
     vector[N_subject_index] subject_slope;  // vector of subject specific slope changes
     vector[N_fragment_index] fragment_slope;    // vector of fragment specific slope changes
-    vector<lower=0,upper=0.75>[N_subject_index] time_correction;    // conversion factor between time(age) measurements and time since infection output
+    vector<lower=0,upper=0.125>[N_subject_index] time_correction;    // conversion factor between time(age) measurements and time since infection output
     real<lower=0> fragment_slope_sd;    // fragment specific slope standard deviation
     real fragment_slope_mean;   // fragment specific slope mean
     real<lower=0> subject_slope_sd; // subject specific slope standard deviation
@@ -58,6 +58,3 @@ generated quantities{
 }
 
 // This model does not have any divergent iterations, however, it claims to have one Rhat value of NA (at a data point where APD  0)
-
-
-
