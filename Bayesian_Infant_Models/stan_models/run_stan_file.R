@@ -15,7 +15,7 @@ data <- list(
 )
 
 
-fit1 <- stan(
+stan_varying_slopes_frag_subject <- stan(
   file = "multilevel_infant_model.stan",  # Stan program
   data = data,    # named list of data
   chains = 4,             # number of Markov chains
@@ -47,4 +47,7 @@ stan_time_correction_varying_slopes_frag_subject_more_restricted <- stan(
 
 setwd("/Users/magdalenarussell/Documents/Matsen_group/infection-timing/Bayesian_Infant_Models/")
 save_models("stan_time_correction_varying_slopes_frag_subject")
+
+setwd("/Users/magdalenarussell/Documents/Matsen_group/infection-timing/Bayesian_Infant_Models/")
+save_models("stan_time_correction_varying_slopes_frag_subject_more_restricted")
 
