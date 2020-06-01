@@ -127,6 +127,9 @@ plot_ETI_TI <- function(data, model){
     plot(data$time_since_infection, data$pred_time, col = c(factor(data$subject), alpha = 0.6), pch=19, cex = 1.25, ylim = c(0, 2.5), xlim = c(0,2.5), ylab = 'Estimated time since infection (ETI)', xlab = 'Observed time since infection (OTI)', main = paste0('Estimated versus Observed Time Since Infection by Patient using \n', model), cex.main = 1, cex.lab = 1, cex.axis = 1, panel.first = grid())
     abline(a = 0, b = 1, lty = 2, lwd = 4)
     abline(lm(data$pred_time ~ data$time_since_infection), col = 'red', lty = 2, lwd = 4)
+    cf <- round(coef(lm(data$pred_time ~ data$time_since_infection)), 2)
+    eq <- paste0("Estimated Time = ", cf[1], "+", cf[2],"* Observed Time")
+    mtext(eq, 1, line=-2)
     legend("topleft", legend=c(levels(factor(data$subject)), "ETI = OTI", "ETI ~ OTI"), col=c(unique(factor(data$subject)), "black", "red"), lty=c(rep(NA, 11), 2, 2), lwd = c(rep(NA, 11), 2, 2), pch=c(rep(16, 11), NA, NA), ncol = 2, cex = 0.75)
 }
 

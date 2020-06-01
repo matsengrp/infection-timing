@@ -38,9 +38,9 @@ model{
     population_sd ~ cauchy( 0 , 0.5 );
     time_since_infection ~ normal( population_mean , population_sd );
     for ( i in 1:N ) {
-        time_adjustment[i] = time_since_infection[i] - time_correction[subject_index[i]]; // Conversion factor between time (age) and time since infection
+        time_adjustment[i] = time_since_infection[i] - time_correction[subject_index[i]]; // Conversion between age at sampling time (time_adjustment) and time since infection. Here time_adjustment is the predicted time (age) calculated from the time_since_infection minus a subject specific time_correction
     }
-    time ~ normal(time_adjustment, 0.01);   // this time conversion from time since infection to time (age) has some noise...
+    time ~ normal(time_adjustment, 0.01);   // the measured age at sampling time is modeled as the time_adjustment value (time (age) estimate) with some noise...
 }
 generated quantities{
     vector[N] total_slope;
@@ -57,7 +57,7 @@ generated quantities{
     }
 }
 
-// This model does not have any divergent iterations, however, it claims to have one Rhat value of NA (at a data point where APD  0)
 
+//This model does not have any divergent iterations, however, it claims to have one Rhat value of NA (at a data point where APD  0)
 
 
