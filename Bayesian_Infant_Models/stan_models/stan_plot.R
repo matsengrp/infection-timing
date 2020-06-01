@@ -64,7 +64,7 @@ plot_age_TI <- function(data, model){
     par(mar=c(5,6,4,4)+.1)
     palette(brewer.pal(n = 11, name = 'Set3'))
     col = setNames(palette(), levels(data$subject))
-    plot(data$time, data$time_since_infection, ylab = 'Time Since Infection (years)', xlab = "Age (years)", main = paste0('APD versus Time Since Infection by Patient'), xlim = c(0, 0.5), ylim = c(0, 0.5), panel.first = grid())
+    plot(data$time, data$time_since_infection, ylab = 'Time since infection (determined in model fitting)', xlab = "Age (years)", main = paste0('APD versus Time Since Infection by Patient \n Model fit time since infection values'), xlim = c(0, 0.5), ylim = c(0, 0.5), panel.first = grid())
     for (samp in unique(data$subject)){
             data_s = data[with(data, subject == samp)]
             points(data_s$time, data_s$time_since_infection, col = col[[samp]], pch=19, cex = 1.25)
@@ -79,7 +79,7 @@ plot_age_predTI <- function(data, model){
     par(mar=c(5,6,4,4)+.1)
     palette(brewer.pal(n = 11, name = 'Set3'))
     col = setNames(palette(), levels(data$subject))
-    plot(data$time, data$pred_time, ylab = 'Time Since Infection (years)', xlab = "Age (years)", main = paste0('APD versus Time Since Infection by Patient'), panel.first = grid())
+    plot(data$time, data$pred_time, ylab = 'Time Since Infection (predicted using model)', xlab = "Age (years)", main = paste0('APD versus Time Since Infection by Patient \n Model predicted time since infection values'), panel.first = grid())
     for (samp in unique(data$subject)){
             data_s = data[with(data, subject == samp)]
             points(data_s$time, data_s$pred_time, col = col[[samp]], pch=19, cex = 1.25)
@@ -95,7 +95,7 @@ plot_APD_TI <- function(data, model){
     apd = seq(0.0001, 0.03, by = 0.0004)
     simulation = c()
     for (j in apd){
-        for (i in 1:30) simulation = c(simulation, simulate_apd_time(model, i, j))
+        for (i in 1:30) simulation = c(simulation, simulate_apd_time_stan(model, i, j))
     }
     apd_sim = rep(apd, each = 30)
     posterior = get(paste0("posterior_", model))
