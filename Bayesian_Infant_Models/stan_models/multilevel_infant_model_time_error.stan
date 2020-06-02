@@ -22,7 +22,7 @@ parameters{
 model{
     vector[N] total_slope;
     vector[N] population_mean;
-    vector[N] time_adjustment;
+    vector[N] sampling_time_estimate;
     fragment_slope_sd ~ cauchy( 0 , 5 );
     fragment_slope_mean ~ normal( 0 , 1 );
     subject_slope_sd ~ cauchy( 0 , 20 );
@@ -38,14 +38,14 @@ model{
     population_sd ~ cauchy( 0 , 0.5 );
     time_since_infection ~ normal( population_mean , population_sd );
     for ( i in 1:N ) {
-        time_adjustment[i] = time_since_infection[i] - time_correction[subject_index[i]]; // Conversion between age at sampling time (time_adjustment) and time since infection. Here time_adjustment is the predicted time (age) calculated from the time_since_infection minus a subject specific time_correction
+        sampling_time_estimate[i] = time_since_infection[i] - time_correction[subject_index[i]]; // Conversion between age at sampling time (sampling_time_estimate) and time since infection. Here sampling_time_estimate is the predicted time (age) calculated from the time_since_infection minus a subject specific time_correction
     }
-    time ~ normal(time_adjustment, 0.01);   // the measured age at sampling time is modeled as the time_adjustment value (time (age) estimate) with some noise...
+    time ~ normal(sampling_time_estimate, 0.01);   // the measured age at sampling time is modeled as the sampling_time_estimate value (time (age) estimate) with some noise...
 }
 generated quantities{
     vector[N] total_slope;
     vector[N] population_mean;
-    vector[N] time_adjustment;
+    vector[N] sampling_time_estimate;
     for ( i in 1:N ) {
         total_slope[i] = (population_avg_slope + subject_slope[subject_index[i]] + fragment_slope[fragment_index[i]]);
     }
@@ -53,11 +53,8 @@ generated quantities{
         population_mean[i] = total_slope[i] * apd[i];
     }
     for ( i in 1:N ) {
-        time_adjustment[i] = time_since_infection[i] - time_correction[subject_index[i]]; //This means that we aren't directly modelling time_since_infection
+        sampling_time_estimate[i] = time_since_infection[i] - time_correction[subject_index[i]]; //This means that we aren't directly modelling time_since_infection
     }
 }
-
-
-//This model does not have any divergent iterations, however, it claims to have one Rhat value of NA (at a data point where APD  0)
 
 
