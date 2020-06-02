@@ -104,7 +104,7 @@ plot_APD_TI <- function(data, model){
     par(mar=c(5,6,4,4)+.1)
     palette(brewer.pal(n = 11, name = 'Set3'))
     col = setNames(palette(), levels(data$subject))
-    plot(apd_sim, simulation, pch = 1, col = alpha("black", 0.3), xlab = 'Average Pairwise Diversity (APD1)', ylab = 'Time Since Infection (years) (determined in model fitting)', main = paste0('APD versus Time Since Infection by Patient \n', model), xlim = c(0,0.03), ylim = c(0, 3), panel.first = grid())
+    plot(apd_sim, simulation, pch = 1, col = alpha("black", 0.1), xlab = 'Average Pairwise Diversity (APD1)', ylab = 'Time Since Infection (years) (determined in model fitting)', main = paste0('APD versus Time Since Infection by Patient \n', model), xlim = c(0,0.03), ylim = c(0, 3), panel.first = grid())
     for (samp in unique(data$subject)){
             data_s = data[with(data, subject == samp)]
             points(data_s$apd, data_s$time_since_infection, col = col[[samp]], pch=19, cex = 1.25)
