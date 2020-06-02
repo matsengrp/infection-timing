@@ -64,7 +64,7 @@ plot_age_TI <- function(data, model){
     par(mar=c(5,6,4,4)+.1)
     palette(brewer.pal(n = 11, name = 'Set3'))
     col = setNames(palette(), levels(data$subject))
-    plot(data$time, data$time_since_infection, ylab = 'Time since infection (determined in model fitting)', xlab = "Age (years)", main = paste0('APD versus Time Since Infection by Patient \n Model fit time since infection values'), xlim = c(0, 0.5), ylim = c(0, 0.5), panel.first = grid())
+    plot(data$time, data$time_since_infection, ylab = 'Time since infection (determined in model fitting)', xlab = "Age (years)", main = paste0('APD versus Time Since Infection by Patient \n Model fit time since infection values \n', model), xlim = c(0, 0.5), ylim = c(0, 0.5), panel.first = grid())
     for (samp in unique(data$subject)){
             data_s = data[with(data, subject == samp)]
             points(data_s$time, data_s$time_since_infection, col = col[[samp]], pch=19, cex = 1.25)
@@ -79,7 +79,7 @@ plot_age_predTI <- function(data, model){
     par(mar=c(5,6,4,4)+.1)
     palette(brewer.pal(n = 11, name = 'Set3'))
     col = setNames(palette(), levels(data$subject))
-    plot(data$time, data$pred_time, ylab = 'Time Since Infection (predicted using model)', xlab = "Age (years)", main = paste0('APD versus Time Since Infection by Patient \n Model predicted time since infection values'), panel.first = grid())
+    plot(data$time, data$pred_time, ylab = 'Time Since Infection (predicted using model)', xlab = "Age (years)", main = paste0('APD versus Time Since Infection by Patient \n Model predicted time since infection values \n', model), panel.first = grid())
     for (samp in unique(data$subject)){
             data_s = data[with(data, subject == samp)]
             points(data_s$time, data_s$pred_time, col = col[[samp]], pch=19, cex = 1.25)
@@ -104,7 +104,7 @@ plot_APD_TI <- function(data, model){
     par(mar=c(5,6,4,4)+.1)
     palette(brewer.pal(n = 11, name = 'Set3'))
     col = setNames(palette(), levels(data$subject))
-    plot(0, type = 'n', xlab = 'Average Pairwise Diversity (APD1)', ylab = 'Time Since Infection (years)', main = paste0('APD versus Time Since Infection by Patient'), xlim = c(0,0.03), ylim = c(0, 3), panel.first = grid())
+    plot(apd_sim, simulation, pch = 1, col = alpha("black", 0.3), xlab = 'Average Pairwise Diversity (APD1)', ylab = 'Time Since Infection (years) (determined in model fitting)', main = paste0('APD versus Time Since Infection by Patient \n', model), xlim = c(0,0.03), ylim = c(0, 3), panel.first = grid())
     for (samp in unique(data$subject)){
             data_s = data[with(data, subject == samp)]
             points(data_s$apd, data_s$time_since_infection, col = col[[samp]], pch=19, cex = 1.25)
@@ -116,7 +116,7 @@ plot_APD_TI <- function(data, model){
     legend("topleft", legend=c(levels(factor(data$subject)), "Simulation", "Time ~ APD"), col=c(unique(factor(data$subject)),"black", "black"), lty=c(rep(NA, 12), 1), lwd = c(rep(NA, 12), 2), pch=c(rep(16, 11), 1, NA), ncol = 2, cex = 0.75)
 }
 
-plot_ETI_TI <- function(data, model){ 
+plot_ETI_TI <- function(data, model, time_type){ 
     assign("data", data)
     posterior = get(paste0("posterior_", model))
     times_since_infection = apply(posterior$time_since_infection, 2, mean)
@@ -124,17 +124,24 @@ plot_ETI_TI <- function(data, model){
     par(mar=c(5,6,4,4)+.1)
     palette(brewer.pal(n = 11, name = 'Set3'))
     col = setNames(palette(), levels(data$subject))
-    plot(data$time_since_infection, data$pred_time, col = c(factor(data$subject), alpha = 0.6), pch=19, cex = 1.25, ylim = c(0, 2.5), xlim = c(0,2.5), ylab = 'Estimated time since infection (ETI)', xlab = 'Observed time since infection (OTI)', main = paste0('Estimated versus Observed Time Since Infection by Patient using \n', model), cex.main = 1, cex.lab = 1, cex.axis = 1, panel.first = grid())
-    abline(a = 0, b = 1, lty = 2, lwd = 4)
-    abline(lm(data$pred_time ~ data$time_since_infection), col = 'red', lty = 2, lwd = 4)
-    cf <- round(coef(lm(data$pred_time ~ data$time_since_infection)), 2)
+    if (time_type == "TI"){
+        plot(data$time_since_infection, data$pred_time, col = c(factor(data$subject), alpha = 0.6), pch=19, cex = 1.25, ylim = c(0, 2.5), xlim = c(0,2.5), ylab = 'Estimated time since infection (ETI)', xlab = 'Observed time since infection (OTI)', main = paste0('Estimated versus Observed Time Since Infection by Patient using \n', model), cex.main = 1, cex.lab = 1, cex.axis = 1, panel.first = grid())
+        abline(a = 0, b = 1, lty = 2, lwd = 4)
+        abline(lm(data$pred_time ~ data$time_since_infection), col = 'red', lty = 2, lwd = 4)
+        cf <- round(coef(lm(data$pred_time ~ data$time_since_infection)), 2)    
+    } else if (time_type == "age"){
+        plot(data$time, data$pred_time, col = c(factor(data$subject), alpha = 0.6), pch=19, cex = 1.25, ylim = c(0, 2.5), xlim = c(0,2.5), ylab = 'Estimated time since infection (ETI)', xlab = 'Age at sampling time (years)', main = paste0('Estimated versus Age at sampling time by Patient using \n', model), cex.main = 1, cex.lab = 1, cex.axis = 1, panel.first = grid())
+        abline(a = 0, b = 1, lty = 2, lwd = 4)
+        abline(lm(data$pred_time ~ data$time), col = 'red', lty = 2, lwd = 4)
+        cf <- round(coef(lm(data$pred_time ~ data$time)), 2)    
+    }
     eq <- paste0("Estimated Time = ", cf[1], "+", cf[2],"* Observed Time")
     mtext(eq, 1, line=-2)
     legend("topleft", legend=c(levels(factor(data$subject)), "ETI = OTI", "ETI ~ OTI"), col=c(unique(factor(data$subject)), "black", "red"), lty=c(rep(NA, 11), 2, 2), lwd = c(rep(NA, 11), 2, 2), pch=c(rep(16, 11), NA, NA), ncol = 2, cex = 0.75)
 }
 
 
-plot_ETI_TI_by_subject <- function(data, model){ 
+plot_ETI_TI_by_subject <- function(data, model, time_type){ 
     assign("data", data)
     posterior = get(paste0("posterior_", model))
     times_since_infection = apply(posterior$time_since_infection, 2, mean)
@@ -142,10 +149,18 @@ plot_ETI_TI_by_subject <- function(data, model){
     par(mar=c(5,6,4,4)+.1)
     palette(brewer.pal(n = 11, name = 'Set3'))
     col = setNames(palette(), levels(data$subject))
-    plot(data$time_since_infection, data$pred_time, col = c(factor(data$subject), alpha = 0.6), pch=19, cex = 1.25, ylim = c(0, 2.5), xlim = c(0, 2.5), ylab = 'Estimated time since infection', xlab = 'Observed time since infection', main = paste0('Estimated versus Observed Time Since Infection by Patient using \n', model), cex.main = 1, cex.lab = 1, cex.axis = 1, panel.first = grid())
-    for (samp in unique(data$subject)){
-        data_s = data[with(data, subject == samp)]
-        abline(lm(data_s$pred_time ~ data_s$time_since_infection), col = c(col[[samp]], alpha = 0.5), lwd = 2.5)
+    if (time_type == "TI"){
+        plot(data$time_since_infection, data$pred_time, col = c(factor(data$subject), alpha = 0.6), pch=19, cex = 1.25, ylim = c(0, 2.5), xlim = c(0, 2.5), ylab = 'Estimated time since infection', xlab = 'Observed time since infection', main = paste0('Estimated versus Observed Time Since Infection by Patient using \n', model), cex.main = 1, cex.lab = 1, cex.axis = 1, panel.first = grid())
+        for (samp in unique(data$subject)){
+            data_s = data[with(data, subject == samp)]
+            abline(lm(data_s$pred_time ~ data_s$time_since_infection), col = c(col[[samp]], alpha = 0.5), lwd = 2.5)
+        }
+    } else if (time_type == "age"){
+        plot(data$time, data$pred_time, col = c(factor(data$subject), alpha = 0.6), pch=19, cex = 1.25, ylim = c(0, 2.5), xlim = c(0, 2.5), ylab = 'Estimated time since infection', xlab = 'Age at sampling time (years)', main = paste0('Estimated versus Age at sampling time by Patient using \n', model), cex.main = 1, cex.lab = 1, cex.axis = 1, panel.first = grid())
+        for (samp in unique(data$subject)){
+            data_s = data[with(data, subject == samp)]
+            abline(lm(data_s$pred_time ~ data_s$time), col = c(col[[samp]], alpha = 0.5), lwd = 2.5)
+        }
     }
     abline(a = 0, b = 1, lty = 2, lwd = 4)
     legend("topleft", legend=c(levels(factor(data$subject)), "ETI = OTI"), col=c(unique(factor(data$subject)), "black"), lty=c(rep(NA, 11), 2), lwd = c(rep(NA, 11), 2), pch=c(rep(16, 11), NA), ncol = 2, cex = 0.75)
