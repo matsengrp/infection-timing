@@ -1,32 +1,32 @@
 
-# Infection Timing Project Thoughts and Questions
+# Infection Timing (latest) Model Summary and Questions
 
 ## These are the assumptions we are currently making about the biology: 
 
 1. We are striving to estimate time since infection. 
-3. Individuals are infected in-utero, at birth, or through breastfeeding.
-4. Individuals could have been infected at different times. 
-5. "Training data" individuals were infected in-utero.
+2. Individuals are infected in-utero, at birth, or through breastfeeding.
+3. "Training data" individuals were infected in-utero
+4. For individuals infected in-utero, all time points during pregnancy are equally likely to be the infection time.
 5. APD is defined to be the measure of average pairwise diversity at the third codon position using only sites at which the sum of all minor variants is greater than 0.01.
-5. Infection time is defined as the time (age) at which average pairwise sequence diversity is zero.
-7. Average pairwise diversity of the sequence increases with time for most individuals.
-8. The rate of average pairwise diversity change over time may be different for each individual.
-9. The rate of average pairwise diversity change over time may be different for each sequence fragment.
-5. For the "training data", time since infection is __*not*__ the same as the observed time (age at sampling time) since individuals were infected in-utero.
-5. For individuals infected in-utero, time since infection will be greater than the observed time (age at sampling time).
+6. APD is zero when time since infection is zero (infection time).
+7. APD of the sequence increases with time for most individuals.
+8. The rate of APD change over time may be different for each individual.
+9. The rate of APD change over time may be different for each sequence fragment.
+10. For "training data" individuals, time since infection will be greater than the observed time (age at sampling time) since all individuals were infected in-utero-- *see time clarification example in the model explanation section*.
 #  
 
 ## Here are some definitions we will use in the model explanation:
 
 #### Key definitions:
-* `apd`: APD measurements (cutoff 0.01) from all runs for each individual (not an average)
+
 * `observation_count`:  the number of observations in the data.
 * `subject_count`:  the number of individuals (or subjects) in the data.
 * `fragment_count`:  the number of sequencing regions (or fragments) in the data.
 * `subject`: the unique identifier of an individual or subject.
-* `fragment`: to be the unique identifier of a sequencing region or fragment. 
+* `fragment`: the unique identifier of a sequencing region or fragment. 
 * `observed_time`:  the age of the individual at sampling time.
 * `time_since_infection`: the time since infection
+* `apd`: APD measurements (cutoff 0.01) from all runs for each individual (not an average)
 
 #### Other definitions (to be defined in the following model explanation)
 * `predicted_time_since_infection`
@@ -41,30 +41,29 @@
 * `fragment_slope_delta_variance_estimate`
 * `observed_time_to_time_since_infection_correction`
 * `predicted_observed_time`
-* `observed_time_variance_estimate`
 
 #  
 
 ## Model Explanation: 
 
-3. We model `time_since_infection` to be normally distributed around a `predicted_time_since_infection` with a `time_since_infection_variance_estimate`.
-    * We choose to model `time_since_infection_variance_estimate` as a cauchy distribution with mean 0 and standard deviation, 0.5.
+1. We model `time_since_infection` to be normally distributed around a `predicted_time_since_infection` with a `time_since_infection_variance_estimate`.
+    * We choose to model `time_since_infection_variance_estimate` as a cauchy distribution with mean = 0 and standard deviation = 0.5.
 2. We model the function `apd` -> `predicted_time_since_infection` as a linear function with `predicted_time_since_infection` = `total_slope` * `apd`.
-5. We model `total_slope` to be the sum of a `baseline_slope`, a `subject_slope_delta`, and a `fragment_slope_delta`.
-3. We model the `baseline_slope` of this function as a uniform distribution, __*restricted to be positive*__.
-6. We define `subject_slope_delta` to be the change in slope (or APD rate of change) from the `baseline_slope` defined uniquely for each subject. 
+3. We model `total_slope` to be the sum of a `baseline_slope`, a `subject_slope_delta`, and a `fragment_slope_delta`.
+4. We model the `baseline_slope` of this function as a uniform distribution, __*restricted to be positive*__.
+5. We define `subject_slope_delta` to be the difference in slope (or APD rate of change) from the `baseline_slope` defined uniquely for each subject. 
 We model the `subject_slope_delta` of this function as a normal distribution, with mean, `subject_slope_delta_mean_estimate`, and variance, `subject_slope_delta_variance_estimate`.
-    * We choose to model the `subject_slope_delta_mean_estimate` as a normal distribution with mean 0 and standard deviation, 1.
-    * We choose to model the `subject_slope_delta_variance_estimate` as a cauchy distribution with mean 0 and standard deviation, 20.
-7. We define `fragment_slope_delta` to be the change in slope (or APD rate of change) from the `baseline_slope` defined uniquely for each fragment.
+    * We choose to model the `subject_slope_delta_mean_estimate` as a normal distribution with mean = 0 and standard deviation = 1.
+    * We choose to model the `subject_slope_delta_variance_estimate` as a cauchy distribution with mean = 0 and standard deviation = 20.
+6. We define `fragment_slope_delta` to be the difference in slope (or APD rate of change) from the `baseline_slope` defined uniquely for each fragment.
 We model the `fragment_slope_delta` of this function as a normal distribution, with mean, `fragment_slope_delta_mean_estimate`, and variance, `fragment_slope_delta_variance_estimate`.
-    * We choose to model the `fragment_slope_delta_mean_estimate` as a normal distribution with mean 0 and standard deviation, 1.
-    * We choose to model the `fragment_slope_delta_variance_estimate` as a cauchy distribution with mean 0 and standard deviation, 5.
-5. Since the data does not directly measure `time_since_infection`, for training the model, we define an `observed_time_to_time_since_infection_correction` __*for each subject*__ which will act to convert between `time_since_infection` and `predicted_observed_time`.
+    * We choose to model the `fragment_slope_delta_mean_estimate` as a normal distribution with mean = 0 and standard deviation =1.
+    * We choose to model the `fragment_slope_delta_variance_estimate` as a cauchy distribution with mean = 0 and standard deviation = 5.
+7. Since the data does not directly measure `time_since_infection`, for training the model, we define an `observed_time_to_time_since_infection_correction` __*for each subject*__ which will act to convert between `time_since_infection` and `predicted_observed_time`.
     * We choose to model the `observed_time_to_time_since_infection_correction` as a uniform distribution between 0 and 0.75 (years).
-6. We model `predicted_observed_time` to be the difference between `time_since_infection` and a subject specific `observed_time_to_time_since_infection_correction`.
-__*See time clarification example below...*__
-7. Lastly, we model `observed_time` to be normally distributed around a `predicted_observed_time` with standard deviation, 0.1.
+8. We model `predicted_observed_time` to be the difference between `time_since_infection` and a __*subject specific*__ `observed_time_to_time_since_infection_correction`.
+*See time clarification example below...*
+9. Lastly, we model `observed_time` to be normally distributed around a `predicted_observed_time` with standard deviation = 0.1.
 #  
 __TIME CLARIFICATION EXAMPLE:__ 
 Say we have an infant that was infected three months before birth. 
@@ -93,7 +92,7 @@ Could we utilize another family of functions to better predict time since infect
 
 ## Model Stan Code: 
 
-```
+```stan
 data{
     int<lower=1> observation_count; // number of observations
     int<lower=1> subject_count;   // number of subjects
