@@ -25,8 +25,7 @@ knitr::opts_chunk$set(fig.width=8, fig.height=6)
 The following is a list of the multilevel models I have created so far...
 
 ```{r warning=FALSE, results='hide', message = FALSE}
-models = c("stan_time_correction_varying_slopes_frag_subject_more_restricted", "stan_time_correction_varying_slopes_frag_subject")
-models = c("stan_time_correction_varying_slopes_frag_subject")
+models = c("stan_time_correction_varying_slopes_frag_subject_normal_time_correction", "stan_time_correction_varying_slopes_frag_subject")
 ```
 
 Here, we can plot the estimated time since infection and the actual time since infection to assess model accuracy. 
@@ -39,7 +38,7 @@ for (model in models){
     plot_ETI_TI_by_subject(data, model, time_type = "TI")
     plot_ETI_TI(data, model, time_type = "age")
     plot_ETI_TI_by_subject(data, model, time_type = "age")
-    plot_age_predTI(data, model)
-    plot_age_TI(data, model)
+    #plot_age_predTI(data, model)
+    #plot_age_TI(data, model)
 }
 ```
