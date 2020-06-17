@@ -65,6 +65,17 @@ stan_time_correction_varying_slopes_frag_subject_normal_time_correction <- stan(
   control = list(adapt_delta = 0.99, max_treedepth = 20), 
 )
 
+
+stan_time_correction_varying_slopes_frag_subject_beta_time_correction <- stan(
+  file = "multilevel_infant_model_time_error_beta_correction.stan",  # Stan program
+  data = data,    # named list of data
+  chains = 4,             # number of Markov chains
+  warmup = 10000,          # number of warmup iterations per chain
+  iter = 20000,            # total number of iterations per chain
+  cores = 2,              # number of cores (could use one per chain)
+  control = list(adapt_delta = 0.99, max_treedepth = 20), 
+)
+
 setwd("/Users/magdalenarussell/Documents/Matsen_group/infection-timing/Bayesian_Infant_Models/")
 save_models("stan_time_correction_varying_slopes_frag_subject")
 
@@ -74,3 +85,6 @@ save_models("stan_time_correction_varying_slopes_frag_subject_more_restricted")
 setwd("/Users/magdalenarussell/Documents/Matsen_group/infection-timing/Bayesian_Infant_Models/")
 save_models("stan_time_correction_varying_slopes_frag_subject_normal_time_correction")
 
+
+setwd("/Users/magdalenarussell/Documents/Matsen_group/infection-timing/Bayesian_Infant_Models/")
+save_models("stan_time_correction_varying_slopes_frag_subject_beta_time_correction")

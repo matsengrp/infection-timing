@@ -4,8 +4,8 @@ library(rstan)
 
 ## PREDICTIONS with training data
 # create own link
-posterior_link_existing_data_stan <- function(apd, frag_index, subject_index, posterior){
-    time <- with(posterior, (subject_slope[,subject_index] + fragment_slope[,frag_index] + population_avg_slope) * apd) # here, time is time since infection
+posterior_link_existing_data_stan <- function(apd, fragment, subject, posterior){
+    time <- with(posterior, (subject_slope_delta[,subject] + fragment_slope_delta[,fragment] + baseline_slope) * apd) # here, time is time since infection
     return(time)
 }
 
@@ -31,8 +31,8 @@ compute_predictions_existing_data_stan <- function(model_data, posterior){
 
 simulate_apd_time_stan = function(model, i, apd){
     post <- extract(get(model))
-    simulate_subject = rnorm(1,post$subject_slope_mean[i], post$subject_slope_sd[i])
-    simulate_fragment = rnorm(1,post$fragment_slope_mean[i], post$fragment_slope_sd[i])
-    time_since_infection = (simulate_subject + simulate_fragment + post$population_avg_slope[i]) * apd
+    simulate_subject = rnorm(1,post$subject_slope_delta_mean_estimate[i], post$subject_slope_delta_variance_estimate[i])
+    simulate_fragment = rnorm(1,post$fragment_slope_delta_mean_estimate[i], post$fragment_slope_delta_variance_estimate[i])
+    time_since_infection = (simulate_subject + simulate_fragment + post$baseline_slope[i]) * apd
     return(time_since_infection)
 }
