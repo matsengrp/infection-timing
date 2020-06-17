@@ -14,7 +14,7 @@ infant_data = read.csv("../_ignore/AllRunsAvg.csv")
 setwd("/Users/magdalenarussell/Documents/Matsen_group/infection-timing/Bayesian_Infant_Models/models")
 
 
-models = c("stan_time_correction_varying_slopes_frag_subject", "stan_time_correction_varying_slopes_frag_subject_normal_time_correction")
+models = c("stan_time_correction_varying_slopes_frag_subject", "stan_time_correction_varying_slopes_frag_subject_beta_time_correction")
 
 index = 0
 for (model in models){
