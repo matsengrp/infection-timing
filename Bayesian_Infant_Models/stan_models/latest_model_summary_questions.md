@@ -6,7 +6,7 @@
 1. We are striving to estimate time since infection. 
 2. Individuals are infected in-utero, at birth, or through breastfeeding.
 3. "Training data" individuals were infected in-utero
-4. For individuals infected in-utero, all time points during pregnancy are equally likely to be the infection time.
+4. For individuals infected in-utero, time points closer to the third trimester (of pregnancy) are most likely to be the infection time.
 5. APD is defined to be the measure of average pairwise diversity at the third codon position using only sites at which the sum of all minor variants is greater than 0.01.
 6. APD is zero when time since infection is zero (infection time).
 7. APD of the sequence increases with time for most individuals.

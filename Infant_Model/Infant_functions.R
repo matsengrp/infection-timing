@@ -11,7 +11,7 @@ library(tidyverse)
 library(L1pack)
 library(gee)
 
-source("../common_regression.R")
+source("../Model_Comparisons_Neher_Infant/common_regression.R")
 data = read.csv("../_ignore/AllRunsAvg.csv")
 
 
