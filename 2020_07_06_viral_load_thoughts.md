@@ -6,6 +6,8 @@
 **We want to explore whether a difference in viral load could be "responsible" for this overestimation (since the model was "trained" using a purely adult cohort).**
 **To do this, we have explored the following questions:**
 
+Note: The sequence fragments and APD cutoff (0.01) used in this analysis are the *same* for both the infant cohort and the Neher cohort.
+
 ## How does viral load compare between the two cohorts?
 
 * If we compare the viral load of the two cohorts, the infant cohort (as expected) has a significantly higher set point viral load (average over all viral load measurements for each indiviudal) compared to the Neher cohort.
