@@ -10,6 +10,8 @@ Bayesian_Infant_Models/models/
 *.html
 *.key
 *.pdf
+*.pptx
+.DS_Store
 
 # History files
 .Rhistory
