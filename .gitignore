@@ -1,16 +1,13 @@
 # Hide data files
 _ignore/
-Neher_Code/
-rethinking_tutorials/
-Bayesian_Infant_Models/old_scripts/
-Bayesian_Infant_Models/plots/
-Bayesian_Infant_Models/models/
+figures/
 
 # Custom
 *.html
 *.key
 *.pdf
 *.pptx
+*.rds
 .DS_Store
 
 # History files
