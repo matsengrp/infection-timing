@@ -13,8 +13,12 @@ search_sample_name_ptnum <- function(column){
     return(char_list)
 }
 
-check_data <- function(){
-    raw_data = fread(INFANT_DATA_PATH)
+check_data <- function(data_path){
+    raw_data = fread(data_path)
+    temp_cols = c('Sample', 'ptnum', 'month_visit', 'pass2_APD', 'Fragment', 'vload', 'incat_hiv')
+
+    stopifnot(all(temp_cols %in% colnames(raw_data)))
+
     # check subject_ids
     raw_data[, extracted_subjects := as.numeric(search_sample_name_ptnum(Sample))]
     if (nrow(raw_data[extracted_subjects != ptnum]) > 0){
@@ -60,8 +64,8 @@ index_subjects <- function(data){
     return(data)
 }
 
-configure_data <- function(){
-    data = check_data()
+configure_data <- function(data_path){
+    data = check_data(data_path)
     # remove NA cases
     #TODO verify NA removal
     data = data[!(is.na(pass2_APD))]
@@ -107,8 +111,31 @@ fit_model <- function(data, chains = 4, warmup_iterations = 10000, total_iterati
                  warmup = warmup_iterations, # total number of warmup iterations per chain
                  iter = total_iterations, # total number of iterations per chain
                  cores = NCPU, # number of cores (can us up to one per chain)
+                 seed = 555,
                  control = list(adapt_delta = step_size, max_treedepth = 20)
                  )
     return(model)
 }
 
+get_model_fit_name <- function(){
+    path = file.path(PROJECT_PATH, 'scripts', 'stan_models', 'model_fits')
+    dir.create(path, recursive = TRUE)
+    name = str_split(MODEL_FILE, '/')[[1]][9]
+    name = str_split(name, '.stan')[[1]][1]
+    data_description = str_split(TRAINING_INFANT_DATA_PATH, '/')[[1]][length(str_split(TRAINING_INFANT_DATA_PATH, '/')[[1]])]
+    data_description = str_split(data_description, '.tsv')[[1]][1]
+    model_name = paste0('/', name, '_', data_description, '.rds')
+    together = paste0(path, model_name)
+    return(together)
+}
+
+save_model_fit <- function(model){
+    model_name = get_model_fit_name()
+    saveRDS(model, model_name)
+}
+
+load_model_fit <- function(){
+    model_name = get_model_fit_name()
+    model = readRDS(model_name)
+    return(model)
+}
