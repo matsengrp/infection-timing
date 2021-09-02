@@ -13,8 +13,13 @@ PREPROCESS_DATA <<- TRUE
 source('config/config.R')
 source(paste0(PROJECT_PATH, '/config/file_paths.R'))
 source(paste0(PROJECT_PATH, '/scripts/model_fitting_functions.R'))
+source(paste0(PROJECT_PATH, '/scripts/model_prediction_evaluation_functions.R'))
 
-infant_data = configure_data(TRAINING_INFANT_DATA_PATH)
-model = fit_model(infant_data)
+model = load_model_fit()
 
-save_model_fit(model)
+new_infant_data = configure_data(TESTING_INFANT_DATA_PATH)
+
+test_set_posteriors = predict_posterior(new_infant_data, model)
+test_set_posterior_means = get_mean_prediction(test_set_posteriors) 
+
+# save posterior means?
