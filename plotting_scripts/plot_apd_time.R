@@ -1,7 +1,9 @@
+library(rstan)
 library(data.table)
 library(tidyverse)
-library(rstan)
-library(foreach)
+library(RColorBrewer)
+library(ggplot2)
+library(cowplot)
 
 args = commandArgs(trailingOnly = TRUE)
 
@@ -13,13 +15,9 @@ PREPROCESS_DATA <<- TRUE
 source('config/config.R')
 source(paste0(PROJECT_PATH, '/config/file_paths.R'))
 source(paste0(PROJECT_PATH, '/scripts/model_fitting_functions.R'))
-source(paste0(PROJECT_PATH, '/scripts/model_prediction_evaluation_functions.R'))
+source(paste0(PROJECT_PATH, '/plotting_scripts/plotting_functions.R'))
 
-model = load_model_fit()
+infant_data = as.data.table(configure_data(TRAINING_INFANT_DATA_PATH))
 
-new_infant_data = configure_data(TESTING_INFANT_DATA_PATH)
 
-test_set_posteriors = predict_posterior(new_infant_data, model)
-test_set_posterior_means = predict(test_set_posteriors) 
 
-# save posterior means?
