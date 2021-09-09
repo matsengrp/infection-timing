@@ -42,7 +42,6 @@
 * `observed_time_to_time_since_infection_correction`
 * `predicted_observed_time`
 
-#  
 
 ## Model Explanation: 
 
@@ -66,21 +65,45 @@ We model the `fragment_slope_delta` of this function as a normal distribution, w
 9. Lastly, we model `observed_time` to be normally distributed around a `predicted_observed_time` with standard deviation = 0.1.
 #  
 __TIME CLARIFICATION EXAMPLE:__ 
-Say we have an infant that was infected three months before birth. 
-Say we have a sample taken for sequencing at one month post birth. 
-At one month, this individual will have an `observed_time` of 1 month. 
-However, since the individual was infected four months prior to sampling, their `time_since_infection` will be 4 months at sampling time.
-The difference between the `time_since_infection` and the `observed_time` will be 3 months. 
-In the model, we define these three months as the `observed_time_to_time_since_infection_correction`. 
+Infants can either be infected in utero, at birth, or post birth.
 
-Here is an image to try and clarify: 
-![Time since infection vs. Observed time](time_example.png)
+Say we have an infant that was infected two months before birth. 
+Say we have a sample taken for sequencing at six months post birth. 
+At six months, this individual will have an `observed_time` of 6 months. 
+However, since the individual was infected eight months prior to sampling, their `time_since_infection` will be 8 months at sampling time.
+The difference between the `time_since_infection` and the `observed_time` will be two months. 
+In the model, we define these two months as the `observed_time_to_time_since_infection_correction`--shown as "observed time correction" in the figure below. 
+![Infected in utero--time since infection vs. observed time](figs/utero.png)
 
-In equation form, this relationship is defined as follows: 
+In equation form, this relationship for infants infected in utero is defined as follows: 
 ## 
 <img src="https://render.githubusercontent.com/render/math?math=\text{observed\_time}  \approx  \text{time\_since\_infection} - \text{observed\_time\_to\_time\_since\_infection\_correction}">
 
-*Note that this relationship is approximate due to noise in fitting the model.*
+
+Say we have an infant that was infected two months post birth. 
+Say we have a sample taken for sequencing at six months post birth. 
+At six months, this individual will have an `observed_time` of 6 months. 
+However, since the individual was infected four months prior to sampling, their `time_since_infection` will be 4 months at sampling time.
+The difference between the `time_since_infection` and the `observed_time` will be two months. 
+In the model, we define these two months as the `observed_time_to_time_since_infection_correction`--shown as "observed time correction" in the figure below. 
+![Infected post birth--time since infection vs. observed time](figs/post.png)
+
+In equation form, this relationship for infants infected post birth is defined as follows: 
+## 
+<img src="https://render.githubusercontent.com/render/math?math=\text{observed\_time}  \approx  \text{time\_since\_infection} + \text{observed\_time\_to\_time\_since\_infection\_correction}">
+
+Say we have an infant that was infected at birth. 
+Say we have a sample taken for sequencing at six months post birth. 
+At six months, this individual will have an `observed_time` of 6 months. 
+Since the individual was infected at birth, their `time_since_infection` will also be 6 months at sampling time.
+This is shown in the figure below:
+![Infected at birth--time since infection vs. observed time](figs/birth.png)
+
+In equation form, this relationship for infants infected at birth is defined as follows: 
+## 
+<img src="https://render.githubusercontent.com/render/math?math=\text{observed\_time}  \approx  \text{time\_since\_infection}}">
+
+*Note that these relationship are approximate due to noise in fitting the model.*
 #  
 
 ## Some questions to think about: 
