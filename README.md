@@ -16,7 +16,7 @@
 11. For individuals infected at birth, time since infection will be equal to observed time *
 12. For individuals infected through breastfeeding (after birth), time since infection will be less than the observed time (age at sampling time) *
 
-* -- *see time clarification example in the model explanation section*.
+`*` -- *see time clarification example in the model explanation section*.
 
 #  
 
@@ -38,6 +38,8 @@
 * `observed_time`:  the age of the individual at sampling time.
 * `time_since_infection`: the time since infection
 * `apd`: APD measurements (cutoff 0.01) from all runs for each individual (not an average)
+* `is_utero`: TRUE/FALSE indicating whether the individual was known to be infected in utero
+* `is_post`: TRUE/FALSE indicating whether the individual was known to be infected after birth
 
 #### Other definitions (to be defined in the following model explanation)
 * `predicted_time_since_infection`
@@ -70,7 +72,8 @@ We model the `fragment_slope_delta` of this function as a normal distribution, w
     * We choose to model the `fragment_slope_delta_mean_estimate` as a normal distribution with mean = 0 and standard deviation =1.
     * We choose to model the `fragment_slope_delta_variance_estimate` as a cauchy distribution with mean = 0 and standard deviation = 5.
 7. Since the data does not directly measure `time_since_infection`, for training the model, we define an `observed_time_to_time_since_infection_correction` __*for each subject*__ which will act to convert between `time_since_infection` and `predicted_observed_time`.
-    * We choose to model the `observed_time_to_time_since_infection_correction` as a uniform distribution between 0 and 0.75 (years).
+    * We choose to model the `observed_time_to_time_since_infection_correction` __*for individuals infected in utero*__ as a beta(1, 5) distribution bounded between 0 and 0.75 (years).
+    * We choose to model the `observed_time_to_time_since_infection_correction` __*for individuals infected after birth*__ as a uniform distribution between -1 and -0.0833 (years).
 8. We model `predicted_observed_time` to be the difference between `time_since_infection` and a __*subject specific*__ `observed_time_to_time_since_infection_correction`.
 *See time clarification example below...*
 9. Lastly, we model `observed_time` to be normally distributed around a `predicted_observed_time` with standard deviation = 0.1.
@@ -112,7 +115,7 @@ This is shown in the figure below:
 
 In equation form, this relationship for infants infected at birth is defined as follows: 
 ## 
-<img src="https://render.githubusercontent.com/render/math?math=\text{observed\_time}  \approx  \text{time\_since\_infection}}">
+<img src="https://render.githubusercontent.com/render/math?math=\text{observed\_time}  \approx  \text{time\_since\_infection}">
 
 *Note that these relationship are approximate due to noise in fitting the model.*
 #  
@@ -124,4 +127,4 @@ Could we utilize another family of functions to better predict time since infect
 2. Are we sequencing viral RNA or DNA?
 # 
 
-The current stan model can be found [here](scripts/stan_models/)
+The current stan model can be found [here](scripts/stan_models/multilevel_infant_model_time_error_beta.stan).
