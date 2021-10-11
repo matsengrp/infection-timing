@@ -6,7 +6,7 @@
 1. We are striving to estimate time since infection. 
 2. Individuals are infected in-utero, at birth, or through breastfeeding.
 4. For individuals infected in-utero, time points closer to the third trimester (of pregnancy) are most likely to be the infection time.
-5. Individuals infected through breastfeeding, are infected at some point after one month of age.
+5. Individuals infected through breastfeeding are infected at some point after one month of age.
 5. APD is defined to be the measure of average pairwise diversity at the third codon position using only sites at which the sum of all minor variants is greater than 0.01.
 6. APD is zero when time since infection is zero (infection time).
 7. APD of the sequence increases with time for most individuals.
@@ -104,7 +104,7 @@ In the model, we define these two months as the `observed_time_to_time_since_inf
 
 In equation form, this relationship for infants infected post birth is defined as follows: 
 ## 
-<img src="https://render.githubusercontent.com/render/math?math=\text{observed\_time}  \approx  \text{time\_since\_infection} + \text{observed\_time\_to\_time\_since\_infection\_correction}">
+<img src="https://render.githubusercontent.com/render/math?math=\text{observed\_time}  \approx  \text{time\_since\_infection} \+ \text{observed\_time\_to\_time\_since\_infection\_correction}">
 
 Say we have an infant that was infected at birth. 
 Say we have a sample taken for sequencing at six months post birth. 

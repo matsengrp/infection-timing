@@ -18,7 +18,7 @@ predict_posterior <- function(data, model){
     } else {
         predicted_time_since_infection_posteriors = posterior$predicted_time_since_infection    
         predicted_time_since_infection_posteriors = data.table(predicted_time_since_infection_posteriors)
-        colnames(predicted_time_since_infection_posteriors) = paste0('subject_', data$subject_id, '_', data$observed_time, '_', data$apd)
+        colnames(predicted_time_since_infection_posteriors) = paste0(data$subject_id, '_',data$fragment, '_', data$observed_time, '_', data$apd)
     }
 
     return(predicted_time_since_infection_posteriors)
@@ -42,7 +42,7 @@ get_mean_prediction <- function(posterior_predictions){
     means = posterior_predictions[, lapply(.SD, mean)]
     means = means %>%
         pivot_longer(everything(), names_to = 'subject', values_to = 'mean_predicted_time_since_infection') %>%
-        separate(subject, c('infection_status', 'subject_id', 'observed_time', 'apd', 'fragment'), '_') %>%
+        separate(subject, c('subject_id', 'fragment', 'observed_time', 'apd'), '_') %>%
         as.data.table()
     means[, posterior_variance := lapply(posterior_predictions, var)]
     return(means)

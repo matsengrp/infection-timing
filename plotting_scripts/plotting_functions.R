@@ -1,5 +1,5 @@
 get_file_path_apd_time <- function(time_type, real_data = NULL){
-    path = file.path(PROJECT_PATH, 'plots', 'apd_time', paste0(TIME_CORRECTION, '_time_correction'))
+    path = file.path(PROJECT_PATH, 'plots', 'apd_time', paste0(TIME_CORRECTION_TYPE, '_time_correction'))
     dir.create(path, recursive = TRUE)
     if (is.null(real_data)){
         name = paste0(path, '/apd_', time_type, '.pdf')
@@ -8,6 +8,31 @@ get_file_path_apd_time <- function(time_type, real_data = NULL){
     }
     return(name)
 }
+
+get_file_path_apd_time_by_subject <- function(){
+    path = file.path(PROJECT_PATH, 'plots', 'apd_time', paste0(TIME_CORRECTION_TYPE, '_time_correction'))
+    dir.create(path, recursive = TRUE)
+    name = paste0(path, '/apd_time_by_subject.pdf')
+    return(name)
+}
+
+plot_apd_time_by_subject <- function(data){
+    data$temp_time = data$mean_predicted_time_since_infection + -1*data$observed_time_correction
+    plot = ggplot() +
+        geom_point(data = data, aes(x = as.numeric(apd), y = as.numeric(observed_time), color = infection_status), alpha = 0.6, size = 4) +
+        geom_smooth(data = data, aes(x = as.numeric(apd), y = temp_time, group = subject_id, color = infection_status), method = 'lm', size = 1, se = FALSE, fullrange = TRUE) +
+        facet_grid(~fragment) +
+        theme_cowplot(font_family = 'Arial') +
+        theme(axis.text = element_text(size = 20), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 22), axis.line = element_blank(), text = element_text(size = 30), axis.ticks = element_line(color = 'gray60', size = 1.5)) +
+        background_grid(major = 'xy') +
+        ylim(-0.25, 2)+
+        ylab('Observed (sampling) time') +
+        xlab('APD') 
+    
+    file_name = get_file_path_apd_time_by_subject()
+    ggsave(file_name, plot = plot, width = 18, height = 6, units = 'in', dpi = 750, device = cairo_pdf)
+}
+
 
 plot_apd_time <- function(sim_data, data = NULL){
     plot = ggplot() +
@@ -23,7 +48,7 @@ plot_apd_time <- function(sim_data, data = NULL){
     
     if (!is.null(data)){
         plot = plot +
-            geom_point(data = data, aes(x = as.numeric(apd), y = as.numeric(observed_time), color = as.character(subject_id)), size = 6, alpha = 0.7) +
+            geom_point(data = data, aes(x = as.numeric(apd), y = as.numeric(corrected_observed_time), color = as.character(subject_id)), size = 6, alpha = 0.7) +
             labs(color = 'Subject')
 
     }
@@ -32,7 +57,7 @@ plot_apd_time <- function(sim_data, data = NULL){
 }
 
 get_file_path_observed_predicted_time <- function(with_observed_time_correction = FALSE){
-    path = file.path(PROJECT_PATH, 'plots', 'observed_predicted_time', paste0(TIME_CORRECTION, '_time_correction'))
+    path = file.path(PROJECT_PATH, 'plots', 'observed_predicted_time', paste0(TIME_CORRECTION_TYPE, '_time_correction'))
     dir.create(path, recursive = TRUE)
     if (isFALSE(with_observed_time_correction)){
         name = paste0(path, '/observed_predicted_time.pdf')
@@ -51,9 +76,9 @@ plot_observed_predicted_time <- function(data, with_observed_time_correction = F
     }    
 
     plot = ggplot(data) +
-        geom_point(aes(x = as.numeric(get(observed_time_time)), y = as.numeric(mean_predicted_time_since_infection), color = subject_id), size = 6, alpha = 0.7) +
+        geom_point(aes(x = as.numeric(get(observed_time_temp)), y = as.numeric(mean_predicted_time_since_infection), color = subject_id, shape = fragment), size = 6, alpha = 0.7) +
         geom_abline(slope = 1, intercept = 0, color = 'black', size = 3) +
-        geom_smooth(aes(x = as.numeric(observed_time), y = as.numeric(mean_predicted_time_since_infection)), method = 'lm', size = 3, color = 'red', se = FALSE) +
+        geom_smooth(aes(x = as.numeric(get(observed_time_temp)), y = as.numeric(mean_predicted_time_since_infection)), method = 'lm', size = 3, color = 'red', se = FALSE) +
         theme_cowplot(font_family = 'Arial') +
         theme(axis.text = element_text(size = 20), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 22), axis.line = element_blank(), text = element_text(size = 30), axis.ticks = element_line(color = 'gray60', size = 1.5)) +
         background_grid(major = 'xy') +

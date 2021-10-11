@@ -18,6 +18,16 @@ source(paste0(PROJECT_PATH, '/scripts/model_fitting_functions.R'))
 source(paste0(PROJECT_PATH, '/plotting_scripts/plotting_functions.R'))
 
 infant_data = as.data.table(configure_data(TRAINING_INFANT_DATA_PATH))
+model = load_model_fit()
 
+test_set_posteriors = predict_posterior(infant_data, model)
+test_set_posterior_means = predict(test_set_posteriors) 
 
+infant_data$subject_id = as.character(infant_data$subject_id)
+infant_data$fragment = as.character(infant_data$fragment)
+infant_data$apd = as.character(infant_data$apd)
+infant_data$observed_time = as.character(infant_data$observed_time)
 
+together = merge(infant_data, test_set_posterior_means, by = c('subject_id', 'fragment', 'apd', 'observed_time'))
+ 
+plot_apd_time_by_subject(together)
