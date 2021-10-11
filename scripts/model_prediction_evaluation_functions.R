@@ -4,9 +4,6 @@ predict_posterior <- function(data, model){
     newdata = ifelse(TRAINING_INFANT_DATA_PATH == TESTING_INFANT_DATA_PATH, FALSE, TRUE)
 
     if (isTRUE(newdata)){
-    #TODO how to handle unseen subjects..??
-        # use baseline slope only?? -- currently doing this!
-        # draw a random subject
         stopifnot(all(c('fragment', 'subject_id', 'apd') %in% names(data)))
         predicted_time_since_infection_posteriors = foreach(index = seq(length(data$apd)), .combine = 'cbind') %do% {
             frag = data$fragment[index]

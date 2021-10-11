@@ -45,7 +45,10 @@ preprocess_data <- function(data){
     # in cases where there are four replicates, filter to two
     data[, rep_count := .N, by = .(ptnum, Fragment, timepoint)]
     data[, min_seq_run := min(seq_run), by = .(ptnum, Fragment, timepoint, replicate)]
-
+    
+    # fix duplicates
+    data = unique(data[, -c('vload')])
+    
     #TODO verify prioritization/filtering procedure
     # if there are more than 2 replicates, prioritize replicates from earlier runs 
     filtered = data[!(rep_count > 2 & min_seq_run != seq_run)]
@@ -54,6 +57,13 @@ preprocess_data <- function(data){
     filtered[, rep_count := .N, by = .(ptnum, Fragment, timepoint)]
     stopifnot(sum(unique(filtered$rep_count)) <= 3)
     return(filtered[, -c('rep_count', 'min_seq_run')])
+}
+
+filter_data <- function(data){
+    # filter subjects/fragment pairs for which we only have one sample timepoint
+    data[, timepoint_count := .N, by = .(ptnum, Fragment)]
+    filtered = data[timepoint_count > 1]
+    return(filtered[, -c('timepoint_count')])
 }
 
 index_subjects <- function(data){
@@ -72,8 +82,8 @@ configure_data <- function(data_path){
     if (isTRUE(PREPROCESS_DATA)){
         data = preprocess_data(data)
     }
-    
-    temp_cols = c('ptnum', 'month_visit', 'pass2_APD', 'Fragment', 'replicate', 'vload', 'incat_hiv')
+
+    temp_cols = c('ptnum', 'month_visit', 'pass2_APD', 'Fragment', 'replicate', 'incat_hiv')
     important_cols = temp_cols[!(temp_cols %in% c('replicate', 'pass2_APD'))]
 
     subset = data[, ..temp_cols]
@@ -82,6 +92,9 @@ configure_data <- function(data_path){
     # TODO verify averaging procedure OR think about how to incorporate multiple measures in model?
     average_subset = subset[, mean(pass2_APD), by = important_cols]
     setnames(average_subset, 'V1', 'average_APD')
+    
+    # filter out subjects, fragments without multiple timepoints
+    average_subset = filter_data(average_subset)
 
     # convert months to years
     average_subset[, year_visit := month_visit/12]
@@ -89,6 +102,11 @@ configure_data <- function(data_path){
     average_subset[, fragment_int := as.numeric(substring(Fragment, 2))]
     # assign index to each subject
     average_subset = index_subjects(average_subset)
+
+    average_subset[incat_hiv == 'IN UTERO', is_utero := TRUE]
+    average_subset[incat_hiv != 'IN UTERO', is_utero := FALSE]
+    average_subset[incat_hiv == 'LATE, after M1', is_post := TRUE]
+    average_subset[incat_hiv != 'LATE, after M1', is_post := FALSE]
 
     data_list = list(
                      observation_count = nrow(average_subset), 
@@ -99,7 +117,9 @@ configure_data <- function(data_path){
                      subject = average_subset$subject_index,
                      subject_id = average_subset$ptnum,
                      fragment = average_subset$fragment_int,
-                     infection_status = average_subset$incat_hiv
+                     infection_status = average_subset$incat_hiv, 
+                     is_utero = average_subset$is_utero,
+                     is_post = average_subset$is_post
                      )
     return(data_list)
 }
