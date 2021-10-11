@@ -5,15 +5,26 @@
 
 1. We are striving to estimate time since infection. 
 2. Individuals are infected in-utero, at birth, or through breastfeeding.
-3. "Training data" individuals were infected in-utero
 4. For individuals infected in-utero, time points closer to the third trimester (of pregnancy) are most likely to be the infection time.
+5. Individuals infected through breastfeeding, are infected at some point after one month of age.
 5. APD is defined to be the measure of average pairwise diversity at the third codon position using only sites at which the sum of all minor variants is greater than 0.01.
 6. APD is zero when time since infection is zero (infection time).
 7. APD of the sequence increases with time for most individuals.
 8. The rate of APD change over time may be different for each individual.
 9. The rate of APD change over time may be different for each sequence fragment.
-10. For "training data" individuals, time since infection will be greater than the observed time (age at sampling time) since all individuals were infected in-utero-- *see time clarification example in the model explanation section*.
+10. For individuals infected in-utero, time since infection will be greater than the observed time (age at sampling time) *
+11. For individuals infected at birth, time since infection will be equal to observed time *
+12. For individuals infected through breastfeeding (after birth), time since infection will be less than the observed time (age at sampling time) *
+
+* -- *see time clarification example in the model explanation section*.
+
 #  
+
+## Data processing/filtering for training and testing the model:
+
+* We are excluding data when, for a given subject and sequence fragment, we only have one sample time point.
+* For samples which have more than 2 replicates, we are including only the first 2 replicates for which we have data.
+* We are averaging these two sample replicates for each subject and sequence fragment to get the final APD value used in model fitting 
 
 ## Here are some definitions we will use in the model explanation:
 
@@ -113,63 +124,4 @@ Could we utilize another family of functions to better predict time since infect
 2. Are we sequencing viral RNA or DNA?
 # 
 
-## Model Stan Code: 
-
-```stan
-data{
-    int<lower=1> observation_count; // number of observations
-    int<lower=1> subject_count;   // number of subjects
-    int<lower=1> fragment_count;  // number of fragments
-    real observed_time[observation_count];   // measurement of outcome variable
-    real apd[observation_count];    // predictor variable
-    int subject[observation_count];   // subject index
-    int fragment[observation_count];  // fragment index
-}
-
-parameters{
-    real<lower=0> time_since_infection_variance_estimate;    // outcome time since infection variance (outcome uncertainty)
-    real<lower=0> time_since_infection[observation_count];    // outcome
-    real<lower=0, upper=150> baseline_slope;   // slope before subject/fragment slope changes
-    vector[subject_count] subject_slope_delta;  // vector of subject specific slope changes
-    real subject_slope_delta_mean_estimate;    // subject specific slope change mean
-    real<lower=0> subject_slope_delta_variance_estimate; // subject specific slope change standard deviation
-    vector[fragment_count] fragment_slope_delta;    // vector of fragment specific slope changes
-    real fragment_slope_delta_mean_estimate;   // fragment specific slope change mean
-    real<lower=0> fragment_slope_delta_variance_estimate;    // fragment specific slope change standard deviation
-    vector<lower=0,upper=0.75>[subject_count] observed_time_to_time_since_infection_correction;    // conversion factor between observed time (age at sampling time) measurements and time since infection output
-}
-
-model{
-    vector[observation_count] total_slope;
-    vector[observation_count] predicted_time_since_infection;
-    vector[observation_count] predicted_observed_time;
-
-    fragment_slope_delta_mean_estimate ~ normal( 0 , 1 );
-    fragment_slope_delta_variance_estimate ~ cauchy( 0 , 5 );
-
-    subject_slope_delta_mean_estimate ~ normal( 0 , 1 );
-    subject_slope_delta_variance_estimate ~ cauchy( 0 , 20 );
-
-    fragment_slope_delta ~ normal( fragment_slope_delta_mean_estimate , fragment_slope_delta_variance_estimate );
-    
-    subject_slope_delta ~ normal( subject_slope_delta_mean_estimate , subject_slope_delta_variance_estimate );
-    
-    for ( i in 1:observation_count ) {
-        total_slope[i] = (baseline_slope + subject_slope_delta[subject[i]] + fragment_slope_delta[fragment[i]]);
-    }
-    
-    for ( i in 1:observation_count ) {
-        predicted_time_since_infection[i] = total_slope[i] * apd[i]; // linear function relating apd to time_since_infection
-    }
-    
-    time_since_infection_variance_estimate ~ cauchy( 0 , 0.5 );
-    
-    time_since_infection ~ normal( predicted_time_since_infection , time_since_infection_variance_estimate);
-    
-    for ( i in 1:observation_count ) {
-        predicted_observed_time[i] = time_since_infection[i] - observed_time_to_time_since_infection_correction[subject[i]]; // Conversion between predicted_observed_time (predicted age at sampling time) and time_since_infection. Here predicted_observed_time is calculated from the difference between time_since_infection and a subject specific observed_time_to_time_since_infection_correction
-    }
-    
-    observed_time ~ normal(predicted_observed_time, 0.1);   // the observed_time (actual measured age at sampling time) is modeled as the predicted_observed_time value with some noise
-}
-```
+The current stan model can be found [here](scripts/stan_models/)
