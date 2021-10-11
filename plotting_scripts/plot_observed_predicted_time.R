@@ -25,4 +25,4 @@ model = load_model_fit()
 test_set_posteriors = predict_posterior(infant_data, model)
 test_set_posterior_means = predict(test_set_posteriors) 
 
-plot_observed_predicted_time(test_set_posterior_means)
+plot_observed_predicted_time(test_set_posterior_means, TRUE)

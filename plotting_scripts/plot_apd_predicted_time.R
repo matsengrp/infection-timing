@@ -31,4 +31,4 @@ sim_data = simulate_apd_time_stan(model)
 plot_apd_time(sim_data)
 
 # plot simulated data and real data (observed time) with predicted time vs. apd
-plot_apd_time(sim_data, infant_data)
+plot_apd_time(sim_data, test_set_posterior_means)

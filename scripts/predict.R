@@ -20,6 +20,6 @@ model = load_model_fit()
 new_infant_data = configure_data(TESTING_INFANT_DATA_PATH)
 
 test_set_posteriors = predict_posterior(new_infant_data, model)
-test_set_posterior_means = predict(test_set_posteriors) 
+test_set_posterior_means = predict(new_infant_data, model) 
 
 # save posterior means?
