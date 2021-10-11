@@ -1,11 +1,11 @@
 # Hide data files
 _ignore/
 figures/
+plots/
 
 # Custom
 *.html
 *.key
-*.pdf
 *.pptx
 *.rds
 .DS_Store
