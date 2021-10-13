@@ -83,7 +83,7 @@ configure_data <- function(data_path){
         data = preprocess_data(data)
     }
 
-    temp_cols = c('ptnum', 'month_visit', 'pass2_APD', 'Fragment', 'replicate', 'incat_hiv')
+    temp_cols = c('ptnum', 'month_visit', 'pass2_APD', 'Fragment', 'replicate', 'incat_hiv', 'inftimemonths')
     important_cols = temp_cols[!(temp_cols %in% c('replicate', 'pass2_APD'))]
 
     subset = data[, ..temp_cols]
@@ -98,10 +98,13 @@ configure_data <- function(data_path){
 
     # convert months to years
     average_subset[, year_visit := month_visit/12]
+    average_subset[, inftimeyears := inftimemonths/12]
     # convert fragment number to numeric
     average_subset[, fragment_int := as.numeric(substring(Fragment, 2))]
     # assign index to each subject
     average_subset = index_subjects(average_subset)
+    # for late infected subjects, convert observed time to time since infection given estimated infection time
+    average_subset[incat_hiv != 'IN UTERO', year_visit := year_visit-inftimeyears]
 
     average_subset[incat_hiv == 'IN UTERO', is_utero := TRUE]
     average_subset[incat_hiv != 'IN UTERO', is_utero := FALSE]
@@ -112,7 +115,7 @@ configure_data <- function(data_path){
                      observation_count = nrow(average_subset), 
                      subject_count = length(unique(average_subset$ptnum)), 
                      fragment_count = length(unique(average_subset$Fragment)), 
-                     observed_time = average_subset$year_visit,
+                     observed_time_since_infection = average_subset$year_visit,
                      apd = average_subset$average_APD, 
                      subject = average_subset$subject_index,
                      subject_id = average_subset$ptnum,
