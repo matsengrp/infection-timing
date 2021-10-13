@@ -9,6 +9,31 @@ get_file_path_apd_time <- function(time_type, real_data = NULL){
     return(name)
 }
 
+get_file_path_apd_observed_time_by_subject <- function(){
+    path = file.path(PROJECT_PATH, 'plots', 'apd_observed_time')
+    dir.create(path, recursive = TRUE)
+    name = paste0(path, '/apd_time_by_subject.pdf')
+    return(name)
+}
+
+plot_apd_observed_time_by_subject <- function(data){
+    plot = ggplot() +
+        geom_point(data = data, aes(y = as.numeric(apd), x = as.numeric(observed_time), color = as.factor(subject)), alpha = 0.6, size = 4) +
+        geom_smooth(data = data, aes(y = as.numeric(apd), x = as.numeric(observed_time), color = as.factor(subject)), method = 'lm', size = 1, se = FALSE, fullrange = TRUE) +
+        facet_grid(~fragment) +
+        theme_cowplot(font_family = 'Arial') +
+        theme(axis.text = element_text(size = 20), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 22), axis.line = element_blank(), text = element_text(size = 30), axis.ticks = element_line(color = 'gray60', size = 1.5)) +
+        background_grid(major = 'xy') +
+        ylim(0, 0.04)+
+        xlab('Observed (sampling) time') +
+        ylab('APD') +
+        guides(fill=guide_legend(title="Participant"))
+    
+    file_name = get_file_path_apd_observed_time_by_subject()
+    ggsave(file_name, plot = plot, width = 18, height = 7, units = 'in', dpi = 750, device = cairo_pdf)
+}
+
+
 get_file_path_apd_time_by_subject <- function(){
     path = file.path(PROJECT_PATH, 'plots', 'apd_time', paste0(TIME_CORRECTION_TYPE, '_time_correction'))
     dir.create(path, recursive = TRUE)
@@ -19,7 +44,7 @@ get_file_path_apd_time_by_subject <- function(){
 plot_apd_time_by_subject <- function(data){
     data$temp_time = data$mean_predicted_time_since_infection + -1*data$observed_time_correction
     plot = ggplot() +
-        geom_point(data = data, aes(x = as.numeric(apd), y = as.numeric(observed_time), color = infection_status), alpha = 0.6, size = 4) +
+        geom_point(data = data, aes(x = as.numeric(apd), y = as.numeric(temp_time), color = infection_status), alpha = 0.6, size = 4) +
         geom_smooth(data = data, aes(x = as.numeric(apd), y = temp_time, group = subject_id, color = infection_status), method = 'lm', size = 1, se = FALSE, fullrange = TRUE) +
         facet_grid(~fragment) +
         theme_cowplot(font_family = 'Arial') +
