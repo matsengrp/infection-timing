@@ -71,8 +71,10 @@ get_file_path_observed_predicted_time <- function(with_observed_time_correction 
 plot_observed_predicted_time <- function(data, with_observed_time_correction = FALSE){
     if (isFALSE(with_observed_time_correction)){
         observed_time_temp = 'observed_time'
+        xlab = 'Observed Time'
     } else {
         observed_time_temp = 'corrected_observed_time'
+        xlab = 'Observed time since infection'
     }    
 
     plot = ggplot(data) +
@@ -82,7 +84,7 @@ plot_observed_predicted_time <- function(data, with_observed_time_correction = F
         theme_cowplot(font_family = 'Arial') +
         theme(axis.text = element_text(size = 20), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 22), axis.line = element_blank(), text = element_text(size = 30), axis.ticks = element_line(color = 'gray60', size = 1.5)) +
         background_grid(major = 'xy') +
-        xlab('Observed time') +
+        xlab(xlab) +
         ylab('Predicted time since infection') +
         labs(color = 'Subject')
 
