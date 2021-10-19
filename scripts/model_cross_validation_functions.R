@@ -68,8 +68,9 @@ configure_data_without_left_out_subject <- function(data_list, left_out_subject_
 }
 
 run_prediction <- function(data, chains = 1, total_iterations = 100){
-    prediction_file = paste0(PROJECT_PATH, '/scripts/stan_models/predict.stan')
-    predictions = stan(file = prediction_file, 
+    if (data$fragment_count == 1) {
+        prediction_file = paste0(PROJECT_PATH, '/scripts/stan_models/predict_one_frag.stan')
+        predictions = stan(file = prediction_file, 
                  data = data,
                  chains = chains, # number of Markov chains
                  iter = total_iterations, # total number of iterations per chain
@@ -77,6 +78,17 @@ run_prediction <- function(data, chains = 1, total_iterations = 100){
                  seed = 555,
                  algorithm = 'Fixed_param'
                  )
+    } else {
+        prediction_file = paste0(PROJECT_PATH, '/scripts/stan_models/predict.stan')
+        predictions = stan(file = prediction_file, 
+                 data = data,
+                 chains = chains, # number of Markov chains
+                 iter = total_iterations, # total number of iterations per chain
+                 cores = NCPU, # number of cores (can us up to one per chain)
+                 seed = 555,
+                 algorithm = 'Fixed_param'
+                 )
+    }
     return(predictions)
 }
 
@@ -106,12 +118,14 @@ transform_posterior_matrix_to_dataframe <- function(leave_one_out_data, posterio
     posterior_dt = posterior_dt %>% pivot_longer(!iteration, names_to = 'apd', values_to = 'time_since_infection_posterior_draw') %>% as.data.table()
 
     together = merge(dt, posterior_dt, by = 'apd')
-    together$apd = as.numeric(together$ap)
+    together$apd = as.numeric(together$apd)
     return(together)
 }
 
 run_leave_one_out_validation <- function(data){
     together = data.table() 
+    # registerDoParallel(cores=NCPU)
+    # together = foreach(subject = unique(data$subject_id), .combine = 'rbind') %dopar% {
     for (subject in unique(data$subject_id)){
         # remove left out subject from data
         other_subjects = configure_data_without_left_out_subject(data, subject)
@@ -126,9 +140,26 @@ run_leave_one_out_validation <- function(data){
         # get prediction posteriors
         leave_one_out_posteriors = get_leave_one_out_prediction_posterior(leave_one_out_data, leave_one_out_predictions)
         # clean data
-        leave_one_out_posteriors_dt = transform_posterior_matrix_to_dataframe(leave_one_out_data, leave_one_out_posteriors)
-        together = rbind(together, leave_one_out_posteriors_dt)
+        print(paste0('finished validation for subject ', subject))
+
+        transformed_posteriors = transform_posterior_matrix_to_dataframe(leave_one_out_data, leave_one_out_posteriors)
+        together = rbind(together, transformed_posteriors)
     }
+    # stopImplicitCluster()
     together$time_correction_type = TIME_CORRECTION_TYPE
     return(together)
 }
+
+get_posterior_means <- function(leave_one_out_posteriors, all_subject_data){
+    posterior_means = leave_one_out_posteriors[, mean(time_since_infection_posterior_draw), by = .(subject_id, fragment_id, apd)]
+    setnames(posterior_means, 'V1', 'mean_time_since_infection_estimate')
+    setnames(posterior_means, 'fragment_id', 'fragment')
+    all_subject_data = as.data.table(all_subject_data)
+    all_subject_data$apd = as.numeric(as.character(all_subject_data$apd))
+    merged = merge(all_subject_data, posterior_means, by = c('subject_id', 'fragment', 'apd'))
+
+    stopifnot(nrow(merged) == nrow(all_subject_data))
+    merged[, time_abs_difference := abs(mean_time_since_infection_estimate - observed_time_since_infection)]
+    return(merged)
+}
+
