@@ -1,7 +1,7 @@
 # simulate y based on new x
-predict_posterior <- function(data, model){
+predict_posterior <- function(data, model, newdata = TRUE){
     posterior = rstan::extract(model)
-    newdata = ifelse(TRAINING_INFANT_DATA_PATH == TESTING_INFANT_DATA_PATH, FALSE, TRUE)
+    # newdata = ifelse(TRAINING_INFANT_DATA_PATH == TESTING_INFANT_DATA_PATH, FALSE, TRUE)
 
     if (isTRUE(newdata)){
         stopifnot(all(c('fragment', 'subject_id', 'apd') %in% names(data)))
@@ -11,7 +11,12 @@ predict_posterior <- function(data, model){
             subject = data$subject_id[index]
             observed_time = data$observed_time[index]
             infection_status = data$infection_status[index]
-            post_temp = data.table(with(posterior, (fragment_slope_delta[,frag] + baseline_slope) * apd))
+            if (TIME_CORRECTION_TYPE == 'beta'){
+                post_temp = data.table(with(posterior, (fragment_slope_delta_reparameterized[,frag] + baseline_slope) * apd))
+
+            } else {
+                post_temp = data.table(with(posterior, (fragment_slope_delta[,frag] + baseline_slope) * apd))
+            }
             colnames(post_temp) = paste0(infection_status, '_', subject, '_', observed_time, '_', apd, '_', frag)
             post_temp
         }
@@ -76,4 +81,10 @@ simulate_apd_time_stan <- function(model){
         data.table(apd = apd, predicted_time_since_infection = time_since_infection)
     }
     return(simulations)
+}
+
+get_estimated_infection_time <- function(TRAINING_INFANT_DATA_PATH){
+    data = fread(TRAINING_INFANT_DATA_PATH)
+    simple = unique(data[, c('ptnum', 'inftimemonths')])
+
 }

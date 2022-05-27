@@ -19,4 +19,4 @@ source(paste0(PROJECT_PATH, '/plotting_scripts/plotting_functions.R'))
 
 infant_data = as.data.table(configure_data(TRAINING_INFANT_DATA_PATH))
 
-plot_apd_time_by_subject(infant_data)
+plot_apd_time_by_subject_color_timing(infant_data)

@@ -1,4 +1,4 @@
-name: infection-timing
+name: infection-timing2
 channels:
   - conda-forge
   - defaults
