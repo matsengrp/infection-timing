@@ -143,7 +143,7 @@ fit_model <- function(data, chains = 4, warmup_iterations = 10000, total_iterati
 get_model_fit_name <- function(){
     path = file.path(PROJECT_PATH, 'scripts', 'stan_models', 'model_fits')
     dir.create(path, recursive = TRUE)
-    name = str_split(MODEL_FILE, '/')[[1]][9]
+    name = str_split(MODEL_FILE, '/')[[1]][7]
     name = str_split(name, '.stan')[[1]][1]
     data_description = str_split(TRAINING_INFANT_DATA_PATH, '/')[[1]][length(str_split(TRAINING_INFANT_DATA_PATH, '/')[[1]])]
     data_description = str_split(data_description, '.tsv')[[1]][1]
