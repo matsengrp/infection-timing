@@ -1,3 +1,3 @@
-TRAINING_INFANT_DATA_PATH <<- paste0(PROJECT_PATH, '/_ignore/runs1_7_apd_vload_subtype_20220510.tsv')
+TRAINING_INFANT_DATA_PATH <<- paste0(PROJECT_PATH, '/_ignore/runs1_7_apd_vload_subtype_20220510.csv')
 # TODO this is temp...
-TESTING_INFANT_DATA_PATH  <<- paste0(PROJECT_PATH, '/_ignore/runs1_7_apd_vload_subtype_20220510.tsv')
+TESTING_INFANT_DATA_PATH  <<- paste0(PROJECT_PATH, '/_ignore/runs1_7_apd_vload_subtype_20220510.csv')
