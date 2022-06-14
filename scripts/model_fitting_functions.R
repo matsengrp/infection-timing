@@ -20,7 +20,8 @@ check_data <- function(data_path){
     stopifnot(all(temp_cols %in% colnames(raw_data)))
 
     # check subject_ids
-    raw_data[, extracted_subjects := as.numeric(search_sample_name_ptnum(Sample))]
+    raw_data[!(Sample == ''), extracted_subjects := as.numeric(search_sample_name_ptnum(Sample))]
+    raw_data[Sample == '', extracted_subjects := ptnum]
     if (nrow(raw_data[extracted_subjects != ptnum]) > 0){
         print(paste0('Some subject ID mistakes found:'))
         print(raw_data[extracted_subjects != ptnum])
@@ -28,7 +29,8 @@ check_data <- function(data_path){
         raw_data[, ptnum := extracted_subjects]
     }
     # check fragment numbers
-    raw_data[, extracted_frags := search_sample_name('F', Sample)]
+    raw_data[!(Sample == ''), extracted_frags := search_sample_name('F', Sample)]
+    raw_data[Sample == '', extracted_frags := Fragment]
     if (nrow(raw_data[extracted_frags != Fragment]) > 0){
         print(paste0('Some fragment ID mistakes found:'))
         print(raw_data[extracted_frags != Fragment])
@@ -36,6 +38,8 @@ check_data <- function(data_path){
         raw_data[, Fragment := extracted_frags]
     }
 
+    # filter out no APD cases
+    raw_data = raw_data[!is.na(pass2_APD)]
     # get replicates
     raw_data[, replicate := search_sample_name('R', Sample)]
     return(raw_data[, -c('extracted_subjects', 'extracted_frags')])
@@ -54,6 +58,8 @@ preprocess_data <- function(data){
     filtered = data[!(rep_count > 2 & min_seq_run != seq_run)]
     filtered[, rep_count := .N, by = .(ptnum, Fragment, timepoint)]
     filtered = filtered[!(rep_count > 2 & replicate %in% c('R3', 'R4'))]
+    filtered[, rep_count := .N, by = .(ptnum, Fragment, timepoint)]
+    filtered = filtered[!(rep_count > 2 & replicate %in% c('R5', 'R6'))]
     filtered[, rep_count := .N, by = .(ptnum, Fragment, timepoint)]
     stopifnot(sum(unique(filtered$rep_count)) <= 3)
     return(filtered[, -c('rep_count', 'min_seq_run')])
@@ -89,12 +95,17 @@ configure_data <- function(data_path){
     subset = data[, ..temp_cols]
 
     # average APD across replicates
-    # TODO verify averaging procedure OR think about how to incorporate multiple measures in model?
     average_subset = subset[, mean(pass2_APD), by = important_cols]
     setnames(average_subset, 'V1', 'average_APD')
-    
+
+    # fill in missing infection times
+    known_times = unique(subset[, c('ptnum', 'incat_hiv', 'inftimemonths')])
+    known_times[, reps := .N, by = ptnum]
+    known_times = known_times[!(is.na(inftimemonths) & reps > 1)]
+    average_subset = merge(average_subset[, -c('incat_hiv', 'inftimemonths')], known_times[, -c('reps')]) 
+
     # filter out subjects, fragments without multiple timepoints
-    average_subset = filter_data(average_subset)
+    # average_subset = filter_data(average_subset)
 
     # convert months to years
     average_subset[, year_visit := month_visit/12]
