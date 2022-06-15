@@ -80,6 +80,17 @@ index_subjects <- function(data){
     return(data)
 }
 
+index_infection_time <- function(data){
+    it = unique(data$incat_hiv)
+    indices = seq(1:length(it))
+    names(indices) = it
+    data[incat_hiv == it[1], infection_time_index := indices[1]]
+    data[incat_hiv == it[2], infection_time_index := indices[2]]
+    stopifnot(length(it) == 2)
+    return(data)
+}
+
+
 configure_data <- function(data_path){
     data = check_data(data_path)
     # remove NA cases
@@ -114,6 +125,7 @@ configure_data <- function(data_path){
     average_subset[, fragment_int := as.numeric(substring(Fragment, 2))]
     # assign index to each subject
     average_subset = index_subjects(average_subset)
+    average_subset = index_infection_time(average_subset)
     # for late infected subjects, convert observed time to time since infection given estimated infection time
     average_subset[incat_hiv != 'IN UTERO', year_visit := year_visit-inftimeyears]
 
@@ -126,11 +138,13 @@ configure_data <- function(data_path){
                      observation_count = nrow(average_subset), 
                      subject_count = length(unique(average_subset$ptnum)), 
                      fragment_count = length(unique(average_subset$Fragment)), 
+                     infection_time_count = length(unique(average_subset$incat_hiv)),
                      observed_time_since_infection = average_subset$year_visit,
                      apd = average_subset$average_APD, 
                      subject = average_subset$subject_index,
                      subject_id = average_subset$ptnum,
                      fragment = average_subset$fragment_int,
+                     infection_time = average_subset$infection_time_index, 
                      infection_status = average_subset$incat_hiv, 
                      is_utero = average_subset$is_utero,
                      is_post = average_subset$is_post
@@ -138,8 +152,8 @@ configure_data <- function(data_path){
     return(data_list)
 }
 
-fit_model <- function(data, chains = 4, warmup_iterations = 10000, total_iterations = 20000, step_size = 0.99){
-    model = stan(file = MODEL_FILE, 
+fit_model <- function(data, chains = 4, warmup_iterations = 10000, total_iterations = 20000, step_size = 0.99, model_file = MODEL_FILE){
+    model = stan(file = model_file, 
                  data = data,
                  chains = chains, # number of Markov chains
                  warmup = warmup_iterations, # total number of warmup iterations per chain
