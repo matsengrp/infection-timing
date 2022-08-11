@@ -13,10 +13,13 @@ search_sample_name_ptnum <- function(column){
     return(char_list)
 }
 
-check_data <- function(data_path){
+check_data <- function(data_path, time_known = TRUE){
     raw_data = fread(data_path)
-    temp_cols = c('Sample', 'ptnum', 'month_visit', 'pass2_APD', 'Fragment', 'vload', 'incat_hiv')
-
+    if (isTRUE(time_known)) {
+        temp_cols = c('Sample', 'ptnum', 'month_visit', 'pass2_APD', 'Fragment', 'vload', 'incat_hiv')
+    } else {
+        temp_cols = c('Sample', 'ptnum', 'pass2_APD', 'Fragment')
+    }
     stopifnot(all(temp_cols %in% colnames(raw_data)))
 
     # check subject_ids
@@ -91,8 +94,8 @@ index_infection_time <- function(data){
 }
 
 
-configure_data <- function(data_path){
-    data = check_data(data_path)
+configure_data <- function(data_path, time_known = TRUE){
+    data = check_data(data_path, time_known)
     # remove NA cases
     #TODO verify NA removal
     data = data[!(is.na(pass2_APD))]
@@ -101,6 +104,7 @@ configure_data <- function(data_path){
     }
 
     temp_cols = c('ptnum', 'month_visit', 'pass2_APD', 'Fragment', 'replicate', 'incat_hiv', 'inftimemonths')
+
     important_cols = temp_cols[!(temp_cols %in% c('replicate', 'pass2_APD'))]
 
     subset = data[, ..temp_cols]
@@ -187,3 +191,5 @@ load_model_fit <- function(){
     model = readRDS(model_name)
     return(model)
 }
+
+
