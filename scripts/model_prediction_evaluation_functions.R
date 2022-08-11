@@ -1,3 +1,34 @@
+configure_newdata <- function(data_path, time_known = FALSE){
+    data = check_data(data_path, time_known)
+    data = data[!(is.na(pass2_APD))]
+
+    temp_cols = c('ptnum', 'pass2_APD', 'Fragment')
+    important_cols = temp_cols[!(temp_cols %in% c('replicate', 'pass2_APD'))]
+
+    subset = data[, ..temp_cols]
+
+    # average APD across replicates
+    average_subset = subset[, mean(pass2_APD), by = important_cols]
+    setnames(average_subset, 'V1', 'average_APD')
+
+    # convert fragment number to numeric
+    average_subset[, fragment_int := as.numeric(substring(Fragment, 2))]
+    # assign index to each subject
+    average_subset = index_subjects(average_subset)
+
+    data_list = list(
+                     observation_count = nrow(average_subset), 
+                     subject_count = length(unique(average_subset$ptnum)), 
+                     fragment_count = length(unique(average_subset$Fragment)), 
+                     apd = average_subset$average_APD, 
+                     subject = average_subset$subject_index,
+                     subject_id = average_subset$ptnum,
+                     fragment = average_subset$fragment_int
+                     )
+    return(data_list)
+}
+
+
 # simulate y based on new x
 predict_posterior <- function(data, model, newdata = TRUE){
     posterior = rstan::extract(model)
@@ -17,7 +48,7 @@ predict_posterior <- function(data, model, newdata = TRUE){
             } else {
                 post_temp = data.table(with(posterior, (fragment_slope_delta[,frag] + baseline_slope) * apd))
             }
-            colnames(post_temp) = paste0(infection_status, '_', subject, '_', observed_time, '_', apd, '_', frag)
+            colnames(post_temp) = paste0(subject, '_', frag, '_', observed_time, '_', apd)
             post_temp
         }
     } else {
@@ -88,3 +119,24 @@ get_estimated_infection_time <- function(TRAINING_INFANT_DATA_PATH){
     simple = unique(data[, c('ptnum', 'inftimemonths')])
 
 }
+
+
+get_model_output_filename <- function(input_data){
+    path = file.path(OUTPUT_PATH, 'model_predictions')
+    dir.create(path, recursive = TRUE)
+    data_name = str_remove(input_data, '.csv')
+    data_name = str_remove(data_name, '.tsv')
+    data_name = str_split(data_name, '/')[[1]][length(str_split(data_name, '/')[[1]])]
+    model_name = str_split(MODEL_FILE, '/')[[1]][length(str_split(MODEL_FILE, '/')[[1]])]
+    model_name = str_remove(model_name, '.stan')
+    file_name = paste0(data_name, '_', model_name, '_results.tsv')
+    together = file.path(path, file_name)
+    return(together)
+}
+
+save_prediction_results <- function(results, input_data){
+    file_name = get_model_output_filename(input_data)
+    fwrite(results, file_name, sep = '\t')
+}
+
+
