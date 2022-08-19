@@ -6,10 +6,7 @@ library(ggplot2)
 library(cowplot)
 library(foreach)
 
-args = commandArgs(trailingOnly = TRUE)
-
-TIME_CORRECTION_TYPE <<- args[1]
-stopifnot(TIME_CORRECTION_TYPE %in% c('uniform', 'beta', 'none'))
+TIME_CORRECTION_TYPE <<- 'beta'
 NCPU <<- 2
 PREPROCESS_DATA <<- TRUE
 
@@ -27,5 +24,10 @@ infant_data = as.data.table(configure_data(TRAINING_INFANT_DATA_PATH))
 posterior_means = get_posterior_means(loocv, infant_data)
 
 
-plot_scatter = plot_observed_predicted_time(posterior_means, FALSE, TRUE, FALSE)
-plot_hist = plot_observed_predicted_time_histogram(posterior_means, FALSE, TRUE)
+plot_scatter = plot_observed_predicted_time(posterior_means, FALSE, TRUE, xlimits = c(0, 2.4), with_subject_legend = TRUE, with_fragment_legend = FALSE)
+plot_scatter_loocv = plot_scatter + facet_grid(~fragment) + labs(color = 'ptnum') 
+ggsave(paste0('plots/manuscript_figs/loocv_scatter_by_frag.pdf'), plot = plot_scatter_loocv, width = 27, height = 9.5, units = 'in', dpi = 750, device = cairo_pdf)
+
+plot_hist_loocv = plot_observed_predicted_time_histogram(posterior_means, FALSE, TRUE, xlimits = c(-2.1, 6))
+ggsave(paste0('plots/manuscript_figs/loocv_hist_by_frag.pdf'), plot = plot_hist_loocv, width = 13, height = 11.25, units = 'in', dpi = 750, device = cairo_pdf)
+

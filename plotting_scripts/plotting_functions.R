@@ -179,7 +179,7 @@ get_file_path_observed_predicted_time <- function(with_observed_time_correction 
 }
 
 
-plot_observed_predicted_time <- function(data, with_observed_time_correction = FALSE, loocv = FALSE, with_subject_legend = TRUE, with_fragment_legend = TRUE, adult_data = FALSE, xlimits = NA, ylimits = NA){
+plot_observed_predicted_time <- function(data, with_observed_time_correction = FALSE, loocv = FALSE, with_subject_legend = TRUE, with_fragment_legend = TRUE, adult_data = FALSE, xlimits = NA, ylimits = NA, write_plot = TRUE){
     if (isTRUE(with_observed_time_correction)){
         observed_time_temp = 'corrected_observed_time_since_infection'
         xlab = 'Observed time since infection (corrected)'
@@ -195,7 +195,7 @@ plot_observed_predicted_time <- function(data, with_observed_time_correction = F
         geom_abline(slope = 1, intercept = 0, color = 'black', size = 3) +
         geom_smooth(aes(x = as.numeric(get(observed_time_temp)), y = as.numeric(mean_time_since_infection_estimate)), method = 'lm', size = 3, color = 'red', se = FALSE) +
         theme_cowplot(font_family = 'Avenir') +
-        theme(axis.text = element_text(size = 20), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 22), axis.line = element_blank(), text = element_text(size = 30), axis.ticks = element_line(color = 'gray60', size = 1.5), legend.position = c(0.65, 0.8)) +
+        theme(axis.text = element_text(size = 20), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 22), axis.line = element_blank(), text = element_text(size = 30), axis.ticks = element_line(color = 'gray60', size = 1.5)) +
         background_grid(major = 'xy') +
         xlab(xlab) +
         ylab('Predicted time since infection') +
@@ -219,11 +219,14 @@ plot_observed_predicted_time <- function(data, with_observed_time_correction = F
     }
 
 
-    file_name = get_file_path_observed_predicted_time(with_observed_time_correction, loocv, hist = FALSE, adult_data)
-    ggsave(file_name, plot = plot, width = 9, height = 9.5, units = 'in', dpi = 750, device = cairo_pdf)
+    if (isTRUE(write_plot)){
+        file_name = get_file_path_observed_predicted_time(with_observed_time_correction, loocv, hist = FALSE, adult_data)
+        ggsave(file_name, plot = plot, width = 9, height = 9.5, units = 'in', dpi = 750, device = cairo_pdf)
+    }
+    return(plot)
 }
 
-plot_observed_predicted_time_histogram <- function(data, with_observed_time_correction = FALSE, loocv = FALSE, adult_data = FALSE, xlimits = NA, ylimits = NA){
+plot_observed_predicted_time_histogram <- function(data, with_observed_time_correction = FALSE, loocv = FALSE, adult_data = FALSE, xlimits = NA, ylimits = NA, write_plot = TRUE){
     if (isTRUE(with_observed_time_correction)){
         observed_time_temp = 'corrected_observed_time_since_infection'
         xlab = 'Predicted - Observed (years)'
@@ -237,6 +240,7 @@ plot_observed_predicted_time_histogram <- function(data, with_observed_time_corr
 
     plot = ggplot(data) +
         geom_histogram(aes(x = difference), alpha = 0.7) +
+        facet_grid(rows = vars(fragment))+
         geom_vline(xintercept = 0, color = 'black', size = 2) +
         theme_cowplot(font_family = 'Avenir') +
         theme(axis.text = element_text(size = 20), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 22), axis.line = element_blank(), text = element_text(size = 30), axis.ticks = element_line(color = 'gray60', size = 1.5)) +
@@ -252,6 +256,25 @@ plot_observed_predicted_time_histogram <- function(data, with_observed_time_corr
         plot = plot + scale_y_continuous(limits = ylimits)
     }
 
-    file_name = get_file_path_observed_predicted_time(with_observed_time_correction, loocv, hist = TRUE, adult_data)
-    ggsave(file_name, plot = plot, width = 13, height = 3.75, units = 'in', dpi = 750, device = cairo_pdf)
+    if (isTRUE(write_plot)){
+        file_name = get_file_path_observed_predicted_time(with_observed_time_correction, loocv, hist = TRUE, adult_data)
+        ggsave(file_name, plot = plot, width = 13, height = 11.25, units = 'in', dpi = 750, device = cairo_pdf)
+    } 
+    return(plot)
+}
+
+plot_observed_time_versus_time_diff <- function(data){
+    if (isTRUE(with_observed_time_correction)){
+        observed_time_temp = 'corrected_observed_time_since_infection'
+        xlab = '|Predicted - Observed (years)|'
+    } else {
+        observed_time_temp = 'observed_time_since_infection'
+        xlab = '|Predicted - Estimated (years)|'
+    }    
+    stopifnot(observed_time_temp %in% colnames(data))
+    
+    data$difference = data$mean_time_since_infection_estimate - data[[observed_time_temp]]
+    plot_data = data[, mean(abs(difference)), by = .(fragment, observed_time_since_infection)]
+    plot = ggplot(plot_data) +
+        geom_point(aes(x = observed_time_since_infection, y = V1, color = as.factor(fragment))) 
 }

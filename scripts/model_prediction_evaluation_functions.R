@@ -43,10 +43,10 @@ predict_posterior <- function(data, model, newdata = TRUE){
             observed_time = data$observed_time[index]
             infection_status = data$infection_status[index]
             if (TIME_CORRECTION_TYPE == 'beta'){
-                post_temp = data.table(with(posterior, (fragment_slope_delta_reparameterized[,frag] + baseline_slope) * apd))
+                post_temp = data.table(with(posterior, (fragment_slope_delta_reparameterized[,frag] + baseline_slope + rnorm(subject_slope_delta_mean_estimate, subject_slope_delta_variance_estimate)) * apd))
 
             } else {
-                post_temp = data.table(with(posterior, (fragment_slope_delta[,frag] + baseline_slope) * apd))
+                post_temp = data.table(with(posterior, (fragment_slope_delta[,frag] + baseline_slope + rnorm(subject_slope_delta_mean_estimate, subject_slope_delta_variance_estimate)) * apd))
             }
             colnames(post_temp) = paste0(subject, '_', frag, '_', observed_time, '_', apd)
             post_temp
@@ -113,13 +113,6 @@ simulate_apd_time_stan <- function(model){
     }
     return(simulations)
 }
-
-get_estimated_infection_time <- function(TRAINING_INFANT_DATA_PATH){
-    data = fread(TRAINING_INFANT_DATA_PATH)
-    simple = unique(data[, c('ptnum', 'inftimemonths')])
-
-}
-
 
 get_model_output_filename <- function(input_data){
     path = file.path(OUTPUT_PATH, 'model_predictions')
