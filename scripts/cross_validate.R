@@ -23,10 +23,10 @@ infant_data = configure_data(TRAINING_INFANT_DATA_PATH)
 
 leave_one_out_posteriors = run_leave_one_out_validation(infant_data)
 
-fwrite(leave_one_out_posteriors, paste0(OUTPUT_PATH, '/loocv_posteriors_', TIME_CORRECTION_TYPE, '.tsv'), sep = '\t')
+name = str_split(TRAINING_INFANT_DATA_PATH, '/')[[1]][length(str_split(TRAINING_INFANT_DATA_PATH, '/')[[1]])]
+name = str_replace(name, '.csv', '')
+dir.create(file.path(OUTPUT_PATH, 'model_loocv'))
+file_name = file.path(OUTPUT_PATH, 'model_loocv', paste0('loocv_posteriors_', name, '_', TIME_CORRECTION_TYPE, '.csv'))
 
-# get posterior mean time since infection estimates
-posterior_means = get_posterior_means(leave_one_out_posteriors, infant_data)
 
-# get mean absolute difference
-print(mean(posterior_means$time_abs_difference)
+fwrite(leave_one_out_posteriors, file_name, sep = '\t')

@@ -26,18 +26,12 @@ check_data <- function(data_path, time_known = TRUE){
     raw_data[!(Sample == ''), extracted_subjects := as.numeric(search_sample_name_ptnum(Sample))]
     raw_data[Sample == '', extracted_subjects := ptnum]
     if (nrow(raw_data[extracted_subjects != ptnum]) > 0){
-        print(paste0('Some subject ID mistakes found:'))
-        print(raw_data[extracted_subjects != ptnum])
-        print(paste0('Correcting subject ID mistakes now.'))
         raw_data[, ptnum := extracted_subjects]
     }
     # check fragment numbers
     raw_data[!(Sample == ''), extracted_frags := search_sample_name('F', Sample)]
     raw_data[Sample == '', extracted_frags := Fragment]
     if (nrow(raw_data[extracted_frags != Fragment]) > 0){
-        print(paste0('Some fragment ID mistakes found:'))
-        print(raw_data[extracted_frags != Fragment])
-        print(paste0('Correcting fragment ID mistakes now.'))
         raw_data[, Fragment := extracted_frags]
     }
 
@@ -56,7 +50,6 @@ preprocess_data <- function(data){
     # fix duplicates
     data = unique(data[, -c('vload')])
     
-    #TODO verify prioritization/filtering procedure
     # if there are more than 2 replicates, prioritize replicates from earlier runs 
     filtered = data[!(rep_count > 2 & min_seq_run != seq_run)]
     filtered[, rep_count := .N, by = .(ptnum, Fragment, timepoint)]
@@ -97,7 +90,6 @@ index_infection_time <- function(data){
 configure_data <- function(data_path, time_known = TRUE){
     data = check_data(data_path, time_known)
     # remove NA cases
-    #TODO verify NA removal
     data = data[!(is.na(pass2_APD))]
     if (isTRUE(PREPROCESS_DATA)){
         data = preprocess_data(data)
@@ -175,19 +167,17 @@ get_model_fit_name <- function(){
     name = str_split(MODEL_FILE, '/')[[1]][7]
     name = str_split(name, '.stan')[[1]][1]
     data_description = str_split(TRAINING_INFANT_DATA_PATH, '/')[[1]][length(str_split(TRAINING_INFANT_DATA_PATH, '/')[[1]])]
-    data_description = str_split(data_description, '.tsv')[[1]][1]
+    data_description = str_split(data_description, '.csv')[[1]][1]
     model_name = paste0('/', name, '_', data_description, '.rds')
     together = paste0(path, model_name)
     return(together)
 }
 
-save_model_fit <- function(model){
-    model_name = get_model_fit_name()
+save_model_fit <- function(model, model_name = get_model_fit_name()){
     saveRDS(model, model_name)
 }
 
-load_model_fit <- function(){
-    model_name = get_model_fit_name()
+load_model_fit <- function(model_name = get_model_fit_name()){
     model = readRDS(model_name)
     return(model)
 }
