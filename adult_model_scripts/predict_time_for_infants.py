@@ -1,11 +1,12 @@
 import TI_predictor as predict
 import pandas as pd
+import sys
 
-infant_datapath = '../_ignore/neher_webtool_results.tsv'
-infant_data = pd.read_csv(infant_datapath, sep='\t')
+infant_datapath = sys.argv[1]
+infant_data = pd.read_csv(infant_datapath)
 
 apd_list = infant_data['average_APD'].tolist()
-regions = list(zip(map(int, infant_data['HXB2nt_start']), map(int, infant_data['HXB2nt_end '])))
+regions = list(zip(map(int, infant_data['HXB2nt_start']), map(int, infant_data['HXB2nt_end'])))
 
 estimated_times = []
 for i in range(len(apd_list)):
