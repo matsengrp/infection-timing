@@ -127,8 +127,7 @@ get_model_output_filename <- function(input_data){
     return(together)
 }
 
-save_prediction_results <- function(results, input_data){
-    file_name = get_model_output_filename(input_data)
+save_prediction_results <- function(results, input_data, file_name = get_model_output_filename(input_data)){ 
     fwrite(results, file_name, sep = '\t')
 }
 
