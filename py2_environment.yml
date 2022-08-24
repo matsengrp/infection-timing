@@ -1,0 +1,38 @@
+name: infection-timing_py2
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - _libgcc_mutex=0.1=conda_forge
+  - _openmp_mutex=4.5=1_gnu
+  - ca-certificates=2021.10.8=ha878542_0
+  - certifi=2019.11.28=py27h8c360ce_1
+  - ld_impl_linux-64=2.36.1=hea4e1c9_2
+  - libblas=3.9.0=12_linux64_openblas
+  - libcblas=3.9.0=12_linux64_openblas
+  - libffi=3.2.1=he1b5a44_1007
+  - libgcc-ng=11.2.0=h1d223b6_11
+  - libgfortran-ng=11.2.0=h69a702a_11
+  - libgfortran5=11.2.0=h5c6108e_11
+  - libgomp=11.2.0=h1d223b6_11
+  - liblapack=3.9.0=12_linux64_openblas
+  - libopenblas=0.3.18=pthreads_h8fe5266_0
+  - libstdcxx-ng=11.2.0=he4da1e4_11
+  - libzlib=1.2.11=h36c2ea0_1013
+  - ncurses=6.2=h58526e2_4
+  - numpy=1.16.5=py27h95a1406_0
+  - openssl=1.1.1l=h7f98852_0
+  - pandas=0.24.2=py27hb3f55d8_0
+  - pip=20.1.1=pyh9f0ad1d_0
+  - python=2.7.15=h5a48372_1011_cpython
+  - python-dateutil=2.8.1=py_0
+  - python_abi=2.7=1_cp27mu
+  - pytz=2019.3=py_0
+  - readline=8.1=h46c0cb4_0
+  - setuptools=44.0.0=py27_0
+  - six=1.16.0=pyh6c4a22f_0
+  - sqlite=3.36.0=h9cd32fc_2
+  - tk=8.6.11=h27826a3_1
+  - wheel=0.37.0=pyhd8ed1ab_1
+  - zlib=1.2.11=h36c2ea0_1013
+prefix: /home/mrussel2/miniconda3/envs/infection-timing_py2
