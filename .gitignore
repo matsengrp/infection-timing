@@ -8,6 +8,7 @@ plots/
 *.key
 *.pptx
 *.rds
+slurm*
 .DS_Store
 
 # History files
