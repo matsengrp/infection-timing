@@ -58,7 +58,7 @@ get_file_path_apd_time_by_subject <- function(type){
     return(name)
 }
 
-plot_apd_time_by_subject <- function(data){
+plot_apd_time_by_subject <- function(data, write_plot = TRUE){
     # data$temp_time = data$mean_predicted_time_since_infection + -1*data$observed_time_correction
 
     nice_fragments = c('Sequencing region 1\n(within gag)', 'Sequencing region 2\n(within pol)', 'Sequencing region 3\n(within pol)')
@@ -76,8 +76,11 @@ plot_apd_time_by_subject <- function(data){
         xlab('Estimated time since infection (years)') +
         ylab('APD') 
     
-    file_name = get_file_path_apd_time_by_subject('by_subject')
-    ggsave(file_name, plot = plot, width = 18, height = 9, units = 'in', dpi = 750, device = cairo_pdf)
+    if (isTRUE(write_plot)){
+        file_name = get_file_path_apd_time_by_subject('by_subject')
+        ggsave(file_name, plot = plot, width = 18, height = 9, units = 'in', dpi = 750, device = cairo_pdf)
+    }
+    return(plot)
 }
 
 plot_apd_time_by_subject_color_timing <- function(data){
@@ -105,7 +108,7 @@ plot_apd_time_by_subject_color_timing <- function(data){
 }
 
 
-plot_apd_time_all <- function(data, by_subject_regression_sim = NULL){
+plot_apd_time_all <- function(data, by_subject_regression_sim = NULL, write_plot = TRUE){
     plot = ggplot() +
         geom_point(data = data, aes(y = as.numeric(apd), x = observed_time_since_infection, color = as.factor(subject_id)), alpha = 0.6, size = 6) 
 
@@ -124,9 +127,12 @@ plot_apd_time_all <- function(data, by_subject_regression_sim = NULL){
         ylab('Average pairwise diversity') +
         xlab('Sampling time (years)') 
 
-    file_name = get_file_path_apd_observed_time_by_subject('all')
+    if (isTRUE(write_plot)){
+        file_name = get_file_path_apd_observed_time_by_subject('all')
    
-    ggsave(file_name, plot = plot, width = 12, height = 10, units = 'in', dpi = 750, device = cairo_pdf)
+        ggsave(file_name, plot = plot, width = 12, height = 10, units = 'in', dpi = 750, device = cairo_pdf)
+    } 
+    return(plot)
 }
 
 
