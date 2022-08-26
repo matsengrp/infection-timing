@@ -14,6 +14,7 @@ source('config/config.R')
 source(paste0(PROJECT_PATH, '/config/file_paths.R'))
 source(paste0(PROJECT_PATH, '/scripts/model_fitting_functions.R'))
 source(paste0(PROJECT_PATH, '/plotting_scripts/plotting_functions.R'))
+source(paste0(PROJECT_PATH, '/plotting_scripts/calculation_functions.R'))
 source(paste0(PROJECT_PATH, '/scripts/model_prediction_evaluation_functions.R'))
 source(paste0(PROJECT_PATH, '/scripts/model_cross_validation_functions.R'))
 
@@ -29,11 +30,15 @@ true_results[, year_visit := month_visit/12]
 true_results[, observed_time_since_infection := year_visit - inftimeyears]
 
 together = merge(posteriors, true_results, by.y = 'ptnum', by.x = 'subject_id')
-plot_scatter = plot_observed_predicted_time(together, FALSE, FALSE, write_plot = FALSE, xlimits = c(0, 2.4), ylimits = c(0, 7.4), with_subject_legend = TRUE, with_fragment_legend = FALSE)
+
+mae = calculate_mae_dt(together)
+
+plot_scatter = plot_observed_predicted_time(together, FALSE, FALSE, write_plot = FALSE, with_subject_legend = TRUE, with_fragment_legend = FALSE)
 
 plot_scatter_val = plot_scatter + facet_grid(~fragment)+ labs(color = 'ptnum') 
-ggsave(paste0('plots/manuscript_figs/testing_scatter_by_frag.pdf'), plot = plot_scatter_val, width = 27, height = 9.5, units = 'in', dpi = 750, device = cairo_pdf)
+ggsave(paste0('plots/manuscript_figs/infant_model_testing_scatter_by_frag.pdf'), plot = plot_scatter_val, width = 27, height = 9.5, units = 'in', dpi = 750, device = cairo_pdf)
 
-plot_hist_val = plot_observed_predicted_time_histogram(together, FALSE, FALSE, write_plot = FALSE, xlimits = c(-2.1, 6))
-ggsave(paste0('plots/manuscript_figs/testing_hist_by_frag.pdf'), plot = plot_hist_val, width = 13, height = 11.25, units = 'in', dpi = 750, device = cairo_pdf)
+plot_hist_val = plot_observed_predicted_time_histogram(together, FALSE, FALSE, write_plot = FALSE) +
+    geom_text(data = mae, x = 2, y = Inf, aes(label = paste0('MAE = ', mae)), vjust = 2, size = 8)
+ggsave(paste0('plots/manuscript_figs/infant_model_testing_hist_by_frag.pdf'), plot = plot_hist_val, width = 13, height = 11.25, units = 'in', dpi = 750, device = cairo_pdf)
 
