@@ -148,7 +148,18 @@ configure_data <- function(data_path, time_known = TRUE){
     return(data_list)
 }
 
-fit_model <- function(data, chains = 4, warmup_iterations = 10000, total_iterations = 20000, step_size = 0.99, model_file = MODEL_FILE){
+fit_model <- function(data, chains = 4, warmup_iterations = 10000, total_iterations = 20000, step_size = 0.99, model_file = MODEL_FILE, type = 'MCMC'){
+    stopifnot(type %in% c('MCMC', 'MAP'))
+    if (type == 'MCMC') {
+        model = fit_model_mcmc(data, chains, warmup_iterations, total_iterations, step_size, model_file)
+    } else if (type == 'MAP') {
+        model_code = stan_model(model_file)
+        model = optimizing(model_code, data, hessian = TRUE)
+    } 
+    return(model)
+}
+
+fit_model_mcmc <- function(data, chains = 4, warmup_iterations = 10000, total_iterations = 20000, step_size = 0.99, model_file = MODEL_FILE){
     model = stan(file = model_file, 
                  data = data,
                  chains = chains, # number of Markov chains
@@ -161,23 +172,24 @@ fit_model <- function(data, chains = 4, warmup_iterations = 10000, total_iterati
     return(model)
 }
 
-get_model_fit_name <- function(){
+get_model_fit_name <- function(type){
     path = file.path(PROJECT_PATH, 'scripts', 'stan_models', 'model_fits')
+    dir.create(file.path(PROJECT_PATH, 'scripts', 'stan_models', 'cred_intervals'), recursive = TRUE)
     dir.create(path, recursive = TRUE)
     name = str_split(MODEL_FILE, '/')[[1]][7]
     name = str_split(name, '.stan')[[1]][1]
     data_description = str_split(TRAINING_INFANT_DATA_PATH, '/')[[1]][length(str_split(TRAINING_INFANT_DATA_PATH, '/')[[1]])]
     data_description = str_split(data_description, '.csv')[[1]][1]
-    model_name = paste0('/', name, '_', data_description, '.rds')
+    model_name = paste0('/', name, '_', data_description, '_', type, '.rds')
     together = paste0(path, model_name)
     return(together)
 }
 
-save_model_fit <- function(model, model_name = get_model_fit_name()){
+save_model_fit <- function(model, model_name = get_model_fit_name('MCMC')){
     saveRDS(model, model_name)
 }
 
-load_model_fit <- function(model_name = get_model_fit_name()){
+load_model_fit <- function(model_name = get_model_fit_name('MCMC')){
     model = readRDS(model_name)
     return(model)
 }
