@@ -152,7 +152,7 @@ get_mean_observed_time_to_time_since_infection_prediction <- function(data, mode
     time_correction_posteriors = data.table(posterior[['observed_time_to_time_since_infection_correction']])
     colnames(time_correction_posteriors) = unique(paste0('subject_', data$subject_id))
 
-    means = time_correction_posteriors[, lapply(.SD, mean)]
+    means = time_correction_posteriors[, lapply(.SD, median)]
     means = means %>% 
         pivot_longer(everything(), names_to = 'subject_id', values_to = 'observed_time_correction') %>%
         as.data.table()
@@ -224,14 +224,14 @@ save_prediction_results <- function(results, input_data, type = 'MCMC', file_nam
     fwrite(results, file_name, sep = '\t')
 }
 
-get_posterior_interval_data <- function(model){
+get_posterior_interval_data <- function(model, prob = 0.9){
     matrix_data = as.matrix(model)
     require(rstanarm)
-    post = posterior_interval(matrix_data)
+    post = posterior_interval(matrix_data, prob)
     post_df = as.data.frame(post)
     post_df$variable = rownames(post_df)
     post_dt = as.data.table(post_df)
-    mean = apply(matrix_data, 2, mean)
+    mean = apply(matrix_data, 2, median)
     mean_df = as.data.frame(mean)
     mean_df$variable = rownames(mean_df)
     mean_dt = as.data.table(mean_df)
@@ -240,11 +240,11 @@ get_posterior_interval_data <- function(model){
 }
 
 get_posterior_prediction_coverage <- function(loocv_results, actual_times){
-    quants = c(0, 0.05, 0.25, 0.5, 0.75, 0.95, 1)
+    quants = c(0, 0.055, 0.255, 0.5, 0.745, 0.945, 1)
     for (q in quants){
         loocv_results[, paste0('q', q) := quantile(time_since_infection_posterior_draw, probs = q), by = .(subject_id, fragment_id, apd)]
     }
-    cols = c('apd', 'subject_id', 'fragment_id', 'q0', 'q0.05', 'q0.25', 'q0.5', 'q0.75', 'q0.95', 'q1')
+    cols = c('apd', 'subject_id', 'fragment_id', 'q0', 'q0.055', 'q0.255', 'q0.5', 'q0.745', 'q0.945', 'q1')
     results = unique(loocv_results[, ..cols])
     setnames(results, 'fragment_id', 'fragment')
     results$apd = round(results$apd, 8)
@@ -252,15 +252,15 @@ get_posterior_prediction_coverage <- function(loocv_results, actual_times){
     tog = merge(results, actual_times, by = c('subject_id', 'apd', 'fragment'))
     # collapse all fragments
     quant_cols = paste0('q', quants)
-    cols = c('subject_id', quant_cols, 'observed_time_since_infection')
+    cols = c('subject_id', quant_cols, 'observed_time_since_infection', 'fragment')
     subset = unique(tog[, ..cols])
-    subset = subset[,lapply(.SD, mean), by=.(subject_id,observed_time_since_infection)]
+    subset = subset[,lapply(.SD, median), by=.(subject_id,observed_time_since_infection, fragment)]
     # calculate coverage
-    subset[observed_time_since_infection > q0.05 & observed_time_since_infection < q0.95, coverage_90 := TRUE]
-    subset[!(observed_time_since_infection > q0.05 & observed_time_since_infection < q0.95), coverage_90 := FALSE]
-    subset[observed_time_since_infection > q0.25 & observed_time_since_infection < q0.75, coverage_50 := TRUE]
-    subset[!(observed_time_since_infection > q0.25 & observed_time_since_infection < q0.75), coverage_50 := FALSE]
-    coverage_50 = subset[, .N, by = coverage_50][, prop := N/sum(N)]
-    coverage_90 = subset[, .N, by = coverage_90][, prop := N/sum(N)]
-    return(list(data = subset, coverage_50 = coverage_50, coverage_90 = coverage_90))
+    subset[observed_time_since_infection > q0.055 & observed_time_since_infection < q0.945, coverage_89 := TRUE]
+    subset[!(observed_time_since_infection > q0.055 & observed_time_since_infection < q0.945), coverage_89 := FALSE]
+    subset[observed_time_since_infection > q0.255 & observed_time_since_infection < q0.745, coverage_49 := TRUE]
+    subset[!(observed_time_since_infection > q0.255 & observed_time_since_infection < q0.745), coverage_49 := FALSE]
+    coverage_49 = subset[, .N, by = coverage_49][, prop := N/sum(N)]
+    coverage_89 = subset[, .N, by = coverage_89][, prop := N/sum(N)]
+    return(list(data = subset, coverage_49 = coverage_49, coverage_89 = coverage_89))
 }
