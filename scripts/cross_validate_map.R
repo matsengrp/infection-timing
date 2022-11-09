@@ -7,7 +7,7 @@ library(doParallel)
 args = commandArgs(trailingOnly = TRUE)
 
 TIME_CORRECTION_TYPE <<- args[1]
-stopifnot(TIME_CORRECTION_TYPE %in% c('uniform', 'beta', 'none'))
+stopifnot(TIME_CORRECTION_TYPE %in% c('uniform', 'beta', 'none', 'beta_laplace'))
 NCPU <<- 2
 PREPROCESS_DATA <<- TRUE
 
