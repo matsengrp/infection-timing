@@ -7,7 +7,6 @@ plots/
 *.html
 *.key
 *.pptx
-*.rds
 slurm*
 .DS_Store
 
