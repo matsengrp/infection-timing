@@ -87,7 +87,7 @@ index_infection_time <- function(data){
 }
 
 
-configure_data <- function(data_path, time_known = TRUE){
+configure_data <- function(data_path, time_known = TRUE, include_vl = FALSE){
     data = check_data(data_path, time_known)
     # remove NA cases
     data = data[!(is.na(pass2_APD))]
@@ -130,6 +130,14 @@ configure_data <- function(data_path, time_known = TRUE){
     average_subset[incat_hiv == 'LATE, after M1', is_post := TRUE]
     average_subset[incat_hiv != 'LATE, after M1', is_post := FALSE]
 
+    if (isTRUE(include_vl)){
+        vl = get_vload_data(data_path)
+        average_subset = merge(average_subset, vl, by.x = 'ptnum', by.y = 'subject_id')
+        # assign index to each subject
+        average_subset = index_subjects(average_subset)
+        average_subset = index_infection_time(average_subset)
+    }
+
     data_list = list(
                      observation_count = nrow(average_subset), 
                      subject_count = length(unique(average_subset$ptnum)), 
@@ -145,6 +153,10 @@ configure_data <- function(data_path, time_known = TRUE){
                      is_utero = average_subset$is_utero,
                      is_post = average_subset$is_post
                      )
+
+    if (isTRUE(include_vl)){
+        data_list[['vload']] = average_subset$log10_vload
+    }
     return(data_list)
 }
 
@@ -194,4 +206,16 @@ load_model_fit <- function(model_name = get_model_fit_name('MCMC')){
     return(model)
 }
 
-
+get_vload_data <- function(data_path, time_known = TRUE){
+    data = check_data(data_path, time_known)
+    # remove NA cases
+    data = data[!(is.na(pass2_APD) | vload == -99 | is.na(vload))]
+    
+    cols = c('ptnum', 'month_visit', 'vload')
+    subset = unique(data[, ..cols])
+    setpt = subset[, mean(vload), by = ptnum]
+    setnames(setpt, 'ptnum', 'subject_id')
+    setnames(setpt, 'V1', 'vload')
+    setpt[, log10_vload := log10(vload)]
+    return(setpt)
+}
