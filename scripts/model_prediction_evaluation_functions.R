@@ -70,7 +70,7 @@ get_prediction_stan_file <- function(type, frag_count){
     return(tog)
 }
 
-run_prediction <- function(data, total_iterations = 100, type = 'MCMC'){
+run_prediction <- function(data, total_iterations = 1, type = 'MCMC'){
     frag_count = data$fragment_count
     prediction_file = get_prediction_stan_file(type, frag_count)
     predictions = stan(file = prediction_file, 
@@ -85,12 +85,19 @@ run_prediction <- function(data, total_iterations = 100, type = 'MCMC'){
 get_prediction_posterior <- function(predictions, type = 'MCMC'){
     prediction_posteriors = rstan::extract(predictions)
     if (type == 'MCMC') {
+        reps = dim(prediction_posteriors$time_since_infection)[1]
         iterations = dim(prediction_posteriors$time_since_infection)[2]
         observations = dim(prediction_posteriors$time_since_infection)[3]
-        time_posteriors = matrix(NA, nrow = iterations, ncol = observations)
-        for (iter in 1:iterations) {
-            for (obs in 1:observations) {
-                time_posteriors[iter, obs] = median(prediction_posteriors$time_since_infection[, iter, obs])
+        time_posteriors = matrix(NA, nrow = iterations*reps, ncol = observations)
+        for (rep in 1:reps){
+            for (iter in 1:iterations) {
+                iter_rep = iter
+                if (rep > 1){
+                    iter_rep = iter + iterations*(rep - 1)
+                }
+                for (obs in 1:observations) {
+                    time_posteriors[iter_rep, obs] = prediction_posteriors$time_since_infection[rep, iter, obs]
+                }
             }
         }
     } else if (type == 'MAP'){
@@ -106,9 +113,12 @@ get_prediction_posterior <- function(predictions, type = 'MCMC'){
     return(time_posteriors)
 }
 
-transform_posterior_matrix_to_dataframe <- function(data, posteriors) {
+transform_posterior_matrix_to_dataframe <- function(data, posteriors, observed_time = FALSE) {
     dt = as.data.table(data)
     data_cols = c('subject_id', 'fragment_id', 'apd')
+    if (isTRUE(observed_time)){
+        data_cols = c(data_cols, 'observed_time_since_infection')
+    }
     dt = unique(dt[, ..data_cols])
     dt$apd = as.character(dt$apd)
 
@@ -136,7 +146,7 @@ predict_posterior <- function(data, model, newdata = TRUE, type = 'MCMC'){
         # get prediction posteriors
         prediction_posteriors = get_prediction_posterior(predictions, type)
     } else {
-        prediction_posteriors = posterior$predicted_time_since_infection    
+        prediction_posteriors = posterior$time_since_infection    
     }
     transformed_posteriors = transform_posterior_matrix_to_dataframe(data, prediction_posteriors)
     medians = get_posterior_means(transformed_posteriors, data)
@@ -263,4 +273,39 @@ get_posterior_prediction_coverage <- function(loocv_results, actual_times){
     coverage_49 = subset[, .N, by = coverage_49][, prop := N/sum(N)]
     coverage_89 = subset[, .N, by = coverage_89][, prop := N/sum(N)]
     return(list(data = subset, coverage_49 = coverage_49, coverage_89 = coverage_89))
+}
+
+calculate_posterior_pred_check <- function(stat, posteriors, actual_data){
+    iterations = length(unique(posteriors$iteration))
+    post_stat = posteriors[, stat(time_since_infection_posterior_draw), by = iteration]
+    stat = stat(actual_data$observed_time_since_infection)
+    p = nrow(post_stat[V1 >= stat])/iterations
+    return(list(sim_stat = post_stat, stat = stat, p = p))
+}
+
+plot_posterior_pred_check <- function(stat, stat_name , posteriors, actual_data, check = calculate_posterior_pred_check(stat, posteriors, actual_data), file_name = NULL){
+    post_stat = check$sim_stat
+    p = check$p
+    stat_val = check$stat
+    min = min(post_stat$V1)
+    max = max(post_stat$V1)
+
+    require(cowplot)
+    plot = ggplot(post_stat) +
+        geom_histogram(aes(x = V1)) +
+        geom_vline(xintercept = stat_val, linewidth = 2) +
+        xlab(paste0(stat_name, '(observed time since infection simulation)')) +
+        ylab('count')+
+        annotate('text', label = paste0('p = ', round(p, 3)), x = stat_val + 0.02, y = 6000, vjust = 0, hjust = 0, size = 10) +
+        theme_cowplot(font_family = 'Arial') +
+        theme(axis.text = element_text(size = 20), text = element_text(size = 30), axis.ticks = element_line(color = 'gray60', size = 1.5)) +
+        background_grid(major = 'xy')+
+        xlim(min-0.08, max+0.08)
+    
+    if (is.null(file_name)){
+        file_name = file.path(PROJECT_PATH, 'plots', 'manuscript_figs', paste0('post_pred_check_', stat_name, '.pdf'))
+    }
+    print(stat_name)
+    print(file_name)
+    ggsave(file_name, plot = plot, width = 12, height = 7, units = 'in', dpi = 750, device = cairo_pdf)
 }
