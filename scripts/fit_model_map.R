@@ -7,20 +7,14 @@ args = commandArgs(trailingOnly = TRUE)
 
 TIME_CORRECTION_TYPE <<- args[1]
 stopifnot(TIME_CORRECTION_TYPE %in% c('uniform', 'beta', 'none'))
-DATA_PATH <<- args[2] 
 NCPU <<- 2
-PREPROCESS_DATA <<- FALSE 
+PREPROCESS_DATA <<- TRUE
 
 source('config/config.R')
 source(paste0(PROJECT_PATH, '/config/file_paths.R'))
 source(paste0(PROJECT_PATH, '/scripts/model_fitting_functions.R'))
-source(paste0(PROJECT_PATH, '/scripts/model_prediction_evaluation_functions.R'))
 
-model = load_model_fit()
+infant_data = configure_data(TRAINING_INFANT_DATA_PATH)
+model = fit_model(infant_data, type = 'MAP')
 
-new_infant_data = configure_newdata(DATA_PATH)
-
-test_set_posterior_means = predict(new_infant_data, model) 
-
-# save posterior means
-save_prediction_results(test_set_posterior_means, DATA_PATH, type = 'MCMC')
+save_model_fit(model, model_name = get_model_fit_name('MAP'))

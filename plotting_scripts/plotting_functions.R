@@ -61,7 +61,7 @@ get_file_path_apd_time_by_subject <- function(type){
 plot_apd_time_by_subject <- function(data, write_plot = TRUE){
     # data$temp_time = data$mean_predicted_time_since_infection + -1*data$observed_time_correction
 
-    nice_fragments = c('Sequencing region 1\n(within gag)', 'Sequencing region 2\n(within pol)', 'Sequencing region 3\n(within pol)')
+    nice_fragments = c('Gene region 1\n(within gag)', 'Gene region 2\n(within pol)', 'Gene region 3\n(within pol)')
     data$fragment_long = mapvalues(data$fragment, from = seq(1,3), to = nice_fragments)
     plot = ggplot() +
         # geom_point(data = data, aes(x = as.numeric(apd), y = as.numeric(temp_time), color = infection_status), alpha = 0.6, size = 4) +
@@ -73,7 +73,7 @@ plot_apd_time_by_subject <- function(data, write_plot = TRUE){
         theme(legend.position = 'none', axis.text = element_text(size = 25), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 30), axis.line = element_blank(), text = element_text(size = 37), axis.ticks = element_line(color = 'gray60', size = 1.5)) +
         background_grid(major = 'xy') +
         ylim(0, 0.04)+
-        xlab('Estimated time since infection (years)') +
+        xlab('Predicted time since infection (years)') +
         ylab('APD') 
     
     if (isTRUE(write_plot)){
@@ -248,8 +248,8 @@ plot_observed_predicted_time_histogram <- function(data, with_observed_time_corr
         geom_histogram(aes(x = difference), alpha = 0.7) +
         facet_grid(rows = vars(fragment))+
         geom_vline(xintercept = 0, color = 'black', size = 2) +
-        theme_cowplot(font_family = 'Avenir') +
-        theme(axis.text = element_text(size = 20), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 22), axis.line = element_blank(), text = element_text(size = 30), axis.ticks = element_line(color = 'gray60', size = 1.5)) +
+        theme_cowplot() +
+        theme(axis.text = element_text(size = 30), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 35), axis.line = element_blank(), text = element_text(size = 40), axis.ticks = element_line(color = 'gray60', size = 1.5)) +
         background_grid(major = 'xy') +
         xlab(xlab) +
         ylab('density') +

@@ -21,12 +21,11 @@ source(paste0(PROJECT_PATH, '/scripts/model_cross_validation_functions.R'))
 
 infant_data = configure_data(TRAINING_INFANT_DATA_PATH)
 
-leave_one_out_posteriors = run_leave_one_out_validation(infant_data)
+leave_one_out_posteriors = run_leave_one_out_validation(infant_data, type = 'MAP')
 
 name = str_split(TRAINING_INFANT_DATA_PATH, '/')[[1]][length(str_split(TRAINING_INFANT_DATA_PATH, '/')[[1]])]
 name = str_replace(name, '.csv', '')
-dir.create(file.path(OUTPUT_PATH, 'model_loocv'))
-file_name = file.path(OUTPUT_PATH, 'model_loocv', paste0('loocv_posteriors_', name, '_', TIME_CORRECTION_TYPE, '.csv'))
-
+dir.create(file.path(OUTPUT_PATH, 'model_loocv_map'))
+file_name = file.path(OUTPUT_PATH, 'model_loocv_map', paste0('loocv_posteriors_', name, '_', TIME_CORRECTION_TYPE, '.csv'))
 
 fwrite(leave_one_out_posteriors, file_name, sep = '\t')
