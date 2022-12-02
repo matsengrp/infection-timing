@@ -16,11 +16,11 @@ source(paste0(PROJECT_PATH, '/config/file_paths.R'))
 source(paste0(PROJECT_PATH, '/scripts/model_fitting_functions.R'))
 source(paste0(PROJECT_PATH, '/scripts/model_prediction_evaluation_functions.R'))
 
-model = load_model_fit()
+model = load_model_fit(model_name = get_model_fit_name('MAP'))
 
 new_infant_data = configure_newdata(DATA_PATH)
 
-test_set_posterior_means = predict(new_infant_data, model) 
+test_set_posterior_means = predict(new_infant_data, model, type = 'MAP') 
 
 # save posterior means
-save_prediction_results(test_set_posterior_means, DATA_PATH, type = 'MCMC')
+save_prediction_results(test_set_posterior_means, DATA_PATH, type = 'MAP')

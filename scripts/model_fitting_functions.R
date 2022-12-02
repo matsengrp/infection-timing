@@ -87,7 +87,7 @@ index_infection_time <- function(data){
 }
 
 
-configure_data <- function(data_path, time_known = TRUE){
+configure_data <- function(data_path, time_known = TRUE, include_vl = FALSE){
     data = check_data(data_path, time_known)
     # remove NA cases
     data = data[!(is.na(pass2_APD))]
@@ -130,6 +130,14 @@ configure_data <- function(data_path, time_known = TRUE){
     average_subset[incat_hiv == 'LATE, after M1', is_post := TRUE]
     average_subset[incat_hiv != 'LATE, after M1', is_post := FALSE]
 
+    if (isTRUE(include_vl)){
+        vl = get_vload_data(data_path)
+        average_subset = merge(average_subset, vl, by.x = 'ptnum', by.y = 'subject_id')
+        # assign index to each subject
+        average_subset = index_subjects(average_subset)
+        average_subset = index_infection_time(average_subset)
+    }
+
     data_list = list(
                      observation_count = nrow(average_subset), 
                      subject_count = length(unique(average_subset$ptnum)), 
@@ -145,10 +153,25 @@ configure_data <- function(data_path, time_known = TRUE){
                      is_utero = average_subset$is_utero,
                      is_post = average_subset$is_post
                      )
+
+    if (isTRUE(include_vl)){
+        data_list[['vload']] = average_subset$log10_vload
+    }
     return(data_list)
 }
 
-fit_model <- function(data, chains = 4, warmup_iterations = 10000, total_iterations = 20000, step_size = 0.99, model_file = MODEL_FILE){
+fit_model <- function(data, chains = 4, warmup_iterations = 10000, total_iterations = 20000, step_size = 0.99, model_file = MODEL_FILE, type = 'MCMC'){
+    stopifnot(type %in% c('MCMC', 'MAP'))
+    if (type == 'MCMC') {
+        model = fit_model_mcmc(data, chains, warmup_iterations, total_iterations, step_size, model_file)
+    } else if (type == 'MAP') {
+        model_code = stan_model(model_file)
+        model = optimizing(model_code, data, hessian = TRUE)
+    } 
+    return(model)
+}
+
+fit_model_mcmc <- function(data, chains = 4, warmup_iterations = 10000, total_iterations = 20000, step_size = 0.99, model_file = MODEL_FILE){
     model = stan(file = model_file, 
                  data = data,
                  chains = chains, # number of Markov chains
@@ -161,25 +184,38 @@ fit_model <- function(data, chains = 4, warmup_iterations = 10000, total_iterati
     return(model)
 }
 
-get_model_fit_name <- function(){
+get_model_fit_name <- function(type){
     path = file.path(PROJECT_PATH, 'scripts', 'stan_models', 'model_fits')
+    dir.create(file.path(PROJECT_PATH, 'scripts', 'stan_models', 'cred_intervals'), recursive = TRUE)
     dir.create(path, recursive = TRUE)
     name = str_split(MODEL_FILE, '/')[[1]][7]
     name = str_split(name, '.stan')[[1]][1]
     data_description = str_split(TRAINING_INFANT_DATA_PATH, '/')[[1]][length(str_split(TRAINING_INFANT_DATA_PATH, '/')[[1]])]
     data_description = str_split(data_description, '.csv')[[1]][1]
-    model_name = paste0('/', name, '_', data_description, '.rds')
+    model_name = paste0('/', name, '_', data_description, '_', type, '.rds')
     together = paste0(path, model_name)
     return(together)
 }
 
-save_model_fit <- function(model, model_name = get_model_fit_name()){
+save_model_fit <- function(model, model_name = get_model_fit_name('MCMC')){
     saveRDS(model, model_name)
 }
 
-load_model_fit <- function(model_name = get_model_fit_name()){
+load_model_fit <- function(model_name = get_model_fit_name('MCMC')){
     model = readRDS(model_name)
     return(model)
 }
 
-
+get_vload_data <- function(data_path, time_known = TRUE){
+    data = check_data(data_path, time_known)
+    # remove NA cases
+    data = data[!(is.na(pass2_APD) | vload == -99 | is.na(vload))]
+    
+    cols = c('ptnum', 'month_visit', 'vload')
+    subset = unique(data[, ..cols])
+    setpt = subset[, mean(vload), by = ptnum]
+    setnames(setpt, 'ptnum', 'subject_id')
+    setnames(setpt, 'V1', 'vload')
+    setpt[, log10_vload := log10(vload)]
+    return(setpt)
+}

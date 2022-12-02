@@ -8,11 +8,15 @@ data{
     int fragment[observation_count];  // fragment index
     int is_utero[observation_count];
     int is_post[observation_count];
+    real vload[observation_count];
 }
 parameters{
     real<lower=0> time_since_infection_variance_estimate;    // outcome time since infection variance (outcome uncertainty)
     real<lower=0> time_since_infection[observation_count];    // outcome
     real<lower=0, upper=150> baseline_slope;   // slope before subject/fragment slope changes
+    real vload_slope_delta;   // slope before subject/fragment slope changes
+    real vload_slope_delta_mean_estimate;
+    real<lower=0> vload_slope_delta_variance_estimate;
     vector[subject_count] subject_slope_delta;  // vector of subject specific slope changes
     real subject_slope_delta_mean_estimate;    // subject specific slope change mean
     real<lower=0> subject_slope_delta_variance_estimate; // subject specific slope change standard deviation
@@ -36,11 +40,15 @@ model{
     subject_slope_delta_mean_estimate ~ normal( 0 , 1 );
     subject_slope_delta_variance_estimate ~ cauchy( 0 , 20 );
     subject_slope_delta ~ normal( subject_slope_delta_mean_estimate , subject_slope_delta_variance_estimate );
+    vload_slope_delta_mean_estimate ~ normal( 0 , 1 );
+    vload_slope_delta_variance_estimate ~ cauchy( 0 , 20 );
+    vload_slope_delta ~ normal( vload_slope_delta_mean_estimate , vload_slope_delta_variance_estimate );
+
     for ( i in 1:observation_count ) {
         total_slope[i] = (baseline_slope + subject_slope_delta[subject[i]] + fragment_slope_delta_reparameterized[fragment[i]]);
     }
     for ( i in 1:observation_count ) {
-        predicted_time_since_infection[i] = total_slope[i] * apd[i]; // linear function relating apd to time_since_infection
+        predicted_time_since_infection[i] = total_slope[i] * apd[i] + vload_slope_delta * apd[i]*vload[i]; // linear function relating apd to time_since_infection
     }
     observed_time_to_time_since_infection_correction_utero ~ beta(1,5); // subjects infected in utero were most likely infected in the third trimester (of pregnancy)
 
@@ -61,18 +69,12 @@ model{
 generated quantities{
     vector[observation_count] total_slope;
     vector[observation_count] predicted_time_since_infection;
-    vector[observation_count] time_since_infection_rep;
-    vector[observation_count] observed_time_since_infection_rep;
-    vector[observation_count] predicted_observed_time_since_infection;
     vector[subject_count] observed_time_to_time_since_infection_correction;
     for ( i in 1:observation_count ) {
         total_slope[i] = (baseline_slope + subject_slope_delta[subject[i]] + fragment_slope_delta_reparameterized[fragment[i]]);
     }
     for ( i in 1:observation_count ) {
-        predicted_time_since_infection[i] = total_slope[i] * apd[i];
-    }
-    for (i in 1:observation_count) {
-        time_since_infection_rep[i] = normal_rng(predicted_time_since_infection[i], time_since_infection_variance_estimate);
+        predicted_time_since_infection[i] = total_slope[i] * apd[i] + vload_slope_delta * apd[i] * vload[i];
     }
     for ( i in 1:observation_count ) {
         if ( is_utero[i] ){
@@ -80,11 +82,5 @@ generated quantities{
         } else if ( is_post[i] ){
           observed_time_to_time_since_infection_correction[subject[i]] = 0;
         }
-    }
-    for (i in 1:observation_count) {
-        predicted_observed_time_since_infection[i] = time_since_infection[i] - observed_time_to_time_since_infection_correction[subject[i]];
-    }
-    for (i in 1:observation_count) {
-        observed_time_since_infection_rep[i] = normal_rng(predicted_observed_time_since_infection[i], 0.1);
     }
 }

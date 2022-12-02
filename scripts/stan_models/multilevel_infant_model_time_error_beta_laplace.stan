@@ -45,7 +45,7 @@ model{
     observed_time_to_time_since_infection_correction_utero ~ beta(1,5); // subjects infected in utero were most likely infected in the third trimester (of pregnancy)
 
     time_since_infection_variance_estimate ~ cauchy( 0 , 0.5 );
-    time_since_infection ~ normal( predicted_time_since_infection , time_since_infection_variance_estimate);
+    time_since_infection ~ double_exponential( predicted_time_since_infection , time_since_infection_variance_estimate);
     for ( i in 1:observation_count ) {
         if ( is_utero[i] ){
           observed_time_to_time_since_infection_correction[subject[i]] = observed_time_to_time_since_infection_correction_utero[subject[i]];
@@ -61,9 +61,6 @@ model{
 generated quantities{
     vector[observation_count] total_slope;
     vector[observation_count] predicted_time_since_infection;
-    vector[observation_count] time_since_infection_rep;
-    vector[observation_count] observed_time_since_infection_rep;
-    vector[observation_count] predicted_observed_time_since_infection;
     vector[subject_count] observed_time_to_time_since_infection_correction;
     for ( i in 1:observation_count ) {
         total_slope[i] = (baseline_slope + subject_slope_delta[subject[i]] + fragment_slope_delta_reparameterized[fragment[i]]);
@@ -71,20 +68,11 @@ generated quantities{
     for ( i in 1:observation_count ) {
         predicted_time_since_infection[i] = total_slope[i] * apd[i];
     }
-    for (i in 1:observation_count) {
-        time_since_infection_rep[i] = normal_rng(predicted_time_since_infection[i], time_since_infection_variance_estimate);
-    }
     for ( i in 1:observation_count ) {
         if ( is_utero[i] ){
           observed_time_to_time_since_infection_correction[subject[i]] = observed_time_to_time_since_infection_correction_utero[subject[i]];
         } else if ( is_post[i] ){
           observed_time_to_time_since_infection_correction[subject[i]] = 0;
         }
-    }
-    for (i in 1:observation_count) {
-        predicted_observed_time_since_infection[i] = time_since_infection[i] - observed_time_to_time_since_infection_correction[subject[i]];
-    }
-    for (i in 1:observation_count) {
-        observed_time_since_infection_rep[i] = normal_rng(predicted_observed_time_since_infection[i], 0.1);
     }
 }
