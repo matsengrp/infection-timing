@@ -283,7 +283,7 @@ calculate_posterior_pred_check <- function(stat, posteriors, actual_data){
     return(list(sim_stat = post_stat, stat = stat, p = p))
 }
 
-plot_posterior_pred_check <- function(stat, stat_name , posteriors, actual_data, check = calculate_posterior_pred_check(stat, posteriors, actual_data), file_name = NULL){
+plot_posterior_pred_check <- function(stat, stat_name , posteriors, actual_data, check = calculate_posterior_pred_check(stat, posteriors, actual_data), file_name = NULL, write_plot = TRUE){
     post_stat = check$sim_stat
     p = check$p
     stat_val = check$stat
@@ -301,11 +301,13 @@ plot_posterior_pred_check <- function(stat, stat_name , posteriors, actual_data,
         theme(axis.text = element_text(size = 20), text = element_text(size = 30), axis.ticks = element_line(color = 'gray60', size = 1.5)) +
         background_grid(major = 'xy')+
         xlim(min-0.08, max+0.08)
-    
-    if (is.null(file_name)){
-        file_name = file.path(PROJECT_PATH, 'plots', 'manuscript_figs', paste0('post_pred_check_', stat_name, '.pdf'))
+    if (isTRUE(write_plot)){ 
+        if (is.null(file_name)){
+            file_name = file.path(PROJECT_PATH, 'plots', 'manuscript_figs', paste0('post_pred_check_', stat_name, '.pdf'))
+        }
+        print(stat_name)
+        print(file_name)
+        ggsave(file_name, plot = plot, width = 12, height = 7, units = 'in', dpi = 750, device = cairo_pdf)
     }
-    print(stat_name)
-    print(file_name)
-    ggsave(file_name, plot = plot, width = 12, height = 7, units = 'in', dpi = 750, device = cairo_pdf)
+    return(plot)
 }

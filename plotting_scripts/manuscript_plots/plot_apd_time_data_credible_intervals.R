@@ -91,10 +91,28 @@ data[, count := .N, by = .(fragment, subject_id)]
 # subject_order = c(unique(data[infection_status_long == 'in-utero']$subject_id), unique(data[infection_status_long =='after birth']$subject_id))
 # data$subject_id = factor(data$subject_id, levels = subject_order)
 data$infection_status_long = factor(data$infection_status_long, levels = c('in-utero', 'after birth'))
+subjects = c(unique(data[infection_status_long == 'in-utero']$subject_id), unique(data[infection_status_long == 'after birth']$subject_id))
+subjects_map = paste0('c', c(seq(1, length(unique(data[infection_status_long == 'in-utero']$subject_id))), seq(1, length(unique(data[infection_status_long == 'after birth']$subject_id)))))
+status_map = c(rep(1, length(unique(data[infection_status_long == 'in-utero']$subject_id))), rep(2, length(unique(data[infection_status_long == 'after birth']$subject_id))))
+
+colormap = data.table(subject_id = subjects, subject_color = subjects_map, status_color = status_map)
+data = merge(data, colormap)
+
+uteropalette = c(brewer.pal(n = 8, name = "Dark2"), "#1B9E77", "#D95F02", '#F781BF')
+names(uteropalette) = unique(data[infection_status_long == 'in-utero']$subject_id)
+afterpalette = c(brewer.pal(n = 8, name = "Dark2"), "#1B9E77", "#D95F02", '#F781BF')
+names(afterpalette) = unique(data[infection_status_long == 'after birth']$subject_id)
+
+palette = c(uteropalette, afterpalette)
+palette_df = data.frame(palette)
+palette_df$subject_id = as.numeric(rownames(palette_df))
+
+data = merge(data, palette_df)
+
 plot2 = ggplot(data[count > 1][order(observed_time_since_infection)])+
-    geom_point(aes(x = observed_time_since_infection, y = apd, color = as.factor(subject_id)), size = 5, alpha = 0.8) +
+    geom_point(aes(x = observed_time_since_infection, y = apd, color = subject_color, shape = as.factor(status_color)), size = 5, alpha = 0.8) +
     # geom_smooth(aes(y = observed_time_since_infection, x = apd, color = as.factor(subject_id)), size = 1.5, alpha = 0.8, linetype = '21', method = 'lm', se = FALSE) +
-    geom_line(aes(x = observed_time_since_infection, y = apd, color = as.factor(subject_id)), linewidth = 1.5, alpha = 0.8, linetype = '21') +
+    geom_line(aes(x = observed_time_since_infection, y = apd, color = subject_color), linewidth = 1.5, alpha = 0.8, linetype = '21') +
     facet_grid(cols = vars(fragment_long), rows = vars(infection_status_long)) +
     # facet_grid(cols = vars(fragment_long)) +
     theme_cowplot(font_family = 'Arial') +
@@ -102,11 +120,10 @@ plot2 = ggplot(data[count > 1][order(observed_time_since_infection)])+
     background_grid(major = 'xy') +
     xlab('\nTime since infection (years)\n') +
     ylab('Average pairwise diversity\n')+
-    labs(color = 'Individual') +
     panel_border(color = 'gray60', size = 2) +
-    guides(color=guide_legend(ncol=10))
-
-
+    # scale_color_manual(labels = unique(data$subject_id), name = 'Individual', values = unique(data[, c('subject_id', 'palette')])$palette)+ 
+    guides(color=guide_legend(ncol=10, override.aes = list(fill = unique(data[, c('subject_id', 'palette')])$palette, color = unique(data[, c('subject_id', 'palette')])$palette, shape = unique(data[, c('subject_id', 'status_color')])$status_color, linetype = '21')), shape = FALSE)
+    
 name2 = paste0('plots/manuscript_figs/apd_time.pdf')
 ggsave(name2, plot = plot2, width = 20, height = 14, units = 'in', dpi = 750, device = cairo_pdf)
 
