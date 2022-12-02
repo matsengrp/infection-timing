@@ -117,8 +117,8 @@ plot2 = ggplot(tog) +
     facet_wrap(~model, nrow = 1) +
     geom_abline(intercept = 0, size = 3, color = 'blue') +
     geom_point(aes(x = observed_time_since_infection, y = mean), size = 7, alpha = 0.6) +
-    geom_segment(aes(x = observed_time_since_infection, y = q0.055, xend = observed_time_since_infection, yend = q0.945), size = 2, alpha = 0.5) +
-    geom_text(data = relation, x = 0.4, y = 2.5, aes(label = paste0('R^2 = ', r2, '\nslope = ', slope, '\nintercept = ', intercept)), size = 12) +
+    geom_segment(aes(x = observed_time_since_infection, y = q0.055, xend = observed_time_since_infection, yend = q0.945), size = 1.5, alpha = 0.3) +
+    geom_text(data = relation, x = 0.4, y = 4, aes(label = paste0('R^2 = ', r2, '\nslope = ', slope, '\nintercept = ', intercept)), size = 12) +
     geom_smooth(aes(x = observed_time_since_infection, y = mean), method = 'lm', color = 'gray60', size = 3) +
     theme_cowplot(font_family = 'Arial') +
     theme(axis.text = element_text(size = 30), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 33), axis.line = element_blank(), text = element_text(size = 40), axis.ticks = element_line(color = 'gray60', size = 1.5)) +
