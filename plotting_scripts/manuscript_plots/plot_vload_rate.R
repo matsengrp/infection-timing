@@ -57,18 +57,40 @@ tog = merge(vload_data, subset2)
 
 tog$infection_status_long = factor(tog$infection_status_long, levels = c('in-utero', 'after birth'))
 
+uteropalette = c(brewer.pal(n = 8, name = "Dark2"), "#E41A1C", "#377EB8", '#F781BF')
+names(uteropalette) = unique(tog[infection_status_long == 'in-utero']$subject_id)
+afterpalette = c(brewer.pal(n = 8, name = "Dark2"), "#E41A1C", "#377EB8", '#F781BF')
+names(afterpalette) = unique(tog[infection_status_long == 'after birth']$subject_id)
+
+palette = c(uteropalette, afterpalette)
+palette = palette[!is.na(names(palette))]
+palette_df = data.frame(palette)
+palette_df$subject_id = as.numeric(rownames(palette_df))
+
+tog = merge(tog, palette_df, by = 'subject_id')
+
+# Make lookup tables
+subj_to_status = setNames(tog$infection_status_long, as.factor(tog$subject_id))
+status2shape = c("in-utero" = 16, "after birth" = 17)
+subj_to_palette = setNames(tog$palette, as.factor(tog$subject_id)) 
+
+# # Make subj_to_status unique without dropping names
+subj_to_status = subj_to_status[!duplicated(tog[, c("subject_id", "infection_status_long")])]
+subj_to_palette = subj_to_palette[!duplicated(tog[, c("subject_id", "palette")])]
+
 plot = ggplot(tog[order(observed_time_since_infection)])+
-    geom_point(aes(y = vload, x = mean, color = as.factor(subject_id)), size = 5, alpha = 0.8) +
-    facet_grid(rows = vars(fragment_long), cols = vars(infection_status_long)) +
+    geom_point(aes(x = vload, y = mean, shape = infection_status_long, color = as.factor(subject_id)), size = 5, alpha = 0.8) +
+    facet_grid(cols = vars(fragment_long), rows = vars(infection_status_long)) +
     # facet_grid(cols = vars(fragment_long)) +
+    scale_color_manual(breaks = names(subj_to_status), guide  = guide_legend(ncol = 10, override.aes = list(shape = status2shape[subj_to_status])), values = subj_to_palette[names(subj_to_status)], name = 'Individual') +
+    scale_shape_manual(values = status2shape, guide= "none")+
     theme_cowplot(font_family = 'Arial') +
     theme(axis.text = element_text(size = 25), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 30), axis.line = element_blank(), text = element_text(size = 37), axis.ticks = element_line(color = 'gray60', size = 1.5), legend.position="bottom", legend.direction="horizontal", legend.justification="center") +
     background_grid(major = 'xy') +
-    ylab('log10(set-point viral load)\n') +
-    xlab('\nMedian total APD slope\n')+
+    xlab('\nlog10(set-point viral load)\n') +
+    ylab('Median total APD slope\n')+
     labs(color = 'Individual') +
-    panel_border(color = 'gray60', size = 2) +
-    guides(color=guide_legend(ncol=9))
+    panel_border(color = 'gray60', size = 2) 
 
 name = paste0('plots/manuscript_figs/apd_slope_vload.pdf')
-ggsave(name, plot = plot, width = 14, height = 20, units = 'in', dpi = 750, device = cairo_pdf)
+ggsave(name, plot = plot, width = 20, height = 14, units = 'in', dpi = 750, device = cairo_pdf)
