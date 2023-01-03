@@ -76,6 +76,14 @@ index_subjects <- function(data){
     return(data)
 }
 
+index_subjects2 <- function(data){
+    subjects = unique(data$subject_id)
+    indices = seq(1:length(subjects))
+    names(indices) = subjects
+    data[, subject := indices[paste(subject_id)]]
+    return(data)
+}
+
 index_infection_time <- function(data){
     it = unique(data$incat_hiv)
     indices = seq(1:length(it))
@@ -87,7 +95,7 @@ index_infection_time <- function(data){
 }
 
 
-configure_data <- function(data_path, time_known = TRUE, include_vl = FALSE){
+configure_data <- function(data_path, time_known = TRUE, include_vl = FALSE, include_max_vl = FALSE){
     data = check_data(data_path, time_known)
     # remove NA cases
     data = data[!(is.na(pass2_APD))]
@@ -138,6 +146,14 @@ configure_data <- function(data_path, time_known = TRUE, include_vl = FALSE){
         average_subset = index_infection_time(average_subset)
     }
 
+    if (isTRUE(include_max_vl)){
+        vl = get_max_vload_data(data_path)
+        average_subset = merge(average_subset, vl, by.x = 'ptnum', by.y = 'subject_id')
+        # assign index to each subject
+        average_subset = index_subjects(average_subset)
+        average_subset = index_infection_time(average_subset)
+    }
+
     data_list = list(
                      observation_count = nrow(average_subset), 
                      subject_count = length(unique(average_subset$ptnum)), 
@@ -157,6 +173,10 @@ configure_data <- function(data_path, time_known = TRUE, include_vl = FALSE){
     if (isTRUE(include_vl)){
         data_list[['vload']] = average_subset$log10_vload
     }
+    if (isTRUE(include_max_vl)){
+        data_list[['max_vload']] = average_subset$log10_max_vload
+    }
+
     return(data_list)
 }
 
@@ -218,4 +238,18 @@ get_vload_data <- function(data_path, time_known = TRUE){
     setnames(setpt, 'V1', 'vload')
     setpt[, log10_vload := log10(vload)]
     return(setpt)
+}
+
+get_max_vload_data <- function(data_path, time_known = TRUE){
+    data = check_data(data_path, time_known)
+    # remove NA cases
+    data = data[!(is.na(pass2_APD) | vload == -99 | is.na(vload))]
+    
+    cols = c('ptnum', 'month_visit', 'vload')
+    subset = unique(data[, ..cols])
+    maxvl = subset[, max(vload), by = ptnum]
+    setnames(maxvl, 'ptnum', 'subject_id')
+    setnames(maxvl, 'V1', 'max_vload')
+    maxvl[, log10_max_vload := log10(max_vload)]
+    return(maxvl)
 }
