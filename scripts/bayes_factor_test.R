@@ -11,16 +11,18 @@ stopifnot(TIME_CORRECTION_TYPE %in% c('uniform', 'beta', 'none'))
 NCPU <<- 2
 PREPROCESS_DATA <<- TRUE
 BAYES_FACTOR_VARIATION <<- args[2]
-stopifnot(BAYES_FACTOR_VARIATION %in% c('no_fragment', 'no_subject', 'with_infection_time', 'with_vload'))
+stopifnot(BAYES_FACTOR_VARIATION %in% c('no_fragment', 'no_subject', 'with_infection_time', 'with_vload', 'with_max_vload'))
 
 source('config/config.R')
 source(paste0(PROJECT_PATH, '/config/file_paths.R'))
 source(paste0(PROJECT_PATH, '/scripts/model_fitting_functions.R'))
 source(paste0(PROJECT_PATH, '/scripts/bayes_factor_functions.R'))
 
-if (BAYES_FACTOR_VARIATION %like% 'vload'){
+if (BAYES_FACTOR_VARIATION == 'with_vload'){
     infant_data = configure_data(TRAINING_INFANT_DATA_PATH, include_vl = TRUE)
-} else {
+} else if (BAYES_FACTOR_VARIATION == 'with_max_vload'){
+    infant_data = configure_data(TRAINING_INFANT_DATA_PATH, include_max_vl = TRUE)
+}else {
     infant_data = configure_data(TRAINING_INFANT_DATA_PATH)
 }
 
