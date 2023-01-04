@@ -77,6 +77,8 @@ subj_to_palette = setNames(tog$palette, as.factor(tog$subject_id))
 # # Make subj_to_status unique without dropping names
 subj_to_status = subj_to_status[!duplicated(tog[, c("subject_id", "infection_status_long")])]
 subj_to_palette = subj_to_palette[!duplicated(tog[, c("subject_id", "palette")])]
+subj_to_status = subj_to_status[order(subj_to_status)]
+subj_to_palette = subj_to_palette[order(subj_to_palette)]
 
 plot = ggplot(tog[order(observed_time_since_infection)])+
     geom_point(aes(x = vload, y = mean, shape = infection_status_long, color = as.factor(subject_id)), size = 5, alpha = 0.8) +
@@ -88,7 +90,7 @@ plot = ggplot(tog[order(observed_time_since_infection)])+
     theme(axis.text = element_text(size = 25), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 30), axis.line = element_blank(), text = element_text(size = 37), axis.ticks = element_line(color = 'gray60', size = 1.5), legend.position="bottom", legend.direction="horizontal", legend.justification="center") +
     background_grid(major = 'xy') +
     xlab('\nlog10(set-point viral load)\n') +
-    ylab('Median total APD slope\n')+
+    ylab('Median APD slope (years/diversity)\n')+
     labs(color = 'Individual') +
     panel_border(color = 'gray60', size = 2) 
 

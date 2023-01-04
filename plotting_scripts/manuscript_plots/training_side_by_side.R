@@ -50,10 +50,10 @@ file_name = file.path(OUTPUT_PATH, 'model_loocv', paste0('loocv_posteriors_', na
 loocv = fread(file_name)
 infant_data = as.data.table(configure_data(TRAINING_INFANT_DATA_PATH))
 posterior_means = get_posterior_means(loocv, infant_data)
-posterior_means$model = 'infant-trained\nhierarchical model'
+posterior_means$model = 'infant-trained\nhierarchical\nmodel'
 setnames(posterior_means, 'mean_time_since_infection_estimate', 'mean')
 infant_mae = calculate_mae_dt(posterior_means, by_fragment = TRUE, var = 'mean')
-infant_mae$model = 'infant-trained\nhierarchical model'
+infant_mae$model = 'infant-trained\nhierarchical\nmodel'
 
 together = rbind(results, adult_style_results, posterior_means, fill = TRUE)
 mae = rbind(adult_mae, adult_style_mae, infant_mae)
@@ -73,8 +73,8 @@ plot_hist_val = ggplot(together) +
     panel_border(color = 'gray60', size = 2)+
     facet_grid(cols = vars(fragment_long), rows = vars(model))+
     geom_text(data = mae, x = 9, y = Inf, aes(label = paste0('MAE = ', mae)), vjust = 2, size = 12) +
-    ylab('Observation count')+
-    xlab('ETI - TI (years)')
+    ylab('Observation count\n')+
+    xlab('\nModel-derived time since infection - true time since infection (years)')
 
 ggsave(paste0('plots/manuscript_figs/side_by_side_training_hist_by_frag.pdf'), plot = plot_hist_val, width = 40, height = 15, units = 'in', dpi = 750, device = cairo_pdf)
 
@@ -83,61 +83,73 @@ data = infant_data
 data$number = seq(1, length(data$is_post))
 data = as.data.table(data)
 
-intervals = get_posterior_prediction_coverage(loocv[fragment_id == 3], actual_times = data[fragment == 3])$data
+intervals = get_posterior_prediction_coverage(loocv, actual_times = data)$data
 intervals$mean = intervals[['q0.5']]
-intervals$model = 'infant-trained hierarchical model'
-adult_style_results$model = 'infant-trained linear models'
-tog = rbind(intervals, adult_style_results[fragment == 3], fill = TRUE)
+intervals$model = 'infant-trained\nhierarchical\nmodel'
+adult_style_results$model = 'infant-trained\nlinear models'
+tog = rbind(intervals, adult_style_results, fill = TRUE)
 
-heir = lm(intervals$mean ~ intervals$observed_time_since_infection)
-lin = lm(adult_style_results[fragment == 3]$mean ~ adult_style_results[fragment == 3]$observed_time_since_infection)
+relation = data.table()
+for (frag in c(1, 2, 3)){
+    heir = lm(intervals[fragment == frag]$mean ~ intervals[fragment == frag]$observed_time_since_infection)
+    lin = lm(adult_style_results[fragment == frag]$mean ~ adult_style_results[fragment == frag]$observed_time_since_infection)
+    region = ' (within pol)'
+    if (frag == 1){
+        region = ' (within gag)'
+    }
+    temp_relation = data.table(model = c(paste0('infant-trained\nhierarchical\nmodel'), paste0('infant-trained\nlinear models')), r2 = c(round(summary(heir)$r.squared, 3), round(summary(lin)$r.squared, 3)), slope = c(round(coef(heir)[['intervals[fragment == frag]$observed_time_since_infection']], 3), round(coef(lin)[['adult_style_results[fragment == frag]$observed_time_since_infection']], 3)), intercept = c(round(coef(heir)[['(Intercept)']], 3), round(coef(lin)[['(Intercept)']], 3)))
+    temp_relation[, fragment_long := paste0('gene region ', frag, region)]
+    relation = rbind(temp_relation, relation)
+    tog[fragment == frag, fragment_long := paste0('gene region ', frag, region)]
+}
 
-relation = data.table(model = c('infant-trained hierarchical model,\ngene region 3 (within pol)', 'infant-trained linear models,\ngene region 3 (within pol)'), r2 = c(round(summary(heir)$r.squared, 3), round(summary(lin)$r.squared, 3)), slope = c(round(coef(heir)[['intervals$observed_time_since_infection']], 3), round(coef(lin)[['adult_style_results[fragment == 3]$observed_time_since_infection']], 3)), intercept = c(round(coef(heir)[['(Intercept)']], 3), round(coef(lin)[['(Intercept)']], 3)))
+tog[q0.945 > 5.5, q0.945 := Inf]
 
-tog$model = paste0(tog$model, ',\ngene region 3 (within pol)')
 plot2 = ggplot(tog) +
-    facet_grid(cols = vars(model)) +
+    facet_grid(rows = vars(model), cols = vars(fragment_long)) +
     geom_abline(intercept = 0, size = 3, color = 'blue') +
     geom_point(aes(x = observed_time_since_infection, y = mean), size = 7, alpha = 0.6) +
     geom_segment(aes(x = observed_time_since_infection, y = q0.055, xend = observed_time_since_infection, yend = q0.945), size = 1.5, alpha = 0.3) +
-    geom_text(data = relation, x = 0.4, y = 5.7, aes(label = paste0('R^2 = ', r2, '\nslope = ', slope, '\nintercept = ', intercept)), vjust = 2, size = 12) +
-    geom_smooth(aes(x = observed_time_since_infection, y = mean), method = 'lm', color = 'gray60', size = 3) +
+    geom_text(data = relation, x = 0.5, y = 7, aes(label = paste0('R^2 = ', r2, '\nslope = ', slope, '\nintercept = ', intercept)), vjust = 2, size = 12) +
+    geom_smooth(aes(x = observed_time_since_infection, y = mean), method = 'lm', color = 'gray60', size = 3, se = FALSE) +
     theme_cowplot(font_family = 'Arial') +
     theme(axis.text = element_text(size = 30), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 33), axis.line = element_blank(), text = element_text(size = 40), axis.ticks = element_line(color = 'gray60', size = 1.5)) +
     background_grid(major = 'xy') +
-    xlab('\nTI') +
-    ylab('ETI\n')+
+    xlab('\nTrue time since infection (years)') +
+    ylab('Model-derived\ntime since infection (years)\n')+
+    ylim(-1, 5.5)+
     panel_border(color = 'gray60', size = 2) 
 
-name2 = paste0('plots/manuscript_figs/error_over_time_frag3.pdf')
+name2 = paste0('plots/manuscript_figs/error_over_time.pdf')
 ggsave(name2, plot = plot2, width = 20, height = 12, units = 'in', dpi = 750, device = cairo_pdf)
-saveRDS(plot2, paste0('plots/manuscript_figs/error_over_time_frag3.rds'))
+saveRDS(plot2, paste0('plots/manuscript_figs/error_over_time.rds'))
 
 tog[, resid := mean - observed_time_since_infection]
+tog$model = str_replace_all(tog$model, '\n', ' ')
 tog2 = tog[, mean(resid), by = .(model, observed_time_since_infection)]
 heir2 = lm(tog2[model %like% 'hier']$V1 ~ tog2[model %like% 'hier']$observed_time_since_infection)
 lin2 = lm(tog2[model %like% 'linear']$V1 ~ tog2[model %like% 'linear']$observed_time_since_infection)
 
 plot3 = ggplot(tog2[order(observed_time_since_infection)], aes(x = observed_time_since_infection, y = V1, color = model, fill = model, group = model)) +
     geom_point(size = 7) +
-    geom_smooth(method = 'lm', size = 3) +
+    geom_smooth(method = 'lm', size = 3, se = FALSE) +
     # geom_line(aes(x = observed_time_since_infection, y = V1, color = model), size = 3) +
     geom_hline(yintercept = 0, size = 5, linetype = 'dashed', color = 'gray60') +
     theme_cowplot(font_family = 'Arial') +
     theme(legend.justification = 'center', legend.position = 'bottom', legend.direction = 'horizontal', axis.text = element_text(size = 30), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 35), axis.line = element_blank(), text = element_text(size = 40), axis.ticks = element_line(color = 'gray60', size = 1.5)) +
     background_grid(major = 'xy') +
-    xlab('\nTI') +
-    ylab('Mean residual\n(ETI - TI)')+
+    xlab('\nTrue time since infection (years)\n') +
+    ylab('Mean residual\n(years)\n')+
     panel_border(color = 'gray60', size = 2) +
     scale_color_brewer(palette = 'Dark2') +
     scale_fill_brewer(palette = 'Dark2')
 
 all = align_plots(plot2,plot_hist_val,plot3,  align = 'vh', axis = 'lr')
 
-grid = plot_grid(all[[2]], NULL, all[[1]], NULL, all[[3]], nrow = 5, rel_heights = c(1.25, 0.05, 1, 0.05, 0.8), labels = c('A', '', 'B', '', 'C'), label_size = 40) 
+grid = plot_grid(all[[2]], NULL, all[[1]], NULL, all[[3]], nrow = 5, rel_heights = c(1.15, 0.05, 1.5, 0.05, 0.75), labels = c('A', '', 'B', '', 'C'), label_size = 40) 
 
 name3 = paste0('plots/manuscript_figs/training_error_together.pdf')
-ggsave(name3, grid, width = 30, height = 35, units = 'in', dpi = 750, device = cairo_pdf)
+ggsave(name3, grid, width = 30, height = 38, units = 'in', dpi = 750, device = cairo_pdf)
 saveRDS(plot3, paste0('plots/manuscript_figs/residual.rds'))
 
 print(summary(lm(intervals$mean ~ intervals$observed_time_since_infection)))
