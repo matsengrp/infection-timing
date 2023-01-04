@@ -69,7 +69,7 @@ plot = ggplot(subset2) +
     background_grid(major = 'xy') +
     ylim(-10, 250) +
     xlab('\nIndividual') +
-    ylab('Total APD slope (year/diversity)\n')+
+    ylab('APD slope (years/diversity)\n')+
     labs(color = 'Infection time') +
     panel_border(color = 'gray60', size = 2) +
     # scale_color_brewer(palette = 'Dark2') 
@@ -106,27 +106,30 @@ subj_to_palette = setNames(data$palette, as.factor(data$subject_id))
 
 # # Make subj_to_status unique without dropping names
 subj_to_status = subj_to_status[!duplicated(data[, c("subject_id", "infection_status_long")])]
+subj_to_status = subj_to_status[order(subj_to_status)]
 subj_to_palette = subj_to_palette[!duplicated(data[, c("subject_id", "palette")])]
+subj_to_palette = subj_to_palette[order(subj_to_palette)]
 
 valid = data[order(observed_time_since_infection)]
 
 plot2 = ggplot(valid) +
     geom_point(aes(x = observed_time_since_infection, y = apd, color = as.factor(subject_id), shape = infection_status_long), size = 5, alpha = 0.8) +
     geom_line(aes(x = observed_time_since_infection, y = apd, linetype = infection_status_long, color = as.factor(subject_id)), linewidth = 1.5, alpha = 0.8, key_glyph = 'abline') +
-    facet_grid(cols = vars(fragment_long), rows = vars(infection_status_long)) +
+    facet_grid2(cols = vars(fragment_long), rows = vars(infection_status_long), scales = 'free_y', independent = 'y') +
     scale_color_manual(breaks = names(subj_to_status), guide  = guide_legend(ncol = 10, override.aes = list(linetype = status2line[subj_to_status], shape = status2shape[subj_to_status])), values = subj_to_palette[names(subj_to_status)], name = 'Individual') +
     scale_shape_manual(values = status2shape, guide= "none")+
     scale_linetype_manual(values = status2line, guide= "none")+
     theme_cowplot(font_family = 'Arial') +
     theme(axis.text = element_text(size = 25), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 30), axis.line = element_blank(), text = element_text(size = 37), axis.ticks = element_line(color = 'gray60', size = 1.5), legend.position="bottom", legend.direction="horizontal", legend.justification="center", legend.key.width = unit(3.5, 'line')) +
     background_grid(major = 'xy') +
-    xlab('\nTime since infection (years)\n') +
+    xlab('\nTrue time since infection (years)\n') +
     ylab('Average pairwise diversity\n')+
     panel_border(color = 'gray60', size = 2)
 
 name2 = paste0('plots/manuscript_figs/apd_time.pdf')
-ggsave(name2, plot = plot2, width = 20, height = 14, units = 'in', dpi = 750, device = cairo_pdf)
+ggsave(name2, plot = plot2, width = 22, height = 14, units = 'in', dpi = 750, device = cairo_pdf)
 
+baseline = intervals[variable %like% 'baseline']
 
 plot3 = ggplot()+
     geom_point(data = data[infection_status_long == 'in-utero'], aes(x = apd, y = observed_time_since_infection, color = as.factor(subject_id)), shape = 16, size = 5, alpha = 0.8) +
@@ -140,9 +143,51 @@ plot3 = ggplot()+
     theme_cowplot(font_family = 'Arial') +
     theme(axis.text = element_text(size = 25), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 30), axis.line = element_blank(), text = element_text(size = 37), axis.ticks = element_line(color = 'gray60', size = 1.5), legend.position="bottom", legend.direction="horizontal", legend.justification="center", legend.key.width = unit(3.5, 'line')) +
     background_grid(major = 'xy') +
-    ylab('Time since infection (years)\n') +
+    ylab('True time since infection (years)\n') +
     xlab('\nAverage pairwise diversity\n')+
     panel_border(color = 'gray60', size = 2) 
 
 name3 = paste0('plots/manuscript_figs/apd_time_model_slopes.pdf')
 ggsave(name3, plot = plot3, width = 20, height = 14, units = 'in', dpi = 750, device = cairo_pdf)
+
+# baseline = intervals[variable %like% 'baseline']
+# valid = valid[order(observed_time_since_infection)]
+
+# cred_int = data.table(apd = seq(0, 0.0402, by = 0.0001))
+# cred_int[, lower := baseline[['5.5%']] * apd]
+# cred_int[, upper := baseline[['94.5%']] * apd]
+
+# tog = data.table() 
+# for (f in unique(valid$fragment_long)){
+#     for (i in unique(valid$infection_status_long)){
+
+#         temp = cred_int
+#         temp$fragment_long = f
+
+#         tog = rbind(tog, cred_int)
+
+#     }
+# }
+
+# plot4 = ggplot(valid) +
+#     geom_point(aes(y = observed_time_since_infection, x = apd, color = as.factor(subject_id), shape = infection_status_long), size = 5, alpha = 0.6) +
+#     geom_path(aes(y = observed_time_since_infection, x = apd, linetype = infection_status_long, color = as.factor(subject_id)), linewidth = 1.5, alpha = 0.6, key_glyph = 'abline') +
+#     geom_abline(data = baseline, aes(intercept = 0, slope = mean), color = 'black', linewidth = 2.5) +
+#     geom_ribbon(data = cred_int, aes(x = apd, ymin = lower, ymax = upper), fill = 'gray', alpha = 0.3) +
+#     facet_grid2(cols = vars(fragment_long), rows = vars(infection_status_long)) +
+#     scale_color_manual(breaks = names(subj_to_status), guide  = guide_legend(ncol = 10, override.aes = list(linetype = status2line[subj_to_status], shape = status2shape[subj_to_status])), values = subj_to_palette[names(subj_to_status)], name = 'Individual') +
+#     scale_shape_manual(values = status2shape, guide= "none")+
+#     scale_linetype_manual(values = status2line, guide= "none")+
+#     theme_cowplot(font_family = 'Arial') +
+#     theme(axis.text = element_text(size = 25), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 30), axis.line = element_blank(), text = element_text(size = 37), axis.ticks = element_line(color = 'gray60', size = 1.5), legend.position="bottom", legend.direction="horizontal", legend.justification="center", legend.key.width = unit(3.5, 'line')) +
+#     background_grid(major = 'xy') +
+#     ylab('\nTrue time since infection (years)\n') +
+#     xlab('Average pairwise diversity\n')+
+#     panel_border(color = 'gray60', size = 2)
+
+
+# name4 = paste0('plots/manuscript_figs/apd_time_with_baseline.pdf')
+# ggsave(name4, plot = plot4, width = 22, height = 14, units = 'in', dpi = 750, device = cairo_pdf)
+
+
+
