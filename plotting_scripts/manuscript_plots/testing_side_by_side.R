@@ -81,7 +81,7 @@ plot = ggplot()+
     background_grid(major = 'xy') +
     geom_text(data = mae, x = 17, y = Inf, aes(label = paste0('MAE = ', mae)), vjust = 2, size = 12) +
     ylab('Observation count\n')+
-    xlab('ETI - TI (years)')+
+    xlab('Model-derived time since infection - true time since infection (years)')+
     panel_border(color = 'gray60', size = 2)
 
 ggsave(paste0('plots/manuscript_figs/side_by_side_testing_hist_by_frag.pdf'), plot = plot, width = 30, height = 14, units = 'in', dpi = 750, device = cairo_pdf)

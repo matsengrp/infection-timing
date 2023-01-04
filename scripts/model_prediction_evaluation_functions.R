@@ -283,7 +283,7 @@ calculate_posterior_pred_check <- function(stat, posteriors, actual_data){
     return(list(sim_stat = post_stat, stat = stat, p = p))
 }
 
-plot_posterior_pred_check <- function(stat, stat_name , posteriors, actual_data, check = calculate_posterior_pred_check(stat, posteriors, actual_data), file_name = NULL, write_plot = TRUE){
+plot_posterior_pred_check <- function(stat, stat_name , posteriors, actual_data, check = calculate_posterior_pred_check(stat, posteriors, actual_data), file_name = NULL, write_plot = TRUE, y_pos = 6000){
     post_stat = check$sim_stat
     p = check$p
     stat_val = check$stat
@@ -294,13 +294,15 @@ plot_posterior_pred_check <- function(stat, stat_name , posteriors, actual_data,
     plot = ggplot(post_stat) +
         geom_histogram(aes(x = V1)) +
         geom_vline(xintercept = stat_val, linewidth = 2) +
-        xlab(paste0(stat_name, '(observed time since infection simulation)')) +
+        xlab(paste0('\n', stat_name, '(observed time since infection simulation)\n')) +
         ylab('count')+
-        annotate('text', label = paste0('p = ', round(p, 3)), x = stat_val + 0.02, y = 6000, vjust = 0, hjust = 0, size = 10) +
+        annotate('text', label = paste0('p = ', round(p, 3)), x = stat_val + 0.02, y = y_pos, vjust = 0, hjust = 0, size = 10) +
         theme_cowplot(font_family = 'Arial') +
-        theme(axis.text = element_text(size = 20), text = element_text(size = 30), axis.ticks = element_line(color = 'gray60', size = 1.5)) +
+        theme(axis.text = element_text(size = 25), text = element_text(size = 37), axis.ticks = element_line(color = 'gray60', size = 1.5)) +
         background_grid(major = 'xy')+
-        xlim(min-0.08, max+0.08)
+        xlim(min-0.08, max+0.08) +
+        panel_border(color = 'gray60', size = 2)
+
     if (isTRUE(write_plot)){ 
         if (is.null(file_name)){
             file_name = file.path(PROJECT_PATH, 'plots', 'manuscript_figs', paste0('post_pred_check_', stat_name, '.pdf'))

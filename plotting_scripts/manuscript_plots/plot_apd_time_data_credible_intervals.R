@@ -51,9 +51,6 @@ subset2$converted_mean = 1/subset2$mean
 subset2$converted_cred_int_5 = 1/subset2$cred_int_5
 subset2$converted_cred_int_95 = 1/subset2$cred_int_95
 
-# it = calculate_infection_time(TRAINING_INFANT_DATA_PATH, intervals)
-# subject_order = it[order(it)]$subject_id
-# subset2$subject_id = factor(subset2$subject_id, levels = subject_order)
 subset2$subject_id = factor(subset2$subject_id)
 subset2$infection_status_long = factor(subset2$infection_status_long, levels = c('in-utero', 'after birth'))
 require(RColorBrewer)
@@ -72,7 +69,7 @@ plot = ggplot(subset2) +
     background_grid(major = 'xy') +
     ylim(-10, 250) +
     xlab('\nIndividual') +
-    ylab('Total APD slope (year/diversity)\n')+
+    ylab('APD slope (years/diversity)\n')+
     labs(color = 'Infection time') +
     panel_border(color = 'gray60', size = 2) +
     # scale_color_brewer(palette = 'Dark2') 
@@ -88,19 +85,11 @@ data[infection_status != 'IN UTERO', infection_status_long := 'after birth']
 
 data[, count := .N, by = .(fragment, subject_id)]
 
-# subject_order = c(unique(data[infection_status_long == 'in-utero']$subject_id), unique(data[infection_status_long =='after birth']$subject_id))
-# data$subject_id = factor(data$subject_id, levels = subject_order)
 data$infection_status_long = factor(data$infection_status_long, levels = c('in-utero', 'after birth'))
-subjects = c(unique(data[infection_status_long == 'in-utero']$subject_id), unique(data[infection_status_long == 'after birth']$subject_id))
-subjects_map = paste0('c', c(seq(1, length(unique(data[infection_status_long == 'in-utero']$subject_id))), seq(1, length(unique(data[infection_status_long == 'after birth']$subject_id)))))
-status_map = c(rep(1, length(unique(data[infection_status_long == 'in-utero']$subject_id))), rep(2, length(unique(data[infection_status_long == 'after birth']$subject_id))))
 
-colormap = data.table(subject_id = subjects, subject_color = subjects_map, status_color = status_map)
-data = merge(data, colormap)
-
-uteropalette = c(brewer.pal(n = 8, name = "Dark2"), "#1B9E77", "#D95F02", '#F781BF')
+uteropalette = c(brewer.pal(n = 8, name = "Dark2"), "#E41A1C", "#377EB8", '#F781BF')
 names(uteropalette) = unique(data[infection_status_long == 'in-utero']$subject_id)
-afterpalette = c(brewer.pal(n = 8, name = "Dark2"), "#1B9E77", "#D95F02", '#F781BF')
+afterpalette = c(brewer.pal(n = 8, name = "Dark2"), "#E41A1C", "#377EB8", '#F781BF')
 names(afterpalette) = unique(data[infection_status_long == 'after birth']$subject_id)
 
 palette = c(uteropalette, afterpalette)
@@ -109,91 +98,96 @@ palette_df$subject_id = as.numeric(rownames(palette_df))
 
 data = merge(data, palette_df)
 
-plot2 = ggplot(data[count > 1][order(observed_time_since_infection)])+
-    geom_point(aes(x = observed_time_since_infection, y = apd, color = subject_color, shape = as.factor(status_color)), size = 5, alpha = 0.8) +
-    # geom_smooth(aes(y = observed_time_since_infection, x = apd, color = as.factor(subject_id)), size = 1.5, alpha = 0.8, linetype = '21', method = 'lm', se = FALSE) +
-    geom_line(aes(x = observed_time_since_infection, y = apd, color = subject_color), linewidth = 1.5, alpha = 0.8, linetype = '21') +
-    facet_grid(cols = vars(fragment_long), rows = vars(infection_status_long)) +
-    # facet_grid(cols = vars(fragment_long)) +
+# Make lookup tables
+subj_to_status = setNames(data$infection_status_long, as.factor(data$subject_id))
+status2shape = c("in-utero" = 16, "after birth" = 17)
+status2line = c("in-utero" = 'solid', "after birth" = '41')
+subj_to_palette = setNames(data$palette, as.factor(data$subject_id)) 
+
+# # Make subj_to_status unique without dropping names
+subj_to_status = subj_to_status[!duplicated(data[, c("subject_id", "infection_status_long")])]
+subj_to_status = subj_to_status[order(subj_to_status)]
+subj_to_palette = subj_to_palette[!duplicated(data[, c("subject_id", "palette")])]
+subj_to_palette = subj_to_palette[order(subj_to_palette)]
+
+valid = data[order(observed_time_since_infection)]
+
+plot2 = ggplot(valid) +
+    geom_point(aes(x = observed_time_since_infection, y = apd, color = as.factor(subject_id), shape = infection_status_long), size = 5, alpha = 0.8) +
+    geom_line(aes(x = observed_time_since_infection, y = apd, linetype = infection_status_long, color = as.factor(subject_id)), linewidth = 1.5, alpha = 0.8, key_glyph = 'abline') +
+    facet_grid2(cols = vars(fragment_long), rows = vars(infection_status_long), scales = 'free_y', independent = 'y') +
+    scale_color_manual(breaks = names(subj_to_status), guide  = guide_legend(ncol = 10, override.aes = list(linetype = status2line[subj_to_status], shape = status2shape[subj_to_status])), values = subj_to_palette[names(subj_to_status)], name = 'Individual') +
+    scale_shape_manual(values = status2shape, guide= "none")+
+    scale_linetype_manual(values = status2line, guide= "none")+
     theme_cowplot(font_family = 'Arial') +
-    theme(axis.text = element_text(size = 25), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 30), axis.line = element_blank(), text = element_text(size = 37), axis.ticks = element_line(color = 'gray60', size = 1.5), legend.position="bottom", legend.direction="horizontal", legend.justification="center", legend.key.width = unit(3, 'line')) +
+    theme(axis.text = element_text(size = 25), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 30), axis.line = element_blank(), text = element_text(size = 37), axis.ticks = element_line(color = 'gray60', size = 1.5), legend.position="bottom", legend.direction="horizontal", legend.justification="center", legend.key.width = unit(3.5, 'line')) +
     background_grid(major = 'xy') +
-    xlab('\nTime since infection (years)\n') +
+    xlab('\nTrue time since infection (years)\n') +
     ylab('Average pairwise diversity\n')+
-    panel_border(color = 'gray60', size = 2) +
-    # scale_color_manual(labels = unique(data$subject_id), name = 'Individual', values = unique(data[, c('subject_id', 'palette')])$palette)+ 
-    guides(color=guide_legend(ncol=10, override.aes = list(fill = unique(data[, c('subject_id', 'palette')])$palette, color = unique(data[, c('subject_id', 'palette')])$palette, shape = unique(data[, c('subject_id', 'status_color')])$status_color, linetype = '21')), shape = FALSE)
-    
+    panel_border(color = 'gray60', size = 2)
+
 name2 = paste0('plots/manuscript_figs/apd_time.pdf')
-ggsave(name2, plot = plot2, width = 20, height = 14, units = 'in', dpi = 750, device = cairo_pdf)
+ggsave(name2, plot = plot2, width = 22, height = 14, units = 'in', dpi = 750, device = cairo_pdf)
 
-uteropalette = c(brewer.pal(n = 8, name = "Dark2"), "#1B9E77", "#D95F02", '#F781BF')
-names(uteropalette) = unique(data[infection_status_long == 'in-utero']$subject_id)
-afterpalette = c(brewer.pal(n = 8, name = "Dark2"), "#1B9E77", "#D95F02", '#F781BF')
-names(afterpalette) = unique(data[infection_status_long == 'after birth']$subject_id)
-
-palette = c(uteropalette, afterpalette)
+baseline = intervals[variable %like% 'baseline']
 
 plot3 = ggplot()+
-    geom_point(data = data[count > 1][infection_status_long == 'in-utero'], aes(x = apd, y = observed_time_since_infection, color = as.factor(subject_id)), shape = 'circle', size = 5, alpha = 0.8) +
-    geom_point(data = data[count > 1][infection_status_long == 'after birth'], aes(x = apd, y = observed_time_since_infection, color = as.factor(subject_id)), shape = 'triangle', size = 5, alpha = 0.8) +
-    geom_abline(data = subset2[infection_status_long == 'in-utero'], aes(intercept = 0, slope = mean, color = as.factor(subject_id)), linewidth = 2, alpha = 0.8)+
-    geom_abline(data = subset2[infection_status_long == 'after birth'], aes(intercept = 0, slope = mean, color = as.factor(subject_id)), linetype = '51', linewidth = 2, alpha = 0.8)+
-    facet_grid(rows = vars(fragment_long), cols = vars(infection_status_long)) +
+    geom_point(data = data[infection_status_long == 'in-utero'], aes(x = apd, y = observed_time_since_infection, color = as.factor(subject_id)), shape = 16, size = 5, alpha = 0.8) +
+    geom_point(data = data[infection_status_long == 'after birth'], aes(x = apd, y = observed_time_since_infection, color = as.factor(subject_id)), shape = 17, size = 5, alpha = 0.8) +
+    geom_abline(data = subset2, aes(intercept = 0, slope = mean, color = as.factor(subject_id), linetype = infection_status_long), linewidth = 1.5, alpha = 0.8)+
+    facet_grid(cols = vars(fragment_long), rows = vars(infection_status_long)) +
     # facet_grid(cols = vars(fragment_long)) +
+    scale_color_manual(breaks = names(subj_to_status), guide  = guide_legend(ncol = 10, override.aes = list(linetype = status2line[subj_to_status], shape = status2shape[subj_to_status])), values = subj_to_palette[names(subj_to_status)], name = 'Individual') +
+    scale_shape_manual(values = status2shape, guide= "none")+
+    scale_linetype_manual(values = status2line, guide= "none")+
     theme_cowplot(font_family = 'Arial') +
-    theme(axis.text = element_text(size = 25), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 30), axis.line = element_blank(), text = element_text(size = 37), axis.ticks = element_line(color = 'gray60', size = 1.5), legend.position="bottom", legend.direction="horizontal", legend.justification="center", legend.key.width = unit(3, 'line')) +
+    theme(axis.text = element_text(size = 25), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 30), axis.line = element_blank(), text = element_text(size = 37), axis.ticks = element_line(color = 'gray60', size = 1.5), legend.position="bottom", legend.direction="horizontal", legend.justification="center", legend.key.width = unit(3.5, 'line')) +
     background_grid(major = 'xy') +
-    ylab('Time since infection (years)\n') +
+    ylab('True time since infection (years)\n') +
     xlab('\nAverage pairwise diversity\n')+
-    scale_color_manual(values = palette) +
-    labs(color = 'Individual') +
-    panel_border(color = 'gray60', size = 2) +
-    guides(color=guide_legend(ncol=7))
+    panel_border(color = 'gray60', size = 2) 
 
 name3 = paste0('plots/manuscript_figs/apd_time_model_slopes.pdf')
-ggsave(name3, plot = plot3, width = 14, height = 20, units = 'in', dpi = 750, device = cairo_pdf)
+ggsave(name3, plot = plot3, width = 20, height = 14, units = 'in', dpi = 750, device = cairo_pdf)
 
-# extra = intervals[variable %like% 'baseline' | variable %like% 'reparam']
-# extra[, total_mean := mean]
-# extra[variable %like% 'frag', total_mean := total_mean + extra[variable %like% 'baseline']$mean]
-# plot4 = ggplot()+
-#     geom_point(data = data[count > 1], aes(x = apd, y = observed_time_since_infection, color = as.factor(subject_id)), size = 5, alpha = 0.8) +
-#     geom_abline(data = subset2, aes(intercept = 0, slope = mean, color = as.factor(subject_id)), linewidth = 2, alpha = 0.8)+
-#     facet_grid(rows = vars(fragment_long), cols = vars(infection_status_long)) +
-#     # facet_grid(cols = vars(fragment_long)) +
+# baseline = intervals[variable %like% 'baseline']
+# valid = valid[order(observed_time_since_infection)]
+
+# cred_int = data.table(apd = seq(0, 0.0402, by = 0.0001))
+# cred_int[, lower := baseline[['5.5%']] * apd]
+# cred_int[, upper := baseline[['94.5%']] * apd]
+
+# tog = data.table() 
+# for (f in unique(valid$fragment_long)){
+#     for (i in unique(valid$infection_status_long)){
+
+#         temp = cred_int
+#         temp$fragment_long = f
+
+#         tog = rbind(tog, cred_int)
+
+#     }
+# }
+
+# plot4 = ggplot(valid) +
+#     geom_point(aes(y = observed_time_since_infection, x = apd, color = as.factor(subject_id), shape = infection_status_long), size = 5, alpha = 0.6) +
+#     geom_path(aes(y = observed_time_since_infection, x = apd, linetype = infection_status_long, color = as.factor(subject_id)), linewidth = 1.5, alpha = 0.6, key_glyph = 'abline') +
+#     geom_abline(data = baseline, aes(intercept = 0, slope = mean), color = 'black', linewidth = 2.5) +
+#     geom_ribbon(data = cred_int, aes(x = apd, ymin = lower, ymax = upper), fill = 'gray', alpha = 0.3) +
+#     facet_grid2(cols = vars(fragment_long), rows = vars(infection_status_long)) +
+#     scale_color_manual(breaks = names(subj_to_status), guide  = guide_legend(ncol = 10, override.aes = list(linetype = status2line[subj_to_status], shape = status2shape[subj_to_status])), values = subj_to_palette[names(subj_to_status)], name = 'Individual') +
+#     scale_shape_manual(values = status2shape, guide= "none")+
+#     scale_linetype_manual(values = status2line, guide= "none")+
 #     theme_cowplot(font_family = 'Arial') +
-#     theme(axis.text = element_text(size = 25), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 30), axis.line = element_blank(), text = element_text(size = 37), axis.ticks = element_line(color = 'gray60', size = 1.5), legend.position="bottom", legend.direction="horizontal", legend.justification="center", legend.key.width = unit(3, 'line')) +
+#     theme(axis.text = element_text(size = 25), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 30), axis.line = element_blank(), text = element_text(size = 37), axis.ticks = element_line(color = 'gray60', size = 1.5), legend.position="bottom", legend.direction="horizontal", legend.justification="center", legend.key.width = unit(3.5, 'line')) +
 #     background_grid(major = 'xy') +
-#     ylab('Time since infection (years)\n') +
-#     xlab('\nAverage pairwise diversity\n')+
-#     labs(color = 'Individual') +
-#     panel_border(color = 'gray60', size = 2) +
-#     guides(color=guide_legend(ncol=7))
+#     ylab('\nTrue time since infection (years)\n') +
+#     xlab('Average pairwise diversity\n')+
+#     panel_border(color = 'gray60', size = 2)
 
 
+# name4 = paste0('plots/manuscript_figs/apd_time_with_baseline.pdf')
+# ggsave(name4, plot = plot4, width = 22, height = 14, units = 'in', dpi = 750, device = cairo_pdf)
 
-# print(intervals[variable %like% 'subject_slope_delta'])
-# print(intervals[variable %like% 'fragment'])
 
-# BAYES_FACTOR_VARIATION <<- 'with_infection_time'
-
-# source('config/config.R')
-# source(paste0(PROJECT_PATH, '/config/file_paths.R'))
-# source(paste0(PROJECT_PATH, '/scripts/model_fitting_functions.R'))
-# source(paste0(PROJECT_PATH, '/scripts/bayes_factor_functions.R'))
-
-# # fit model without indicated variation
-# NO_VAR_MODEL_FILE <<- str_replace(MODEL_FILE, '[.]stan', paste0('_', BAYES_FACTOR_VARIATION, '_variation.stan'))
-# no_var_model = fit_model(infant_data, model_file = NO_VAR_MODEL_FILE, total_iterations = 40000)
-
-# var_intervals = get_posterior_interval_data(no_var_model, prob = 0.89)
-# print(var_intervals[variable %like% 'infection_time_slope_delta'])
-
-all = align_plots(plot, plot2, align = 'vh', axis = 'tb')
-
-grid = plot_grid(all[[2]], NULL, all[[1]], nrow = 3, rel_heights = c(1.2, 0.1, 1), labels = c('A', '', 'B'), label_size = 35) 
-
-name3 = paste0('plots/manuscript_figs/apd_time_together.pdf')
-ggsave(name3, grid, width = 20, height = 30, units = 'in', dpi = 750, device = cairo_pdf)
 

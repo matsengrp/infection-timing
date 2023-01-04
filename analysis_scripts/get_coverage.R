@@ -29,3 +29,8 @@ loocv = fread(file_name)
 
 results = get_posterior_prediction_coverage(loocv, data)
 print(results)
+
+# get accuracy
+intervals = results$data
+intervals[, diff := q0.945 - q0.255]
+intervals[, median(diff), by = fragment]
