@@ -167,8 +167,6 @@ plot2_temp2 = ggplot(valid[fragment == 3]) +
 name2 = paste0('plots/manuscript_figs/apd_time_temp2.pdf')
 ggsave(name2, plot = plot2_temp2, width = 15, height = 10.5, units = 'in', dpi = 750, device = cairo_pdf)
 
-
-
 baseline = intervals[variable %like% 'baseline']
 
 plot3 = ggplot()+
