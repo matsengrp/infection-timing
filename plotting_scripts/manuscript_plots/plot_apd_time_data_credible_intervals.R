@@ -129,6 +129,44 @@ plot2 = ggplot(valid) +
 name2 = paste0('plots/manuscript_figs/apd_time.pdf')
 ggsave(name2, plot = plot2, width = 22, height = 14, units = 'in', dpi = 750, device = cairo_pdf)
 
+subj_to_status_temp = subj_to_status[names(subj_to_status) %in% as.character(unique(valid[fragment == 3]$subject_id))]
+plot2_temp = ggplot(valid[fragment == 3]) +
+    geom_point(aes(x = observed_time_since_infection, y = apd, color = as.factor(subject_id), shape = infection_status_long), size = 5, alpha = 0.8) +
+    geom_line(aes(x = observed_time_since_infection, y = apd, linetype = infection_status_long, color = as.factor(subject_id)), linewidth = 1.5, alpha = 0.8, key_glyph = 'abline') +
+    geom_abline(intercept = 0, slope = 0.008, color = 'black', linewidth = 3.5)+
+    facet_grid2(cols = vars(infection_status_long)) +
+    scale_color_manual(breaks = names(subj_to_status_temp), guide  = guide_legend(ncol = 6, override.aes = list(linetype = status2line[subj_to_status_temp], shape = status2shape[subj_to_status_temp])), values = subj_to_palette[names(subj_to_status_temp)], name = 'Individual') +
+    scale_shape_manual(values = status2shape, guide= "none")+
+    scale_linetype_manual(values = status2line, guide= "none")+
+    theme_cowplot(font_family = 'Arial') +
+    theme(axis.text = element_text(size = 25), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 30), axis.line = element_blank(), text = element_text(size = 37), axis.ticks = element_line(color = 'gray60', size = 1.5), legend.position="bottom", legend.direction="horizontal", legend.justification="center", legend.key.width = unit(3.5, 'line')) +
+    background_grid(major = 'xy') +
+    xlab('\nTrue time since infection (years)\n') +
+    ylab('Viral diversity\n')+
+    panel_border(color = 'gray60', size = 2)
+
+name2 = paste0('plots/manuscript_figs/apd_time_temp.pdf')
+ggsave(name2, plot = plot2_temp, width = 15, height = 10.5, units = 'in', dpi = 750, device = cairo_pdf)
+
+plot2_temp2 = ggplot(valid[fragment == 3]) +
+    geom_point(aes(x = observed_time_since_infection, y = apd, color = as.factor(subject_id), shape = infection_status_long), size = 5, alpha = 0.8) +
+    geom_line(aes(x = observed_time_since_infection, y = apd, linetype = infection_status_long, color = as.factor(subject_id)), linewidth = 1.5, alpha = 0.8, key_glyph = 'abline') +
+    geom_abline(intercept = 0, slope = 0.008, color = 'black', linewidth = 3.5)+
+    geom_abline(intercept = 0, slope = 0.002, color = 'red', linewidth = 3.5)+
+    facet_grid2(cols = vars(infection_status_long)) +
+    scale_color_manual(breaks = names(subj_to_status_temp), guide  = guide_legend(ncol = 6, override.aes = list(linetype = status2line[subj_to_status_temp], shape = status2shape[subj_to_status_temp])), values = subj_to_palette[names(subj_to_status_temp)], name = 'Individual') +
+    scale_shape_manual(values = status2shape, guide= "none")+
+    scale_linetype_manual(values = status2line, guide= "none")+
+    theme_cowplot(font_family = 'Arial') +
+    theme(axis.text = element_text(size = 25), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 30), axis.line = element_blank(), text = element_text(size = 37), axis.ticks = element_line(color = 'gray60', size = 1.5), legend.position="bottom", legend.direction="horizontal", legend.justification="center", legend.key.width = unit(3.5, 'line')) +
+    background_grid(major = 'xy') +
+    xlab('\nTrue time since infection (years)\n') +
+    ylab('Viral diversity\n')+
+    panel_border(color = 'gray60', size = 2)
+
+name2 = paste0('plots/manuscript_figs/apd_time_temp2.pdf')
+ggsave(name2, plot = plot2_temp2, width = 15, height = 10.5, units = 'in', dpi = 750, device = cairo_pdf)
+
 baseline = intervals[variable %like% 'baseline']
 
 plot3 = ggplot()+
