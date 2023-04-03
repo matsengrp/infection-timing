@@ -22,26 +22,6 @@ source(paste0(PROJECT_PATH, '/scripts/adult_style_model_functions.R'))
 # get adult model results
 name = str_split(TRAINING_INFANT_DATA_PATH, '/')[[1]][length(str_split(TRAINING_INFANT_DATA_PATH, '/')[[1]])]
 name = str_replace(name, '.csv', '')
-file_name = file.path(OUTPUT_PATH, 'adult_model_estimates', paste0('adult_model_estimates_', name, '.csv'))
-
-results = fread(file_name)
-results[, inftimeyears := inftimemonths/12]
-results[, year_visit := month_visit/12]
-results[, observed_time_since_infection := year_visit - inftimeyears]
-setnames(results, 'adult_model_time_since_infection_estimates', 'mean')
-setnames(results, 'fragment_int', 'fragment')
-setnames(results, 'ptnum', 'subject_id')
-results$model = 'adult-trained\nlinear models'
-adult_mae = calculate_mae_dt(results, by_fragment = TRUE, var = 'mean')
-adult_mae$model = 'adult-trained\nlinear models'
-
-# get adult-style model results
-file_name = get_adult_style_model_loocv_name()
-adult_style_results = fread(file_name)
-setnames(adult_style_results, 'adult_style_model_time_since_infection_estimates', 'mean')
-adult_style_results$model = 'infant-trained\nlinear models'
-adult_style_mae = calculate_mae_dt(adult_style_results, by_fragment = TRUE, var = 'mean')
-adult_style_mae$model = 'infant-trained\nlinear models'
 
 # get infant model results
 name = str_split(TRAINING_INFANT_DATA_PATH, '/')[[1]][length(str_split(TRAINING_INFANT_DATA_PATH, '/')[[1]])]
@@ -66,8 +46,8 @@ Laplace_posterior_means$model = 'infant-trained\nhierarchical\nmodel (Laplace)'
 Laplace_infant_mae = calculate_mae_dt(Laplace_posterior_means, by_fragment = TRUE, var = 'mean')
 Laplace_infant_mae$model = 'infant-trained\nhierarchical\nmodel (Laplace)'
 
-together = rbind(results, adult_style_results, posterior_means, Laplace_posterior_means, fill = TRUE)
-mae = rbind(adult_mae, adult_style_mae, infant_mae, Laplace_infant_mae)
+together = rbind(posterior_means, Laplace_posterior_means, fill = TRUE)
+mae = rbind(infant_mae, Laplace_infant_mae)
 
 together$difference = together$mean - together$observed_time_since_infection
 together[fragment == 1, fragment_long := 'gene region 1 (within gag)']
@@ -101,21 +81,19 @@ intervals$model = 'infant-trained\nhierarchical\nmodel (Normal)'
 Laplace_intervals = get_posterior_prediction_coverage(Laplace_loocv, actual_times = data)$data
 Laplace_intervals$mean = Laplace_intervals[['q0.5']]
 Laplace_intervals$model = 'infant-trained\nhierarchical\nmodel (Laplace)'
-adult_style_results$model = 'infant-trained\nlinear models'
 
-tog = rbind(Laplace_intervals, intervals, adult_style_results, fill = TRUE)
+tog = rbind(Laplace_intervals, intervals, fill = TRUE)
 
 relation = data.table()
 for (frag in c(1, 2, 3)){
     heir = lm(intervals[fragment == frag]$mean ~ intervals[fragment == frag]$observed_time_since_infection)
     heir2 = lm(Laplace_intervals[fragment == frag]$mean ~ Laplace_intervals[fragment == frag]$observed_time_since_infection)
 
-    lin = lm(adult_style_results[fragment == frag]$mean ~ adult_style_results[fragment == frag]$observed_time_since_infection)
     region = ' (within pol)'
     if (frag == 1){
         region = ' (within gag)'
     }
-    temp_relation = data.table(model = c(paste0('infant-trained\nhierarchical\nmodel (Normal)'), paste0('infant-trained\nhierarchical\nmodel (Laplace)'), paste0('infant-trained\nlinear models')), r2 = c(round(summary(heir)$r.squared, 3), round(summary(heir2)$r.squared, 3), round(summary(lin)$r.squared, 3)), slope = c(round(coef(heir)[['intervals[fragment == frag]$observed_time_since_infection']], 3), round(coef(heir2)[['Laplace_intervals[fragment == frag]$observed_time_since_infection']], 3), round(coef(lin)[['adult_style_results[fragment == frag]$observed_time_since_infection']], 3)), intercept = c(round(coef(heir)[['(Intercept)']], 3), round(coef(heir2)[['(Intercept)']], 3),round(coef(lin)[['(Intercept)']], 3)))
+    temp_relation = data.table(model = c(paste0('infant-trained\nhierarchical\nmodel (Normal)'), paste0('infant-trained\nhierarchical\nmodel (Laplace)')), r2 = c(round(summary(heir)$r.squared, 3), round(summary(heir2)$r.squared, 3)), slope = c(round(coef(heir)[['intervals[fragment == frag]$observed_time_since_infection']], 3), round(coef(heir2)[['Laplace_intervals[fragment == frag]$observed_time_since_infection']], 3)), intercept = c(round(coef(heir)[['(Intercept)']], 3), round(coef(heir2)[['(Intercept)']], 3)))
     temp_relation[, fragment_long := paste0('gene region ', frag, region)]
     relation = rbind(temp_relation, relation)
     tog[fragment == frag, fragment_long := paste0('gene region ', frag, region)]
@@ -140,10 +118,9 @@ plot2 = ggplot(tog) +
 
 all = align_plots(plot2,plot_hist_val,align = 'vh', axis = 'lr')
 
-grid = plot_grid(all[[2]], NULL, all[[1]], nrow = 3, rel_heights = c(1.2, 0.05, 1.6), labels = c('A', '', 'B'), label_size = 35) 
+grid = plot_grid(all[[2]], NULL, all[[1]], nrow = 3, rel_heights = c(1, 0.05, 1.6), labels = c('A', '', 'B'), label_size = 35) 
 
 name3 = paste0('plots/manuscript_figs/training_error_together_with_Laplace.pdf')
-ggsave(name3, grid, width = 40, height = 38, units = 'in', dpi = 750, device = cairo_pdf, limitsize = FALSE)
+ggsave(name3, grid, width = 40, height = 26, units = 'in', dpi = 750, device = cairo_pdf, limitsize = FALSE)
 
 print(summary(lm(intervals$mean ~ intervals$observed_time_since_infection)))
-print(summary(lm(adult_style_results$mean ~ adult_style_results$observed_time_since_infection)))
