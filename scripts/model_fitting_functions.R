@@ -95,7 +95,7 @@ index_infection_time <- function(data){
 }
 
 
-configure_data <- function(data_path, time_known = TRUE, include_vl = FALSE, include_max_vl = FALSE){
+configure_data <- function(data_path, time_known = TRUE, include_vl = FALSE, include_max_vl = FALSE, include_meta_data = FALSE, meta_data_path = NULL){
     data = check_data(data_path, time_known)
     # remove NA cases
     data = data[!(is.na(pass2_APD))]
@@ -154,6 +154,14 @@ configure_data <- function(data_path, time_known = TRUE, include_vl = FALSE, inc
         average_subset = index_infection_time(average_subset)
     }
 
+    if (isTRUE(include_meta_data)){
+        stopifnot(!is.null(meta_data_path))
+        average_subset = get_cd_data(average_subset, meta_data_path)
+        average_subset = get_cd_rate(average_subset, meta_data_path)
+        average_subset = index_subjects(average_subset)
+        average_subset = index_infection_time(average_subset)
+    }
+
     data_list = list(
                      observation_count = nrow(average_subset), 
                      subject_count = length(unique(average_subset$ptnum)), 
@@ -176,7 +184,14 @@ configure_data <- function(data_path, time_known = TRUE, include_vl = FALSE, inc
     if (isTRUE(include_max_vl)){
         data_list[['max_vload']] = average_subset$log10_max_vload
     }
-
+    if (isTRUE(include_meta_data)){
+        data_list[['avg_cd4']] = average_subset$avg_cd4
+        data_list[['avg_cd8']] = average_subset$avg_cd8
+        data_list[['cd4rate']] = average_subset$cd4rate
+        data_list[['cd8rate']] = average_subset$cd8rate
+        data_list[['percent_cd4rate']] = average_subset$percent_cd4rate
+        data_list[['percent_cd8rate']] = average_subset$percent_cd8rate
+    }
     return(data_list)
 }
 
@@ -252,4 +267,37 @@ get_max_vload_data <- function(data_path, time_known = TRUE){
     setnames(maxvl, 'V1', 'max_vload')
     maxvl[, log10_max_vload := log10(max_vload)]
     return(maxvl)
+}
+
+get_cd_data <- function(data, meta_data_path){
+    meta = fread(meta_data_path)
+    meta[, month_visit := as.numeric(substring(visit, 2))]
+    meta[, count := .N, by = .(idnum)]
+    meta[count > 1, avg_cd4 := mean(cd4pct), by = .(idnum)]
+    meta_subset = meta[count > 1, mean(cd8pct), by = .(idnum, avg_cd4)]
+    setnames(meta_subset, 'V1', 'avg_cd8')
+
+    tog = merge(data, meta_subset, by.x = c('ptnum'), by.y = c('idnum'))
+    return(tog)
+}
+
+get_cd_rate <- function(data, meta_data_path){
+    meta = fread(meta_data_path)
+    meta[, month_visit := as.numeric(substring(visit, 2))]
+    meta[, year_visit := month_visit/12]
+    meta[, count := .N, by = .(idnum)]
+    temp = data.table()
+
+    for (i in unique(meta[count > 1]$idnum)){
+        t = meta[idnum == i]
+        cd4rate = lm(data = t, cd4cnt ~ year_visit)$coefficients['year_visit']
+        cd8rate = lm(data = t, cd8cnt ~ year_visit)$coefficients['year_visit']
+        percent_cd4rate = lm(data = t, cd4pct ~ year_visit)$coefficients['year_visit']
+        percent_cd8rate = lm(data = t, cd8pct ~ year_visit)$coefficients['year_visit']
+
+        temp = rbind(temp, data.table(idnum = i, cd4rate = cd4rate, cd8rate = cd8rate, percent_cd4rate = percent_cd4rate, percent_cd8rate = percent_cd8rate))
+    }
+
+    tog = merge(data, temp, by.x = c('ptnum'), by.y = c('idnum'))
+    return(tog)
 }
