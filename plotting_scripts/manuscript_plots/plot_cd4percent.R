@@ -81,7 +81,7 @@ subj_to_status = subj_to_status[order(subj_to_status)]
 subj_to_palette = subj_to_palette[order(subj_to_palette)]
 
 plot = ggplot(tog[order(observed_time_since_infection)])+
-    geom_point(aes(x = percent_cd4rate, y = mean, shape = infection_status_long, color = as.factor(subject_id)), size = 5, alpha = 0.8) +
+    geom_point(aes(x = avg_cd4, y = mean, shape = infection_status_long, color = as.factor(subject_id)), size = 5, alpha = 0.8) +
     facet_grid(cols = vars(fragment_long), rows = vars(infection_status_long)) +
     # facet_grid(cols = vars(fragment_long)) +
     scale_color_manual(breaks = names(subj_to_status), guide  = guide_legend(ncol = 10, override.aes = list(shape = status2shape[subj_to_status])), values = subj_to_palette[names(subj_to_status)], name = 'Individual') +
@@ -89,10 +89,10 @@ plot = ggplot(tog[order(observed_time_since_infection)])+
     theme_cowplot(font_family = 'Arial') +
     theme(axis.text = element_text(size = 25), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 30), axis.line = element_blank(), text = element_text(size = 37), axis.ticks = element_line(color = 'gray60', size = 1.5), legend.position="bottom", legend.direction="horizontal", legend.justification="center") +
     background_grid(major = 'xy') +
-    xlab('\nRate of change in CD4+ T cell percentage\n') +
+    xlab('\nAverage CD4+ T cell percentage\n') +
     ylab('Median APD slope (years/diversity)\n')+
     labs(color = 'Individual') +
     panel_border(color = 'gray60', size = 2) 
 
-name = paste0('plots/manuscript_figs/apd_slope_cd4percent_rate.pdf')
+name = paste0('plots/manuscript_figs/apd_slope_cd4percent.pdf')
 ggsave(name, plot = plot, width = 20, height = 14, units = 'in', dpi = 750, device = cairo_pdf)
