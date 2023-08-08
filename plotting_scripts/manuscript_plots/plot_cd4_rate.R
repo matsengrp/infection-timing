@@ -11,6 +11,7 @@ library(plyr)
 TIME_CORRECTION_TYPE <<- 'beta'
 NCPU <<- 2
 PREPROCESS_DATA <<-  TRUE
+MAP_SUBJECTS <<- TRUE
 
 source('config/config.R')
 source(paste0(PROJECT_PATH, '/config/file_paths.R'))
@@ -24,9 +25,18 @@ infant_data = configure_data(TRAINING_INFANT_DATA_PATH)
 data = infant_data
 data$number = seq(1, length(data$is_post))
 data = as.data.table(data)
+if (isTRUE(MAP_SUBJECTS)){
+    map = fread('_ignore/subject_mapping.tsv')
+    data = merge(data, map, by = 'subject_id')
+    subject_var = 'subject_map'
+} else {
+    subject_var = 'subject_id'
+}
 
 cd4_data = configure_data(TRAINING_INFANT_DATA_PATH, include_meta_data = TRUE, meta_data_path = TRAINING_INFANT_METADATA_PATH)
 cd4_data = as.data.table(cd4_data)
+cols = c('percent_cd4rate', 'subject_id')
+cd4_data = unique(cd4_data[, ..cols])
 
 model = load_model_fit()
 intervals = get_posterior_interval_data(model, prob = 0.89)
@@ -37,10 +47,10 @@ subset$number = as.numeric(str_remove(subset$number, '\\]'))
 subset = subset[order(number)]
 
 together = merge(subset, data, by = 'number')
-cols = c('5.5%', '94.5%', 'mean', 'infection_status', 'fragment', 'subject_id')
+cols = c('5.5%', '94.5%', 'mean', 'infection_status', 'fragment', subject_var, 'subject_id')
 
 subset2 = unique(together[, ..cols])
-row_count = nrow(data[, .N, by = .(subject_id, fragment)])
+row_count = nrow(data[, .N, by = .(get(subject_var), fragment)])
 stopifnot(nrow(subset2) == row_count)
 
 subset2[fragment == 1, fragment_long := 'Gene region 1 (within gag)']
@@ -53,35 +63,39 @@ subset2$converted_mean = 1/subset2$mean
 subset2$converted_cred_int_5 = 1/subset2$cred_int_5
 subset2$converted_cred_int_95 = 1/subset2$cred_int_95
 
-tog = merge(cd4_data, subset2)
+tog = merge(cd4_data, subset2, by = 'subject_id')
 
 tog$infection_status_long = factor(tog$infection_status_long, levels = c('in-utero', 'after birth'))
 
 uteropalette = c(brewer.pal(n = 8, name = "Dark2"), "#E41A1C", "#377EB8", '#F781BF')
-names(uteropalette) = unique(tog[infection_status_long == 'in-utero']$subject_id)
+names(uteropalette) = unique(tog[infection_status_long == 'in-utero'][[subject_var]])
 afterpalette = c(brewer.pal(n = 8, name = "Dark2"), "#E41A1C", "#377EB8", '#F781BF')
-names(afterpalette) = unique(tog[infection_status_long == 'after birth']$subject_id)
+afterpalette = afterpalette[-2]
+names(afterpalette) = unique(tog[infection_status_long == 'after birth'][[subject_var]])
 
 palette = c(uteropalette, afterpalette)
 palette = palette[!is.na(names(palette))]
 palette_df = data.frame(palette)
-palette_df$subject_id = as.numeric(rownames(palette_df))
+palette_df[[subject_var]] = as.numeric(rownames(palette_df))
 
-tog = merge(tog, palette_df, by = 'subject_id')
+tog = merge(tog, palette_df, by = subject_var)
 
 # Make lookup tables
-subj_to_status = setNames(tog$infection_status_long, as.factor(tog$subject_id))
+subj_to_status = setNames(tog$infection_status_long, as.factor(tog[[subject_var]]))
 status2shape = c("in-utero" = 16, "after birth" = 17)
-subj_to_palette = setNames(tog$palette, as.factor(tog$subject_id)) 
+status2line = c("in-utero" = 'solid', "after birth" = '41')
+subj_to_palette = setNames(tog$palette, as.factor(tog[[subject_var]])) 
 
 # # Make subj_to_status unique without dropping names
-subj_to_status = subj_to_status[!duplicated(tog[, c("subject_id", "infection_status_long")])]
-subj_to_palette = subj_to_palette[!duplicated(tog[, c("subject_id", "palette")])]
+it_cols = c(subject_var, 'infection_status_long')
+p_cols = c(subject_var, 'palette')
+subj_to_status = subj_to_status[!duplicated(tog[, ..it_cols])]
 subj_to_status = subj_to_status[order(subj_to_status)]
+subj_to_palette = subj_to_palette[!duplicated(tog[, ..p_cols])]
 subj_to_palette = subj_to_palette[order(subj_to_palette)]
 
-plot = ggplot(tog[order(observed_time_since_infection)])+
-    geom_point(aes(x = percent_cd4rate, y = mean, shape = infection_status_long, color = as.factor(subject_id)), size = 5, alpha = 0.8) +
+plot = ggplot(tog)+
+    geom_point(aes(x = percent_cd4rate, y = mean, shape = infection_status_long, color = as.factor(get(subject_var))), size = 5, alpha = 0.8) +
     facet_grid(cols = vars(fragment_long), rows = vars(infection_status_long)) +
     # facet_grid(cols = vars(fragment_long)) +
     scale_color_manual(breaks = names(subj_to_status), guide  = guide_legend(ncol = 10, override.aes = list(shape = status2shape[subj_to_status])), values = subj_to_palette[names(subj_to_status)], name = 'Individual') +
