@@ -189,7 +189,6 @@ predict <- function(data, model, type = 'MCMC'){
     posteriors = predict_posterior(data, model, newdata, type)
     posteriors = posteriors$posteriors
     posterior_mean_dt = posteriors$medians
-    #TODO alter this once using complete dataset
     if (isFALSE(newdata)){
         observed_time_corrections = get_mean_observed_time_to_time_since_infection_prediction(data, model, type)
         posterior_mean_dt = merge(posterior_mean_dt, observed_time_corrections, by = 'subject_id')

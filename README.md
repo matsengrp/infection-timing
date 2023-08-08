@@ -1,130 +1,170 @@
+# infection-timing
 
-# Infection Timing (latest) Model Summary and Questions
+The goal of this project is to use viral sequence diversity to estimate HIV infection timing for infants using a variety of linear regression methods including Bayesian hierarchical regression and least-absolute-deviation regression. 
 
-## These are the assumptions we are currently making about the biology: 
+# Install
+Everything R 4.1.1 based. R packages that are required can be installed via [miniconda](https://docs.conda.io/en/latest/miniconda.html): 
 
-1. We are striving to estimate time since infection. 
-2. Individuals are infected in-utero, at birth, or through breastfeeding.
-4. For individuals infected in-utero, time points closer to the third trimester (of pregnancy) are most likely to be the infection time.
-5. Individuals infected through breastfeeding are infected at some point after one month of age.
-5. APD is defined to be the measure of average pairwise diversity at the third codon position using only sites at which the sum of all minor variants is greater than 0.01.
-6. APD is zero when time since infection is zero (infection time).
-7. APD of the sequence increases with time for most individuals.
-8. The rate of APD change over time may be different for each individual.
-9. The rate of APD change over time may be different for each sequence fragment.
-10. For individuals infected in-utero, time since infection will be greater than the observed time (age at sampling time) *
-11. For individuals infected at birth, time since infection will be equal to observed time *
-12. For individuals infected through breastfeeding (after birth), time since infection will be less than the observed time (age at sampling time) *
+```bash 
+conda env create -f environment.yml
+conda activate infection-timing 
+```
 
-`*` -- *see time clarification example in the model explanation section*.
+If you would like to run analyses involving previously-trained adult-specific least-absolute-deviation models and code (Puller et. al, PLoS Computational Biology 2017), we have built a separate Python-2-based conda environment which can be activated as follows:
 
-#  
+```bash 
+conda env create -f py2_environment.yml
+conda activate infection-timing_py2 
+```
 
-## Data processing/filtering for training and testing the model:
+# Analysis outline: 
 
-* We are excluding data when, for a given subject and sequence fragment, we only have one sample time point.
-* For samples which have more than 2 replicates, we are including only the first 2 replicates for which we have data.
-* We are averaging these two sample replicates for each subject and sequence fragment to get the final APD value used in model fitting 
+__Table of Contents:__
 
-## Here are some definitions we will use in the model explanation:
+* [Data preparation](#data_preparation)
+* [Model training](#model-training)
+    * [Summary of model types](#model-types)
+* [Calculating Bayes Factors](#calculating-bayes_factors)
+* [Model evaluation](#model-evaluation)
+    * [Summary of model evaluation options](#model-evaluation-options)
+* [Model validation](#model-validation)
+    * [Summary of model validation options](#model-validation-options)
+* [Model prediction](#model-prediction)
+* [Plot results](#plot-results)
+* [Supplementary analyses](#supplementary-analyses)
+    * [Model coverage estimates](#model-coverage-estimates)
+    * [Model posterior predictive checks](#model-posterior-predictive-checks)
 
-#### Key definitions:
+## Data preparation
 
-* `observation_count`:  the number of observations in the data.
-* `subject_count`:  the number of individuals (or subjects) in the data.
-* `fragment_count`:  the number of sequencing regions (or fragments) in the data.
-* `subject`: the unique identifier of an individual or subject.
-* `fragment`: the unique identifier of a sequencing region or fragment. 
-* `observed_time`:  the age of the individual at sampling time.
-* `time_since_infection`: the time since infection
-* `apd`: APD measurements (cutoff 0.01) from all runs for each individual (not an average)
-* `is_utero`: TRUE/FALSE indicating whether the individual was known to be infected in utero
-* `is_post`: TRUE/FALSE indicating whether the individual was known to be infected after birth
+All of the models presented here leverage HIV viral diversity measures (which we refer to as ADP) to estimate time since infection. The training and testing sequencing data sets used here were originally processed using this [data processing script](preprocess_sequence_data.R). 
 
-#### Other definitions (to be defined in the following model explanation)
-* `predicted_time_since_infection`
-* `time_since_infection_variance_estimate`
-* `total_slope`
-* `baseline_slope`
-* `subject_slope_delta`
-* `subject_slope_delta_mean_estimate`
-* `subject_slope_delta_variance_estimate`
-* `fragment_slope_delta`
-* `fragment_slope_delta_mean_estimate`
-* `fragment_slope_delta_variance_estimate`
-* `observed_time_to_time_since_infection_correction`
-* `predicted_observed_time`
+### Preparation for making model predictions using your own data with our pre-trained models
 
+We have provided our processed datasets [here](), however, if you would like to make predictions using your own data, make sure your data is in csv format and contains the following required columns:
 
-## Model Explanation: 
+* `Sample`: string containing patient identifier, gene region identifier, and sequencing run number (i.e. `1_F1_R1` would correspond to individual 1, sequencing fragment/gene region 1, and sequencing run 1)
+* `ptnum`: patient identifier
+* `pass2_APD`: viral diversity measure
+* `Fragment`: gene region identifier (i.e. `1` corresponds to gene region 1, `2` corresponds to gene region 2, etc.)
 
-1. We model `time_since_infection` to be normally distributed around a `predicted_time_since_infection` with a `time_since_infection_variance_estimate`.
-    * We choose to model `time_since_infection_variance_estimate` as a cauchy distribution with mean = 0 and standard deviation = 0.5.
-2. We model the function `apd` -> `predicted_time_since_infection` as a linear function with `predicted_time_since_infection` = `total_slope` * `apd`.
-3. We model `total_slope` to be the sum of a `baseline_slope`, a `subject_slope_delta`, and a `fragment_slope_delta`.
-4. We model the `baseline_slope` of this function as a uniform distribution, __*restricted to be positive*__.
-5. We define `subject_slope_delta` to be the difference in slope (or APD rate of change) from the `baseline_slope` defined uniquely for each subject. 
-We model the `subject_slope_delta` of this function as a normal distribution, with mean, `subject_slope_delta_mean_estimate`, and variance, `subject_slope_delta_variance_estimate`.
-    * We choose to model the `subject_slope_delta_mean_estimate` as a normal distribution with mean = 0 and standard deviation = 1.
-    * We choose to model the `subject_slope_delta_variance_estimate` as a cauchy distribution with mean = 0 and standard deviation = 20.
-6. We define `fragment_slope_delta` to be the difference in slope (or APD rate of change) from the `baseline_slope` defined uniquely for each fragment.
-We model the `fragment_slope_delta` of this function as a normal distribution, with mean, `fragment_slope_delta_mean_estimate`, and variance, `fragment_slope_delta_variance_estimate`.
-    * We choose to model the `fragment_slope_delta_mean_estimate` as a normal distribution with mean = 0 and standard deviation =1.
-    * We choose to model the `fragment_slope_delta_variance_estimate` as a cauchy distribution with mean = 0 and standard deviation = 5.
-7. Since the data does not directly measure `time_since_infection`, for training the model, we define an `observed_time_to_time_since_infection_correction` __*for each subject*__ which will act to convert between `time_since_infection` and `predicted_observed_time`.
-    * We choose to model the `observed_time_to_time_since_infection_correction` __*for individuals infected in utero*__ as a beta(1, 5) distribution bounded between 0 and 0.75 (years).
-    * We choose to model the `observed_time_to_time_since_infection_correction` __*for individuals infected after birth*__ as a uniform distribution between -1 and -0.0833 (years).
-8. We model `predicted_observed_time` to be the difference between `time_since_infection` and a __*subject specific*__ `observed_time_to_time_since_infection_correction`.
-*See time clarification example below...*
-9. Lastly, we model `observed_time` to be normally distributed around a `predicted_observed_time` with standard deviation = 0.1.
-#  
-__TIME CLARIFICATION EXAMPLE:__ 
-Infants can either be infected in utero, at birth, or post birth.
+After formatting your data to include these columns, if you would like to make predictions using our pre-trained models, proceed to the [Model prediction](#model-prediction) section.
 
-Say we have an infant that was infected two months before birth. 
-Say we have a sample taken for sequencing at six months post birth. 
-At six months, this individual will have an `observed_time` of 6 months. 
-However, since the individual was infected eight months prior to sampling, their `time_since_infection` will be 8 months at sampling time.
-The difference between the `time_since_infection` and the `observed_time` will be two months. 
-In the model, we define these two months as the `observed_time_to_time_since_infection_correction`--shown as "observed time correction" in the figure below. 
-![Infected in utero--time since infection vs. observed time](figs/utero.png)
+### Preparation for training models using your own data
 
-In equation form, this relationship for infants infected in utero is defined as follows: 
-## 
-<img src="https://render.githubusercontent.com/render/math?math=\text{observed\_time}  \approx  \text{time\_since\_infection} - \text{observed\_time\_to\_time\_since\_infection\_correction}">
+If you would like to train your own models using your own data, you will need several additional columns in your data:
 
+* `month_visit`: the month (post-birth) at which the diversity was sampled
+* `vload`: the viral load measured at the specified time point
+* `incat_hiv`: whether the individual was known to be infected in-utero or after birth
 
-Say we have an infant that was infected two months post birth. 
-Say we have a sample taken for sequencing at six months post birth. 
-At six months, this individual will have an `observed_time` of 6 months. 
-However, since the individual was infected four months prior to sampling, their `time_since_infection` will be 4 months at sampling time.
-The difference between the `time_since_infection` and the `observed_time` will be two months. 
-In the model, we define these two months as the `observed_time_to_time_since_infection_correction`--shown as "observed time correction" in the figure below. 
-![Infected post birth--time since infection vs. observed time](figs/post.png)
+After formatting your data to include these additional columns, if you would like to train your own models, proceed to the [Model training](#model-training) section.
 
-In equation form, this relationship for infants infected post birth is defined as follows: 
-## 
-<img src="https://render.githubusercontent.com/render/math?math=\text{observed\_time}  \approx  \text{time\_since\_infection} \+ \text{observed\_time\_to\_time\_since\_infection\_correction}">
+## Model training
 
-Say we have an infant that was infected at birth. 
-Say we have a sample taken for sequencing at six months post birth. 
-At six months, this individual will have an `observed_time` of 6 months. 
-Since the individual was infected at birth, their `time_since_infection` will also be 6 months at sampling time.
-This is shown in the figure below:
-![Infected at birth--time since infection vs. observed time](figs/birth.png)
+### Model types
 
-In equation form, this relationship for infants infected at birth is defined as follows: 
-## 
-<img src="https://render.githubusercontent.com/render/math?math=\text{observed\_time}  \approx  \text{time\_since\_infection}">
+Here is a summary of the main model options. You can find a description of additional model type options [here](scripts/stan_models/README.md) and [here](scripts/README.md)
 
-*Note that these relationship are approximate due to noise in fitting the model.*
-#  
+| **Model name (same as manuscript)** | Infant-trained hierarchical model | infant-trained linear models | adult-trained linear models |
+|-------------------------------------------------------------------------|
+| **Model type** | Bayesian hierarchical regression model | Least absolute deviation linear regression model | Least absolute deviation linear regression model |
+| **Data input** | Viral diversity measures (sampled from any of the three gene regions) | Viral diversity measures (sampled from any of the three gene regions), *but a unique model will be trained for each gene region in which data is sampled* | Viral diversity measures (sampled from any of the three gene regions), *but a unique model will be trained for each gene region in which data is sampled* | 
+| **Data output** | Distributions of estimated times since infection | Point estimates of time since infection | Point estimates of time since infection |
+| **Includes individual- and gene-region-specific slope-modifying terms? | Yes | No | No |
+| **Model count** | 1 | 1 per gene region region | 1 per gene region |
+| **Script used for model training** | [fit_infant_model](fit_infant_model.sh) | [fit_adult_style_model](fit_adult_style_model.sh) | NA (this model is pre-trained using adult data within Puller et. al, PLoS Comp Bio 2017) |
+| **Location where trained models will be stored** | [here](scripts/stan_models/model_fits) | [here](scripts/adult_style_models/model_fits) | NA |
 
-## Some questions to think about: 
+### Workflow
 
-1. Is a linear model the best approach? 
-Could we utilize another family of functions to better predict time since infection for small time, when viral load is increasing fastest? 
-2. Are we sequencing viral RNA or DNA?
-# 
+0. Download the training cohort data set using the [link]() provided in our manuscript or use your own data (but make sure the data is formatted the same as ours)
+1. Edit the [config](config/config.R) and [file paths](config/file_paths.R) files to be project and/or computer specific. See the [README](config/README.md) for more details.
+2. Train model using the model fitting script for your desired model (see table above; for the infant hierarchical model, use [this](fit_infant_model.sh) and for the infant linear models, use [this](fit_adult_style_model.sh). Both of these scripts can be run locally or on a cluster. If using the [fit_infant_model.sh](fit_infant_model.sh) script, it takes a single "time correction type" argument -- options are `uniform`, `beta`, `none`, or `beta_laplace` (see [here](scripts/stan_models/MODEL_DESCRIPTION.md) for more details; the `beta` argument is the one we use throughout the manuscript). The other model training scripts do not have any arguments.
 
-The current stan model can be found [here](scripts/stan_models/multilevel_infant_model_time_error_beta.stan).
+*Model fits will be stored in the location described in the table above (depending on the model type).*
+
+## Calculating Bayes Factors 
+
+If you would like to explore whether APD slopes vary in certain contexts (e.g. by individual, by gene region, etc.), you can use [this script](scripts/bayes_factor_test.R) to calculate Bayes Factors comparing two Bayesian models. This script takes 2 arguments:
+
+1. the time correction type -- options are `uniform`, `beta`, or `none` (e.g. `beta` is the one we use throughout the manuscript) 
+2. variation type -- options are described below:
+
+| **Variation type argument** | **Description** |
+|-----------------------------------------------|
+| `no_fragment` | Compare a model in which APD slopes vary by gene region to a model in which they don't |
+| `no_subject` | Compare a model in which APD slopes vary by individual to a model in which they don't |
+| `by_infection_time` | Compare a model in which APD slopes vary by mode of infection (i.e. relative timing of infection; either before birth or after birth) to a model in which they don't |
+| `with_vload` | Compare a model in which APD slopes vary with viral load to a model in which they don't |
+| `with_max_vload` | Compare a model in which APD slopes vary with maximum viral load to a model in which they don't |
+| `with_cd4_percent` | Compare a model in which APD slopes vary with percentage of CD4 cells to a model in which they don't |
+| `with_cd4_rate` | Compare a model in which APD slopes vary with rate of CD4 cell count decline to a model in which they don't |
+| `with_percent_cd4_rate` | Compare a model in which APD slopes vary with rate of CD4 cell percentage decline to a model in which they don't |
+
+This analysis will save a file containing the results in a directory called `bayes_factor_results` located in the indicated `OUTPUT_PATH` as specified in the [config](config) files
+
+## Model evaluation
+
+If you would like to evaluate the performance of a model using various subsets of the training data set (i.e. leave one out cross validation), you can use the [hierarchical model evaluation script](predict_with_infant_model_loocv.sh) or the [linear model evaluation script](predict_with_adult_style_model_loocv.sh). 
+
+Both of these scripts can be run locally or on a cluster. If using the hierarchical model evaluation script, it takes a single "time correction type" argument -- options are `uniform`, `beta`, `none`, or `beta_laplace` (see [here](scripts/stan_models/MODEL_DESCRIPTION.md) for more details; the `beta` argument is the one we use throughout the manuscript). The other model evaluation scripts do not have any arguments.
+
+All output files will be located in a directory called `model_loocv` within the `OUTPUT_PATH` as specified in the [config](config) file
+
+## Model prediction 
+
+If you would like to use the model to make predictions on a new data set and/or validate the model on a testing data set, you can follow these steps:
+    
+1. Download the processed testing data set, and make sure it contains the same column names as the training data set 
+2. Edit [config](config/config.R) file to be project and/or computer specific (be sure to add the path to the file from the last step)
+2. Run the [infant-trained hierarchical model prediction script](predict_with_infant_model.sh), [infant-trained linear model prediction script](predict_with_adult_style_model.sh), or the [adult-trained linear model prediction script](predict_with_adult_model.sh). Each of these scripts require different arguments: 
+
+The [infant-trained hierarchical model prediction script](predict_with_infant_model.sh) requires two arguments:
+
+    1. the time correction type--options are `none`, `beta`, or `uniform`
+    2. the path to the dataset you want to make predictions for
+
+The [infant-trained linear model prediction script](predict_with_adult_style_model.sh) requires one argument:
+
+    1. the path to the dataset you want to make predictions for
+
+The [adult-trained linear model prediction script](predict_with_adult_style_model.sh) requires two arguments:
+
+    1. the path to the dataset you want to make predictions for
+    2. whether the true time since infection is known--options are `TRUE` or `FALSE`
+
+All output files will be located in a directory called `model_predictions` within the `OUTPUT_PATH` as specified in the [config](config) file
+
+## Plot results
+
+Plot [figures](plotting_scripts/manuscript_plots) from the manuscript.
+
+Also, have a look at the plotting [README](plotting_scripts/README.md) for more details.
+
+## Supplementary analyses
+
+### Model coverage estimates
+
+If you would like to compute the coverage interval for the predictions from the infant-trained Bayesian hierarchical regression model, you can run the [coverage script](analysis_scripts/get_coverage.R)
+
+### Model posterior predictive checks
+
+If you would like to conduct a series of posterior predictive checks for the infant-trained Bayesian hierarchical regression model, you can run the [posterior predictive checks script](posterior_pred_check.R)
+
+# About the analysis
+
+With this analysis, we want to quantify rates of viral diversification during infant HIV infection and assess the accuracy of using these diversification rates to estimate time since infection.  
+
+See the manuscript for specific model and methods details: 
+
+Russell, M. L., Fish, C. S., Drescher, S., Cassidy, N. A. J., Chanana, P., Benki-Nugent, S., Slyker, J., Mbori-Ngacha, D., Bosire, R., Richardson, B., Wamalwa, D., Maleche-Obimbo, E., Overbaugh, J., John-Stewart, G., Matsen IV, F. A., Lehman, D. A. (In preparation). Using viral sequence diversity to estimate time of HIV infection in infants.
+
+The following packages were especially helpful in our analyses:
+
+- rstan (Stan Development Team, 2020)
+- rstanarm (Goodrich, et. al, 2023)
+- data.table (Dowle and Srinivasan, 2021)
+- tidyverse (Wickham et. al, 2019) 
+- doParallel (Corporation and Steve Weston, 2020)
+- cowplot (Wilke, 2020)
