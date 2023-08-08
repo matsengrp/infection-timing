@@ -1,3 +1,5 @@
+# Overview of Stan models
+
 Currently, there are several stan models: 
 
 * a model [without a time correction term](multilevel_infant_model.stan)

@@ -41,7 +41,7 @@ All of the models presented here leverage HIV viral diversity measures (which we
 
 ### Preparation for making model predictions using your own data with our pre-trained models
 
-We have provided our processed datasets [here](), however, if you would like to make predictions using your own data, make sure your data is in csv format and contains the following required columns:
+We have provided our processed datasets [here](TODO), however, if you would like to make predictions using your own data, make sure your data is in csv format and contains the following required columns:
 
 * `Sample`: string containing patient identifier, gene region identifier, and sequencing run number (i.e. `1_F1_R1` would correspond to individual 1, sequencing fragment/gene region 1, and sequencing run 1)
 * `ptnum`: patient identifier
@@ -66,23 +66,24 @@ After formatting your data to include these additional columns, if you would lik
 
 Here is a summary of the main model options. You can find a description of additional model type options [here](scripts/stan_models/README.md) and [here](scripts/README.md)
 
-| **Model name (same as manuscript)** | Infant-trained hierarchical model | infant-trained linear models | adult-trained linear models |
-|-------------------------------------------------------------------------|
+| **Model name (same as manuscript)** | _Infant-trained hierarchical model_ | _Infant-trained linear models_ | _Adult-trained linear models_ |
+|---|---|---|---|
 | **Model type** | Bayesian hierarchical regression model | Least absolute deviation linear regression model | Least absolute deviation linear regression model |
-| **Data input** | Viral diversity measures (sampled from any of the three gene regions) | Viral diversity measures (sampled from any of the three gene regions), *but a unique model will be trained for each gene region in which data is sampled* | Viral diversity measures (sampled from any of the three gene regions), *but a unique model will be trained for each gene region in which data is sampled* | 
+| **Data input** | Viral diversity measures (sampled from any of the three gene regions) | Viral diversity measures (sampled from any of the three gene regions), _but a unique model will be trained for each gene region in which data is sampled_ | Viral diversity measures (sampled from any of the three gene regions), _but a unique model will be trained for each gene region in which data is sampled_ |
 | **Data output** | Distributions of estimated times since infection | Point estimates of time since infection | Point estimates of time since infection |
-| **Includes individual- and gene-region-specific slope-modifying terms? | Yes | No | No |
-| **Model count** | 1 | 1 per gene region region | 1 per gene region |
+| **Includes individual- and gene-region-specific slope-modifying terms?** | Yes | No | No |
+| **Model count** | 1 | 1 per gene region | 1 per gene region |
 | **Script used for model training** | [fit_infant_model](fit_infant_model.sh) | [fit_adult_style_model](fit_adult_style_model.sh) | NA (this model is pre-trained using adult data within Puller et. al, PLoS Comp Bio 2017) |
 | **Location where trained models will be stored** | [here](scripts/stan_models/model_fits) | [here](scripts/adult_style_models/model_fits) | NA |
 
 ### Workflow
 
-0. Download the training cohort data set using the [link]() provided in our manuscript or use your own data (but make sure the data is formatted the same as ours)
+0. Download the training cohort data set using the [link](TODO) provided in our manuscript or use your own data (but make sure the data is formatted the same as ours)
 1. Edit the [config](config/config.R) and [file paths](config/file_paths.R) files to be project and/or computer specific. See the [README](config/README.md) for more details.
 2. Train model using the model fitting script for your desired model (see table above; for the infant hierarchical model, use [this](fit_infant_model.sh) and for the infant linear models, use [this](fit_adult_style_model.sh). Both of these scripts can be run locally or on a cluster. If using the [fit_infant_model.sh](fit_infant_model.sh) script, it takes a single "time correction type" argument -- options are `uniform`, `beta`, `none`, or `beta_laplace` (see [here](scripts/stan_models/MODEL_DESCRIPTION.md) for more details; the `beta` argument is the one we use throughout the manuscript). The other model training scripts do not have any arguments.
 
 *Model fits will be stored in the location described in the table above (depending on the model type).*
+
 
 ## Calculating Bayes Factors 
 
@@ -92,7 +93,7 @@ If you would like to explore whether APD slopes vary in certain contexts (e.g. b
 2. variation type -- options are described below:
 
 | **Variation type argument** | **Description** |
-|-----------------------------------------------|
+|---|---|
 | `no_fragment` | Compare a model in which APD slopes vary by gene region to a model in which they don't |
 | `no_subject` | Compare a model in which APD slopes vary by individual to a model in which they don't |
 | `by_infection_time` | Compare a model in which APD slopes vary by mode of infection (i.e. relative timing of infection; either before birth or after birth) to a model in which they don't |
@@ -100,7 +101,6 @@ If you would like to explore whether APD slopes vary in certain contexts (e.g. b
 | `with_max_vload` | Compare a model in which APD slopes vary with maximum viral load to a model in which they don't |
 | `with_cd4_percent` | Compare a model in which APD slopes vary with percentage of CD4 cells to a model in which they don't |
 | `with_cd4_rate` | Compare a model in which APD slopes vary with rate of CD4 cell count decline to a model in which they don't |
-| `with_percent_cd4_rate` | Compare a model in which APD slopes vary with rate of CD4 cell percentage decline to a model in which they don't |
 
 This analysis will save a file containing the results in a directory called `bayes_factor_results` located in the indicated `OUTPUT_PATH` as specified in the [config](config) files
 
@@ -122,17 +122,17 @@ If you would like to use the model to make predictions on a new data set and/or 
 
 The [infant-trained hierarchical model prediction script](predict_with_infant_model.sh) requires two arguments:
 
-    1. the time correction type--options are `none`, `beta`, or `uniform`
-    2. the path to the dataset you want to make predictions for
+1. the time correction type--options are `none`, `beta`, or `uniform`
+2. the path to the dataset you want to make predictions for
 
 The [infant-trained linear model prediction script](predict_with_adult_style_model.sh) requires one argument:
 
-    1. the path to the dataset you want to make predictions for
+1. the path to the dataset you want to make predictions for
 
 The [adult-trained linear model prediction script](predict_with_adult_style_model.sh) requires two arguments:
 
-    1. the path to the dataset you want to make predictions for
-    2. whether the true time since infection is known--options are `TRUE` or `FALSE`
+1. the path to the dataset you want to make predictions for
+2. whether the true time since infection is known--options are `TRUE` or `FALSE`
 
 All output files will be located in a directory called `model_predictions` within the `OUTPUT_PATH` as specified in the [config](config) file
 
