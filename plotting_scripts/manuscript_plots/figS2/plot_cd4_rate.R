@@ -33,10 +33,10 @@ if (isTRUE(MAP_SUBJECTS)){
     subject_var = 'subject_id'
 }
 
-vload_data = configure_data(TRAINING_INFANT_DATA_PATH, include_vl = TRUE)
-vload_data = as.data.table(vload_data)
-cols = c('subject_id', 'vload')
-vload_data = unique(vload_data[, ..cols])
+cd4_data = configure_data(TRAINING_INFANT_DATA_PATH, include_meta_data = TRUE, meta_data_path = TRAINING_INFANT_METADATA_PATH)
+cd4_data = as.data.table(cd4_data)
+cols = c('percent_cd4rate', 'subject_id')
+cd4_data = unique(cd4_data[, ..cols])
 
 model = load_model_fit()
 intervals = get_posterior_interval_data(model, prob = 0.89)
@@ -63,13 +63,14 @@ subset2$converted_mean = 1/subset2$mean
 subset2$converted_cred_int_5 = 1/subset2$cred_int_5
 subset2$converted_cred_int_95 = 1/subset2$cred_int_95
 
-tog = merge(vload_data, subset2, by = 'subject_id')
+tog = merge(cd4_data, subset2, by = 'subject_id')
 
 tog$infection_status_long = factor(tog$infection_status_long, levels = c('in-utero', 'after birth'))
 
 uteropalette = c(brewer.pal(n = 8, name = "Dark2"), "#E41A1C", "#377EB8", '#F781BF')
 names(uteropalette) = unique(tog[infection_status_long == 'in-utero'][[subject_var]])
-afterpalette = c(brewer.pal(n = 8, name = "Dark2"), "#377EB8", '#F781BF')
+afterpalette = c(brewer.pal(n = 8, name = "Dark2"), "#E41A1C", "#377EB8", '#F781BF')
+afterpalette = afterpalette[-2]
 names(afterpalette) = unique(tog[infection_status_long == 'after birth'][[subject_var]])
 
 palette = c(uteropalette, afterpalette)
@@ -93,8 +94,10 @@ subj_to_status = subj_to_status[order(subj_to_status)]
 subj_to_palette = subj_to_palette[!duplicated(tog[, ..p_cols])]
 subj_to_palette = subj_to_palette[order(subj_to_palette)]
 
+tog[, mean := mean*12]
+
 plot = ggplot(tog)+
-    geom_point(aes(x = vload, y = mean, shape = infection_status_long, color = as.factor(get(subject_var))), size = 5, alpha = 0.8) +
+    geom_point(aes(x = percent_cd4rate, y = mean, shape = infection_status_long, color = as.factor(get(subject_var))), size = 5, alpha = 0.8) +
     facet_grid(cols = vars(fragment_long), rows = vars(infection_status_long)) +
     # facet_grid(cols = vars(fragment_long)) +
     scale_color_manual(breaks = names(subj_to_status), guide  = guide_legend(ncol = 10, override.aes = list(shape = status2shape[subj_to_status])), values = subj_to_palette[names(subj_to_status)], name = 'Individual') +
@@ -102,10 +105,10 @@ plot = ggplot(tog)+
     theme_cowplot(font_family = 'Arial') +
     theme(axis.text = element_text(size = 25), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 30), axis.line = element_blank(), text = element_text(size = 37), axis.ticks = element_line(color = 'gray60', size = 1.5), legend.position="bottom", legend.direction="horizontal", legend.justification="center") +
     background_grid(major = 'xy') +
-    xlab('\nlog10(set-point viral load)\n') +
-    ylab('Median APD slope (years/diversity)\n')+
+    xlab('\nRate of change in CD4+ T cell percentage\n') +
+    ylab('Median APD slope (months/diversity)\n')+
     labs(color = 'Individual') +
     panel_border(color = 'gray60', size = 2) 
 
-name = paste0('plots/manuscript_figs/apd_slope_vload.pdf')
+name = paste0('plots/manuscript_figs/apd_slope_cd4percent_rate.pdf')
 ggsave(name, plot = plot, width = 20, height = 14, units = 'in', dpi = 750, device = cairo_pdf)

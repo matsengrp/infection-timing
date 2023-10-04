@@ -29,10 +29,11 @@ adult_results = fread(file_name)
 true_results = fread(TESTING_INFANT_DATA_TRUE_TIME_PATH)
 true_results[, inftimeyears := inftimemonths/12]
 true_results[, year_visit := month_visit/12]
-true_results[, observed_time_since_infection := year_visit - inftimeyears]
+true_results[, observed_time_since_infection := month_visit - inftimemonths]
 
 adult_together = merge(adult_results, true_results, by= 'ptnum')
 setnames(adult_together, 'adult_model_time_since_infection_estimates', 'mean')
+adult_together$mean = adult_together$mean*12
 setnames(adult_together, 'fragment_int', 'fragment')
 setnames(adult_together, 'ptnum', 'subject_id')
 adult_together$model = 'adult-trained\nlinear model'
@@ -45,6 +46,7 @@ adult_style_results = fread(output_name)
 
 adult_style_together = merge(adult_style_results, true_results, by.y= 'ptnum', by.x = 'subject_id')
 setnames(adult_style_together, 'adult_style_model_time_since_infection_estimates', 'mean')
+adult_style_together$mean = adult_style_together$mean*12
 adult_style_together$model = 'infant-trained\nlinear model'
 adult_style_mae = calculate_mae_dt(adult_style_together, by_fragment = TRUE, var = 'mean')
 adult_style_mae$model = 'infant-trained\nlinear model'
@@ -60,6 +62,7 @@ if ('mean_predicted_time_since_infection' %in% colnames(posteriors)){
 infant_together = merge(posteriors, true_results, by.y = 'ptnum', by.x = 'subject_id')
 infant_together$model = 'infant-trained\nhierarchical model'
 setnames(infant_together, 'mean_time_since_infection_estimate', 'mean')
+infant_together$mean = infant_together$mean*12
 infant_mae = calculate_mae_dt(infant_together, by_fragment = TRUE, var = 'mean')
 infant_mae$model = 'infant-trained\nhierarchical model'
 
@@ -72,16 +75,16 @@ together[fragment != 1, fragment_long := paste0('gene region ', fragment,' (with
 mae[fragment == 1, fragment_long := 'gene region 1 (within gag)']
 mae[fragment != 1, fragment_long := paste0('gene region ', fragment,' (within pol)')]
 
-plot = ggplot()+
+plot = ggplot(together)+
     facet_grid(cols = vars(fragment_long), rows = vars(model))+
     geom_histogram(data = together, aes(x = difference), alpha = 0.7) +
     geom_vline(xintercept = 0, color = 'black', size = 2) +
     theme_cowplot() +
     theme(axis.text = element_text(size = 30), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 33), axis.line = element_blank(), text = element_text(size = 40), axis.ticks = element_line(color = 'gray60', size = 1.5)) +
     background_grid(major = 'xy') +
-    geom_text(data = mae, x = 17, y = Inf, aes(label = paste0('MAE = ', mae)), vjust = 2, size = 12) +
+    geom_text(data = mae, x = 100, y = Inf, aes(label = paste0('MAE = ', mae)), vjust = 2, size = 12) +
     ylab('Observation count\n')+
-    xlab('Model-derived time since infection - true time since infection (years)')+
+    xlab('Model-derived time since infection - true time since infection (months)')+
     panel_border(color = 'gray60', size = 2)
 
 ggsave(paste0('plots/manuscript_figs/side_by_side_testing_hist_by_frag.pdf'), plot = plot, width = 30, height = 14, units = 'in', dpi = 750, device = cairo_pdf)

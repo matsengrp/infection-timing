@@ -73,7 +73,7 @@ plot_apd_time_by_subject <- function(data, write_plot = TRUE){
         theme(legend.position = 'none', axis.text = element_text(size = 25), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 30), axis.line = element_blank(), text = element_text(size = 37), axis.ticks = element_line(color = 'gray60', size = 1.5)) +
         background_grid(major = 'xy') +
         ylim(0, 0.04)+
-        xlab('Predicted time since infection (years)') +
+        xlab('Predicted time since infection (months)') +
         ylab('APD') 
     
     if (isTRUE(write_plot)){
@@ -98,7 +98,7 @@ plot_apd_time_by_subject_color_timing <- function(data){
         theme(axis.text = element_text(size = 25), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 30), axis.line = element_blank(), text = element_text(size = 37), axis.ticks = element_line(color = 'gray60', size = 1.5), legend.key.width = unit(3,"cm")) +
         background_grid(major = 'xy') +
         ylim(0, 0.04)+
-        xlab('Sampling time (years)') +
+        xlab('Sampling time (months)') +
         ylab('APD')+
         labs(linetype = 'Infection time') +
         guides(color = 'none')
@@ -125,7 +125,7 @@ plot_apd_time_all <- function(data, by_subject_regression_sim = NULL, write_plot
         # scale_x_continuous(breaks=seq(0, 0.03, 0.005)) +
         # scale_y_continuous(breaks=seq(0, 3, 0.5)) +
         ylab('Average pairwise diversity') +
-        xlab('Sampling time (years)') 
+        xlab('Sampling time (months)') 
 
     if (isTRUE(write_plot)){
         file_name = get_file_path_apd_observed_time_by_subject('all')
@@ -235,10 +235,10 @@ plot_observed_predicted_time <- function(data, with_observed_time_correction = F
 plot_observed_predicted_time_histogram <- function(data, with_observed_time_correction = FALSE, loocv = FALSE, adult_data = FALSE, xlimits = NA, ylimits = NA, write_plot = TRUE){
     if (isTRUE(with_observed_time_correction)){
         observed_time_temp = 'corrected_observed_time_since_infection'
-        xlab = 'Predicted - Observed (years)'
+        xlab = 'Predicted - Observed (months)'
     } else {
         observed_time_temp = 'observed_time_since_infection'
-        xlab = 'Predicted - Estimated (years)'
+        xlab = 'Predicted - Estimated (months)'
     }    
     stopifnot(observed_time_temp %in% colnames(data))
     
@@ -272,10 +272,10 @@ plot_observed_predicted_time_histogram <- function(data, with_observed_time_corr
 plot_observed_time_versus_time_diff <- function(data){
     if (isTRUE(with_observed_time_correction)){
         observed_time_temp = 'corrected_observed_time_since_infection'
-        xlab = '|Predicted - Observed (years)|'
+        xlab = '|Predicted - Observed (months)|'
     } else {
         observed_time_temp = 'observed_time_since_infection'
-        xlab = '|Predicted - Estimated (years)|'
+        xlab = '|Predicted - Estimated (months)|'
     }    
     stopifnot(observed_time_temp %in% colnames(data))
     

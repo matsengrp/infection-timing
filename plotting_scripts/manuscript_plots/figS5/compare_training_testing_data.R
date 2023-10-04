@@ -37,7 +37,7 @@ new_infant_data_dt = as.data.table(data.frame(new_infant_data))
 true_results = fread(TESTING_INFANT_DATA_TRUE_TIME_PATH)
 true_results[, inftimeyears := inftimemonths/12]
 true_results[, year_visit := month_visit/12]
-true_results[, observed_time_since_infection := year_visit - inftimeyears]
+true_results[, observed_time_since_infection := month_visit - inftimemonths]
 
 testing = merge(new_infant_data_dt, true_results, by.x = 'subject_id', by.y = 'ptnum')
 testing$type = 'testing data'
@@ -73,7 +73,7 @@ plot_ti = ggplot(together_ti, aes(x = observed_time_since_infection, fill = type
     theme(axis.text = element_text(size = 30), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 33), axis.line = element_blank(), text = element_text(size = 40), axis.ticks = element_line(color = 'gray60', size = 1.5), legend.position = 'bottom', legend.direction = 'horizontal') +
     background_grid(major = 'xy') +
     ylab('Observation count\n')+
-    xlab('True time since infection (years)')+
+    xlab('True time since infection (months)')+
     panel_border(color = 'gray60', size = 2)+
     scale_fill_brewer(palette = 'Dark2')+
     labs(fill = 'Dataset')

@@ -7,6 +7,7 @@ library(ggplot2)
 library(cowplot)
 library(foreach)
 library(plyr)
+library(ggh4x)
 
 TIME_CORRECTION_TYPE <<- 'beta'
 NCPU <<- 2
@@ -32,11 +33,7 @@ if (isTRUE(MAP_SUBJECTS)){
 } else {
     subject_var = 'subject_id'
 }
-
-cd4_data = configure_data(TRAINING_INFANT_DATA_PATH, include_meta_data = TRUE, meta_data_path = TRAINING_INFANT_METADATA_PATH)
-cd4_data = as.data.table(cd4_data)
-cols = c('percent_cd4rate', 'subject_id')
-cd4_data = unique(cd4_data[, ..cols])
+data[, observed_time_since_infection := observed_time_since_infection * 12]
 
 model = load_model_fit()
 intervals = get_posterior_interval_data(model, prob = 0.89)
@@ -47,7 +44,7 @@ subset$number = as.numeric(str_remove(subset$number, '\\]'))
 subset = subset[order(number)]
 
 together = merge(subset, data, by = 'number')
-cols = c('5.5%', '94.5%', 'mean', 'infection_status', 'fragment', subject_var, 'subject_id')
+cols = c('5.5%', '94.5%', 'mean', 'infection_status', 'fragment', subject_var)
 
 subset2 = unique(together[, ..cols])
 row_count = nrow(data[, .N, by = .(get(subject_var), fragment)])
@@ -59,54 +56,69 @@ subset2[infection_status == 'IN UTERO', infection_status_long := 'in-utero']
 subset2[infection_status != 'IN UTERO', infection_status_long := 'after birth']
 setnames(subset2, '5.5%', 'cred_int_5')
 setnames(subset2, '94.5%', 'cred_int_95')
+subset2[, mean := mean*12]
+subset2[, cred_int_5 := cred_int_5*12]
+subset2[, cred_int_95 := cred_int_95*12]
+
 subset2$converted_mean = 1/subset2$mean
 subset2$converted_cred_int_5 = 1/subset2$cred_int_5
 subset2$converted_cred_int_95 = 1/subset2$cred_int_95
 
-tog = merge(cd4_data, subset2, by = 'subject_id')
+subset2[[subject_var]] = factor(subset2[[subject_var]])
+subset2$infection_status_long = factor(subset2$infection_status_long, levels = c('in-utero', 'after birth'))
+require(RColorBrewer)
+it = unique(subset2$infection_status_long)
+color_palette = c('in-utero' = '#1b9e77', 'after birth' = '#7570b3')
 
-tog$infection_status_long = factor(tog$infection_status_long, levels = c('in-utero', 'after birth'))
+data[fragment == 1, fragment_long := 'Gene region 1 (within gag)']
+data[fragment != 1, fragment_long := paste0('Gene region ', fragment, ' (within pol)')]
+data[infection_status == 'IN UTERO', infection_status_long := 'in-utero']
+data[infection_status != 'IN UTERO', infection_status_long := 'after birth']
+
+data[, count := .N, by = .(fragment, get(subject_var))]
+
+data$infection_status_long = factor(data$infection_status_long, levels = c('in-utero', 'after birth'))
 
 uteropalette = c(brewer.pal(n = 8, name = "Dark2"), "#E41A1C", "#377EB8", '#F781BF')
-names(uteropalette) = unique(tog[infection_status_long == 'in-utero'][[subject_var]])
+names(uteropalette) = unique(data[infection_status_long == 'in-utero'][[subject_var]])
 afterpalette = c(brewer.pal(n = 8, name = "Dark2"), "#E41A1C", "#377EB8", '#F781BF')
-afterpalette = afterpalette[-2]
-names(afterpalette) = unique(tog[infection_status_long == 'after birth'][[subject_var]])
+names(afterpalette) = unique(data[infection_status_long == 'after birth'][[subject_var]])
 
 palette = c(uteropalette, afterpalette)
-palette = palette[!is.na(names(palette))]
 palette_df = data.frame(palette)
 palette_df[[subject_var]] = as.numeric(rownames(palette_df))
 
-tog = merge(tog, palette_df, by = subject_var)
+data = merge(data, palette_df, by = subject_var)
 
 # Make lookup tables
-subj_to_status = setNames(tog$infection_status_long, as.factor(tog[[subject_var]]))
+subj_to_status = setNames(data$infection_status_long, as.factor(data[[subject_var]]))
 status2shape = c("in-utero" = 16, "after birth" = 17)
 status2line = c("in-utero" = 'solid', "after birth" = '41')
-subj_to_palette = setNames(tog$palette, as.factor(tog[[subject_var]])) 
+subj_to_palette = setNames(data$palette, as.factor(data[[subject_var]])) 
 
 # # Make subj_to_status unique without dropping names
 it_cols = c(subject_var, 'infection_status_long')
 p_cols = c(subject_var, 'palette')
-subj_to_status = subj_to_status[!duplicated(tog[, ..it_cols])]
+subj_to_status = subj_to_status[!duplicated(data[, ..it_cols])]
 subj_to_status = subj_to_status[order(subj_to_status)]
-subj_to_palette = subj_to_palette[!duplicated(tog[, ..p_cols])]
+subj_to_palette = subj_to_palette[!duplicated(data[, ..p_cols])]
 subj_to_palette = subj_to_palette[order(subj_to_palette)]
 
-plot = ggplot(tog)+
-    geom_point(aes(x = percent_cd4rate, y = mean, shape = infection_status_long, color = as.factor(get(subject_var))), size = 5, alpha = 0.8) +
+plot3 = ggplot()+
+    geom_point(data = data[infection_status_long == 'in-utero'], aes(x = apd, y = observed_time_since_infection, color = as.factor(get(subject_var))), shape = 16, size = 5, alpha = 0.8) +
+    geom_point(data = data[infection_status_long == 'after birth'], aes(x = apd, y = observed_time_since_infection, color = as.factor(get(subject_var))), shape = 17, size = 5, alpha = 0.8) +
+    geom_abline(data = subset2, aes(intercept = 0, slope = mean, color = as.factor(get(subject_var)), linetype = infection_status_long), linewidth = 1.5, alpha = 0.8)+
     facet_grid(cols = vars(fragment_long), rows = vars(infection_status_long)) +
     # facet_grid(cols = vars(fragment_long)) +
-    scale_color_manual(breaks = names(subj_to_status), guide  = guide_legend(ncol = 10, override.aes = list(shape = status2shape[subj_to_status])), values = subj_to_palette[names(subj_to_status)], name = 'Individual') +
+    scale_color_manual(breaks = names(subj_to_status), guide  = guide_legend(ncol = 10, override.aes = list(linetype = status2line[subj_to_status], shape = status2shape[subj_to_status])), values = subj_to_palette[names(subj_to_status)], name = 'Individual') +
     scale_shape_manual(values = status2shape, guide= "none")+
+    scale_linetype_manual(values = status2line, guide= "none")+
     theme_cowplot(font_family = 'Arial') +
-    theme(axis.text = element_text(size = 25), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 30), axis.line = element_blank(), text = element_text(size = 37), axis.ticks = element_line(color = 'gray60', size = 1.5), legend.position="bottom", legend.direction="horizontal", legend.justification="center") +
+    theme(axis.text = element_text(size = 25), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 30), axis.line = element_blank(), text = element_text(size = 37), axis.ticks = element_line(color = 'gray60', size = 1.5), legend.position="bottom", legend.direction="horizontal", legend.justification="center", legend.key.width = unit(3.5, 'line')) +
     background_grid(major = 'xy') +
-    xlab('\nRate of change in CD4+ T cell percentage\n') +
-    ylab('Median APD slope (years/diversity)\n')+
-    labs(color = 'Individual') +
+    ylab('True time since infection (months)\n') +
+    xlab('\nAverage pairwise diversity\n')+
     panel_border(color = 'gray60', size = 2) 
 
-name = paste0('plots/manuscript_figs/apd_slope_cd4percent_rate.pdf')
-ggsave(name, plot = plot, width = 20, height = 14, units = 'in', dpi = 750, device = cairo_pdf)
+name3 = paste0('plots/manuscript_figs/apd_time_model_slopes.pdf')
+ggsave(name3, plot = plot3, width = 20, height = 14, units = 'in', dpi = 750, device = cairo_pdf)

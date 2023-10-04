@@ -24,10 +24,11 @@ data = infant_data
 data$number = seq(1, length(data$is_post))
 data = as.data.table(data)
 data$fragment_id = data$fragment
+data$observed_time_since_infection = data$observed_time_since_infection*12
 
 model = load_model_fit()
 post = rstan::extract(model)
-transformed_posteriors = transform_posterior_matrix_to_dataframe(data, post$observed_time_since_infection_rep, observed_time = TRUE)
+transformed_posteriors = transform_posterior_matrix_to_dataframe(data, post$observed_time_since_infection_rep*12, observed_time = TRUE)
 raw = unique(transformed_posteriors[, -c('iteration', 'time_since_infection_posterior_draw')])
 
 for (stat in c('median', 'mean', 'sd', 'max', 'min')){

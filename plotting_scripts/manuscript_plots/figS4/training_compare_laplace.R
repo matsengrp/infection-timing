@@ -31,6 +31,7 @@ loocv = fread(file_name)
 infant_data = as.data.table(configure_data(TRAINING_INFANT_DATA_PATH))
 posterior_means = get_posterior_means(loocv, infant_data)
 setnames(posterior_means, 'mean_time_since_infection_estimate', 'mean')
+posterior_means$mean = posterior_means$mean*12
 posterior_means$model = 'infant-trained\nhierarchical\nmodel (Normal)'
 infant_mae = calculate_mae_dt(posterior_means, by_fragment = TRUE, var = 'mean')
 infant_mae$model = 'infant-trained\nhierarchical\nmodel (Normal)'
@@ -42,11 +43,13 @@ Laplace_file_name = file.path(OUTPUT_PATH, 'model_loocv', paste0('loocv_posterio
 Laplace_loocv = fread(Laplace_file_name)
 Laplace_posterior_means = get_posterior_means(Laplace_loocv, infant_data)
 setnames(Laplace_posterior_means, 'mean_time_since_infection_estimate', 'mean')
+Laplace_posterior_means$mean = Laplace_posterior_means$mean*12
 Laplace_posterior_means$model = 'infant-trained\nhierarchical\nmodel (Laplace)'
 Laplace_infant_mae = calculate_mae_dt(Laplace_posterior_means, by_fragment = TRUE, var = 'mean')
 Laplace_infant_mae$model = 'infant-trained\nhierarchical\nmodel (Laplace)'
 
 together = rbind(posterior_means, Laplace_posterior_means, fill = TRUE)
+together$observed_time_since_infection = together$observed_time_since_infection*12
 mae = rbind(infant_mae, Laplace_infant_mae)
 
 together$difference = together$mean - together$observed_time_since_infection
@@ -65,21 +68,25 @@ plot_hist_val = ggplot(together) +
     panel_border(color = 'gray60', size = 2)+
     facet_grid(cols = vars(fragment_long), rows = vars(model))+
     ylab('Observation count\n')+
-    xlab('Model-derived time since infection - true time since infection (years)')
+    xlab('Model-derived time since infection - true time since infection (months)')
 
 plot_hist_val = plot_hist_val +
-    geom_text(data = mae, x = 9, y = Inf, aes(label = paste0('MAE = ', mae)), vjust = 2, size = 12) 
+    geom_text(data = mae, x = 12, y = Inf, aes(label = paste0('MAE = ', mae)), vjust = 2, size = 12) 
 
 infant_data = configure_data(TRAINING_INFANT_DATA_PATH)
 data = infant_data
 data$number = seq(1, length(data$is_post))
 data = as.data.table(data)
+data$observed_time_since_infection = data$observed_time_since_infection*12
 
 intervals = get_posterior_prediction_coverage(loocv, actual_times = data)$data
 intervals$mean = intervals[['q0.5']]
+intervals$mean = intervals$mean *12
+
 intervals$model = 'infant-trained\nhierarchical\nmodel (Normal)'
 Laplace_intervals = get_posterior_prediction_coverage(Laplace_loocv, actual_times = data)$data
 Laplace_intervals$mean = Laplace_intervals[['q0.5']]
+Laplace_intervals$mean = Laplace_intervals$mean *12
 Laplace_intervals$model = 'infant-trained\nhierarchical\nmodel (Laplace)'
 
 tog = rbind(Laplace_intervals, intervals, fill = TRUE)
@@ -106,14 +113,14 @@ plot2 = ggplot(tog) +
     facet_grid(rows = vars(model), cols = vars(fragment_long)) +
     geom_abline(intercept = 0, size = 3, color = 'blue') +
     geom_point(aes(x = observed_time_since_infection, y = mean), size = 7, alpha = 0.6) +
-    geom_segment(aes(x = observed_time_since_infection, y = q0.055, xend = observed_time_since_infection, yend = q0.945), size = 1.5, alpha = 0.3) +
-    geom_text(data = relation, x = 0.4, y = 4, aes(label = paste0('R^2 = ', r2, '\nslope = ', slope, '\nintercept = ', intercept)), size = 12) +
+    geom_segment(aes(x = observed_time_since_infection, y = q0.055*12, xend = observed_time_since_infection, yend = q0.945*12), size = 1.5, alpha = 0.3) +
+    geom_text(data = relation, x = 5, y = 52, aes(label = paste0('R^2 = ', r2, '\nslope = ', slope, '\nintercept = ', intercept)), size = 12) +
     geom_smooth(aes(x = observed_time_since_infection, y = mean), method = 'lm', color = 'gray60', size = 3) +
     theme_cowplot(font_family = 'Arial') +
     theme(axis.text = element_text(size = 30), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 33), axis.line = element_blank(), text = element_text(size = 40), axis.ticks = element_line(color = 'gray60', size = 1.5)) +
     background_grid(major = 'xy') +
-    xlab('\nTrue time since infection (years)') +
-    ylab('Model-derived\ntime since infection (years)\n')+
+    xlab('\nTrue time since infection (months)') +
+    ylab('Model-derived\ntime since infection (months)\n')+
     panel_border(color = 'gray60', size = 2) 
 
 all = align_plots(plot2,plot_hist_val,align = 'vh', axis = 'lr')
