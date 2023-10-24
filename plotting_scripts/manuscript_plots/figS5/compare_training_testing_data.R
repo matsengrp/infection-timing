@@ -37,7 +37,7 @@ new_infant_data_dt = as.data.table(data.frame(new_infant_data))
 true_results = fread(TESTING_INFANT_DATA_TRUE_TIME_PATH)
 true_results[, inftimeyears := inftimemonths/12]
 true_results[, year_visit := month_visit/12]
-true_results[, observed_time_since_infection := year_visit - inftimeyears]
+true_results[, observed_time_since_infection := month_visit - inftimemonths]
 
 testing = merge(new_infant_data_dt, true_results, by.x = 'subject_id', by.y = 'ptnum')
 testing$type = 'testing data'
@@ -63,7 +63,16 @@ plot_apd = ggplot(together, aes(x = apd, fill = type, group = type)) +
     scale_fill_brewer(palette = 'Dark2')+
     labs(fill = 'Dataset')
 
-ggsave(paste0('plots/manuscript_figs/train_test_apd_hist.pdf'), plot = plot_apd, width = 18, height = 19, units = 'in', dpi = 750, device = cairo_pdf)
+name = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/figS5/train_test_apd_hist.pdf')
+
+ggsave(name, plot = plot_apd, width = 18, height = 19, units = 'in', dpi = 750, device = cairo_pdf)
+
+cols = c('type', 'fragment_long', 'apd')
+plot_data = together[, ..cols]
+colnames(plot_data) = c('data_type', 'gene_region', 'APD')
+name = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/figS5/train_test_apd_hist.csv')
+fwrite(plot_data, name, sep = ',')
+
 
 together_ti = unique(together[, c('subject_id', 'observed_time_since_infection', 'type')])
 plot_ti = ggplot(together_ti, aes(x = observed_time_since_infection, fill = type, group = type)) +
@@ -73,11 +82,19 @@ plot_ti = ggplot(together_ti, aes(x = observed_time_since_infection, fill = type
     theme(axis.text = element_text(size = 30), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 33), axis.line = element_blank(), text = element_text(size = 40), axis.ticks = element_line(color = 'gray60', size = 1.5), legend.position = 'bottom', legend.direction = 'horizontal') +
     background_grid(major = 'xy') +
     ylab('Observation count\n')+
-    xlab('True time since infection (years)')+
+    xlab('True time since infection (months)')+
     panel_border(color = 'gray60', size = 2)+
     scale_fill_brewer(palette = 'Dark2')+
     labs(fill = 'Dataset')
 
-ggsave(paste0('plots/manuscript_figs/train_test_time_hist.pdf'), plot = plot_ti, width = 18, height = 6.5, units = 'in', dpi = 750, device = cairo_pdf)
+name = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/figS5/train_test_time_hist.pdf')
+
+ggsave(name, plot = plot_ti, width = 18, height = 6.5, units = 'in', dpi = 750, device = cairo_pdf)
+
+cols = c('type', 'observed_time_since_infection')
+plot_data = together_ti[, ..cols]
+colnames(plot_data) = c('data_type', 'observed_time_since_infection')
+name = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/figS5/train_test_time_hist.csv')
+fwrite(plot_data, name, sep = ',')
 
 

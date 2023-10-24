@@ -94,6 +94,8 @@ subj_to_status = subj_to_status[order(subj_to_status)]
 subj_to_palette = subj_to_palette[!duplicated(tog[, ..p_cols])]
 subj_to_palette = subj_to_palette[order(subj_to_palette)]
 
+tog[, mean := mean*12]
+
 plot = ggplot(tog)+
     geom_point(aes(x = percent_cd4rate, y = mean, shape = infection_status_long, color = as.factor(get(subject_var))), size = 5, alpha = 0.8) +
     facet_grid(cols = vars(fragment_long), rows = vars(infection_status_long)) +
@@ -104,9 +106,17 @@ plot = ggplot(tog)+
     theme(axis.text = element_text(size = 25), panel.spacing = unit(2, "lines"), strip.text = element_text(size = 30), axis.line = element_blank(), text = element_text(size = 37), axis.ticks = element_line(color = 'gray60', size = 1.5), legend.position="bottom", legend.direction="horizontal", legend.justification="center") +
     background_grid(major = 'xy') +
     xlab('\nRate of change in CD4+ T cell percentage\n') +
-    ylab('Median APD slope (years/diversity)\n')+
+    ylab('Median APD slope (months/diversity)\n')+
     labs(color = 'Individual') +
     panel_border(color = 'gray60', size = 2) 
 
-name = paste0('plots/manuscript_figs/apd_slope_cd4percent_rate.pdf')
+name = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/figS2/apd_slope_cd4percent_rate.pdf')
 ggsave(name, plot = plot, width = 20, height = 14, units = 'in', dpi = 750, device = cairo_pdf)
+
+cols = c(subject_var, 'infection_status_long', 'fragment_long', 'mean', 'percent_cd4rate')
+plot_data = tog[, ..cols]
+colnames(plot_data) = c('individual', 'mode_of_infection', 'gene_region', 'APD_slope_mean', 'percent_cd4rate')
+name2 = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/figS2/apd_slope_cd4percent_rate.csv')
+
+fwrite(plot_data, name2, sep = ',')
+

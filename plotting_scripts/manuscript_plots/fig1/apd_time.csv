@@ -1,0 +1,167 @@
+individual,observed_time_since_infection,gene_region,APD,mode_of_infection
+12,0.93,Gene region 1 (within gag),0.0114925795,after birth
+12,0.93,Gene region 2 (within pol),0.0001755,after birth
+12,0.93,Gene region 3 (within pol),0.0125435245,after birth
+6,1,Gene region 1 (within gag),0.001897272,in-utero
+6,1,Gene region 2 (within pol),0.00091,in-utero
+6,1,Gene region 3 (within pol),0.001929691,in-utero
+8,1,Gene region 1 (within gag),0.011352987,in-utero
+8,1,Gene region 2 (within pol),0.01077618,in-utero
+8,1,Gene region 3 (within pol),0.0060066775,in-utero
+22,1.06,Gene region 2 (within pol),0.006018246,after birth
+22,1.06,Gene region 3 (within pol),0.005930308,after birth
+22,1.06,Gene region 1 (within gag),0.0137677365,after birth
+18,1.06,Gene region 1 (within gag),0.005938042,after birth
+18,1.06,Gene region 2 (within pol),0.001571234,after birth
+18,1.06,Gene region 3 (within pol),0.003475131,after birth
+17,1.49,Gene region 1 (within gag),0.0023814525,after birth
+17,1.49,Gene region 2 (within pol),0.0032714335,after birth
+17,1.49,Gene region 3 (within pol),0.0046991445,after birth
+13,1.51,Gene region 1 (within gag),0.0143366175,after birth
+13,1.51,Gene region 2 (within pol),0.0165791595,after birth
+13,1.51,Gene region 3 (within pol),0.0042201,after birth
+14,1.54,Gene region 1 (within gag),0.002221419,after birth
+14,1.54,Gene region 2 (within pol),0.0021891385,after birth
+21,1.55,Gene region 1 (within gag),0.016799191,after birth
+3,3,Gene region 1 (within gag),0.002936936,in-utero
+3,3,Gene region 3 (within pol),0.0025038715,in-utero
+5,3,Gene region 1 (within gag),0.0035897415,in-utero
+5,3,Gene region 2 (within pol),0.001902379,in-utero
+5,3,Gene region 3 (within pol),0.0019409315,in-utero
+12,3.93,Gene region 1 (within gag),0.02840063,after birth
+12,3.93,Gene region 2 (within pol),0.013424912,after birth
+12,3.93,Gene region 3 (within pol),0.011829154,after birth
+15,4.06,Gene region 1 (within gag),0.018084483,after birth
+15,4.06,Gene region 2 (within pol),0.0047078935,after birth
+15,4.06,Gene region 3 (within pol),0.001552042,after birth
+17,4.49,Gene region 1 (within gag),0.0061014855,after birth
+17,4.49,Gene region 2 (within pol),0.0006195,after birth
+17,4.49,Gene region 3 (within pol),0.0042794385,after birth
+13,4.51,Gene region 1 (within gag),0.014986777,after birth
+13,4.51,Gene region 2 (within pol),0.0153736155,after birth
+13,4.51,Gene region 3 (within pol),0.007049413,after birth
+16,5.94,Gene region 1 (within gag),0.013558379,after birth
+16,5.94,Gene region 2 (within pol),0.0052465395,after birth
+16,5.94,Gene region 3 (within pol),0.00488713,after birth
+1,6,Gene region 1 (within gag),0.0024556825,in-utero
+1,6,Gene region 2 (within pol),0.004513246,in-utero
+1,6,Gene region 3 (within pol),0.0027597035,in-utero
+2,6,Gene region 1 (within gag),0.004510362,in-utero
+2,6,Gene region 3 (within pol),0.002740764,in-utero
+7,6,Gene region 1 (within gag),0.0043952395,in-utero
+7,6,Gene region 2 (within pol),0.0045744835,in-utero
+7,6,Gene region 3 (within pol),0.002928883,in-utero
+8,6,Gene region 1 (within gag),0.014869049,in-utero
+8,6,Gene region 2 (within pol),0.0125072745,in-utero
+8,6,Gene region 3 (within pol),0.0059429805,in-utero
+9,6,Gene region 1 (within gag),0.0215732385,in-utero
+9,6,Gene region 2 (within pol),0.016560804,in-utero
+9,6,Gene region 3 (within pol),0.0083738245,in-utero
+10,6,Gene region 1 (within gag),0.01502623,in-utero
+10,6,Gene region 2 (within pol),0.016878591,in-utero
+10,6,Gene region 3 (within pol),0.013800568,in-utero
+11,6,Gene region 1 (within gag),0.0042733765,in-utero
+11,6,Gene region 2 (within pol),0.0031247945,in-utero
+11,6,Gene region 3 (within pol),0.002767135,in-utero
+21,6.55,Gene region 1 (within gag),0.0046836545,after birth
+21,6.55,Gene region 2 (within pol),0.005956738,after birth
+19,6.96,Gene region 2 (within pol),0.0085183795,after birth
+19,6.96,Gene region 3 (within pol),0.006947884,after birth
+19,6.96,Gene region 1 (within gag),0.0009921155,after birth
+22,7.06,Gene region 2 (within pol),0.0046145265,after birth
+22,7.06,Gene region 3 (within pol),0.005386129,after birth
+22,7.06,Gene region 1 (within gag),0.011442374,after birth
+4,9,Gene region 1 (within gag),0.008607415,in-utero
+4,9,Gene region 2 (within pol),0.011007579,in-utero
+4,9,Gene region 3 (within pol),0.0083347545,in-utero
+5,9,Gene region 1 (within gag),0.003994135,in-utero
+5,9,Gene region 2 (within pol),0.004924152,in-utero
+5,9,Gene region 3 (within pol),0.0062204735,in-utero
+6,9,Gene region 1 (within gag),0.0093960335,in-utero
+6,9,Gene region 2 (within pol),0.00548822,in-utero
+6,9,Gene region 3 (within pol),0.0031512965,in-utero
+12,9.93,Gene region 1 (within gag),0.035326812,after birth
+12,9.93,Gene region 2 (within pol),0.017514447,after birth
+12,9.93,Gene region 3 (within pol),0.0185048885,after birth
+18,10.06,Gene region 1 (within gag),0.0095514185,after birth
+14,10.54,Gene region 1 (within gag),0.00058,after birth
+16,11.94,Gene region 1 (within gag),0.0157635135,after birth
+16,11.94,Gene region 2 (within pol),0.0059640855,after birth
+16,11.94,Gene region 3 (within pol),0.005579343,after birth
+2,12,Gene region 1 (within gag),0.008389382,in-utero
+2,12,Gene region 3 (within pol),0.00557309,in-utero
+3,12,Gene region 1 (within gag),0.014956136,in-utero
+3,12,Gene region 2 (within pol),0.004292924,in-utero
+3,12,Gene region 3 (within pol),0.0045797475,in-utero
+7,12,Gene region 1 (within gag),0.006437416,in-utero
+7,12,Gene region 2 (within pol),0.008463179,in-utero
+7,12,Gene region 3 (within pol),0.008472564,in-utero
+8,12,Gene region 1 (within gag),0.012020275,in-utero
+8,12,Gene region 2 (within pol),0.0159107255,in-utero
+8,12,Gene region 3 (within pol),0.00858743,in-utero
+9,12,Gene region 1 (within gag),0.02087549,in-utero
+9,12,Gene region 2 (within pol),0.014040621,in-utero
+9,12,Gene region 3 (within pol),0.0085474355,in-utero
+10,12,Gene region 1 (within gag),0.0100180165,in-utero
+10,12,Gene region 3 (within pol),0.011009056,in-utero
+11,12,Gene region 1 (within gag),0.007407472,in-utero
+11,12,Gene region 2 (within pol),0.010724127,in-utero
+11,12,Gene region 3 (within pol),0.0112079135,in-utero
+21,12.55,Gene region 1 (within gag),0.0102928365,after birth
+19,12.96,Gene region 1 (within gag),0.0141418945,after birth
+19,12.96,Gene region 2 (within pol),0.006949456,after birth
+19,12.96,Gene region 3 (within pol),0.011322949,after birth
+15,13.06,Gene region 1 (within gag),0.004695189,after birth
+15,13.06,Gene region 2 (within pol),0.003604464,after birth
+15,13.06,Gene region 3 (within pol),0.001544626,after birth
+20,13.52,Gene region 1 (within gag),0.005832022,after birth
+20,13.52,Gene region 2 (within pol),0.0044289585,after birth
+14,13.54,Gene region 1 (within gag),0.005740207,after birth
+14,13.54,Gene region 3 (within pol),0.0056205945,after birth
+4,15,Gene region 1 (within gag),0.012893184,in-utero
+4,15,Gene region 2 (within pol),0.01841708,in-utero
+4,15,Gene region 3 (within pol),0.012614195,in-utero
+6,15,Gene region 1 (within gag),0.0102172935,in-utero
+6,15,Gene region 3 (within pol),0.0066570255,in-utero
+7,15,Gene region 1 (within gag),0.009128364,in-utero
+7,15,Gene region 2 (within pol),0.0105045635,in-utero
+7,15,Gene region 3 (within pol),0.010275836,in-utero
+1,16,Gene region 1 (within gag),0.007970646,in-utero
+1,16,Gene region 2 (within pol),0.005462475,in-utero
+1,16,Gene region 3 (within pol),0.00411821,in-utero
+16,17.94,Gene region 1 (within gag),0.0135736245,after birth
+16,17.94,Gene region 2 (within pol),0.008851957,after birth
+16,17.94,Gene region 3 (within pol),0.012932265,after birth
+2,18,Gene region 1 (within gag),0.010524498,in-utero
+2,18,Gene region 3 (within pol),0.0110966975,in-utero
+5,18,Gene region 2 (within pol),0.008530818,in-utero
+5,18,Gene region 3 (within pol),0.004159295,in-utero
+5,18,Gene region 1 (within gag),0.009943698,in-utero
+9,18,Gene region 1 (within gag),0.015870174,in-utero
+9,18,Gene region 2 (within pol),0.018980078,in-utero
+9,18,Gene region 3 (within pol),0.0131904475,in-utero
+15,19.06,Gene region 1 (within gag),0.002528349,after birth
+15,19.06,Gene region 2 (within pol),0.006369308,after birth
+15,19.06,Gene region 3 (within pol),0.005717781,after birth
+22,19.06,Gene region 2 (within pol),0.011113053,after birth
+22,19.06,Gene region 3 (within pol),0.0101778655,after birth
+22,19.06,Gene region 1 (within gag),0.0401670815,after birth
+20,19.52,Gene region 1 (within gag),0.004591127,after birth
+1,21,Gene region 1 (within gag),0.0111046005,in-utero
+1,21,Gene region 2 (within pol),0.009782386,in-utero
+1,21,Gene region 3 (within pol),0.004601388,in-utero
+19,21.96,Gene region 2 (within pol),0.016824914,after birth
+19,21.96,Gene region 3 (within pol),0.021126884,after birth
+19,21.96,Gene region 1 (within gag),0.0007735,after birth
+18,22.06,Gene region 1 (within gag),0.018592064,after birth
+18,22.06,Gene region 2 (within pol),0.020234736,after birth
+3,24,Gene region 1 (within gag),0.0116827765,in-utero
+3,24,Gene region 2 (within pol),0.00722542,in-utero
+3,24,Gene region 3 (within pol),0.0068720305,in-utero
+4,24,Gene region 1 (within gag),0.01311957,in-utero
+4,24,Gene region 2 (within pol),0.021736746,in-utero
+4,24,Gene region 3 (within pol),0.0172636085,in-utero
+10,24,Gene region 3 (within pol),0.000747,in-utero
+11,24,Gene region 1 (within gag),0.020204118,in-utero
+11,24,Gene region 2 (within pol),0.015593021,in-utero
+11,24,Gene region 3 (within pol),0.010687829,in-utero

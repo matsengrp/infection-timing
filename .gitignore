@@ -10,6 +10,7 @@ plots/
 *.rds
 slurm*
 .DS_Store
+all_post_pred_checks.csv
 
 # History files
 .Rhistory

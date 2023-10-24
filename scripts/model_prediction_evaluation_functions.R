@@ -295,11 +295,11 @@ plot_posterior_pred_check <- function(stat, stat_name , posteriors, actual_data,
         geom_vline(xintercept = stat_val, linewidth = 2) +
         xlab(paste0('\n', stat_name, '(observed time since infection simulation)\n')) +
         ylab('count')+
-        annotate('text', label = paste0('p = ', round(p, 3)), x = stat_val + 0.02, y = y_pos, vjust = 0, hjust = 0, size = 10) +
+        annotate('text', label = paste0('p = ', round(p, 3)), x = stat_val + 0.1, y = y_pos, vjust = 0, hjust = 0, size = 10) +
         theme_cowplot(font_family = 'Arial') +
         theme(axis.text = element_text(size = 25), text = element_text(size = 37), axis.ticks = element_line(color = 'gray60', size = 1.5)) +
         background_grid(major = 'xy')+
-        xlim(min-0.08, max+0.08) +
+        xlim(min-0.75, max+0.75) +
         panel_border(color = 'gray60', size = 2)
 
     if (isTRUE(write_plot)){ 
