@@ -73,6 +73,13 @@ plot_hist_val = ggplot(together) +
 plot_hist_val = plot_hist_val +
     geom_text(data = mae, x = 12, y = Inf, aes(label = paste0('MAE = ', mae)), vjust = 2, size = 12) 
 
+together = merge(together, mae, by = c('fragment', 'fragment_long', 'model'))
+cols = c('model', 'fragment_long', 'difference', 'mae')
+plot_data = together[, ..cols]
+colnames(plot_data) = c('model', 'gene_region', 'difference', 'mean_absolute_error')
+name = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/figS4/training_error_together_with_Laplace_panelA.csv')
+fwrite(plot_data, name, sep = ',')
+
 infant_data = configure_data(TRAINING_INFANT_DATA_PATH)
 data = infant_data
 data$number = seq(1, length(data$is_post))
@@ -127,7 +134,15 @@ all = align_plots(plot2,plot_hist_val,align = 'vh', axis = 'lr')
 
 grid = plot_grid(all[[2]], NULL, all[[1]], nrow = 3, rel_heights = c(1, 0.05, 1.6), labels = c('A', '', 'B'), label_size = 35) 
 
-name3 = paste0('plots/manuscript_figs/training_error_together_with_Laplace.pdf')
+name3 = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/figS4/training_error_together_with_Laplace.pdf')
 ggsave(name3, grid, width = 40, height = 26, units = 'in', dpi = 750, device = cairo_pdf, limitsize = FALSE)
 
 print(summary(lm(intervals$mean ~ intervals$observed_time_since_infection)))
+
+cols = c('model', 'fragment_long', 'observed_time_since_infection', 'mean', 'q0.055', 'q0.945')
+plot_data = tog[, ..cols]
+colnames(plot_data) = c('model', 'gene_region', 'observed_time_since_infection', 'model_derived_time_since_infection_mean', 'model_derived_time_since_infection_0.055_quantile', 'model_derived_time_since_infection_0.945_quantile')
+name = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/figS4/training_error_together_with_Laplace_panelB.csv')
+fwrite(plot_data, name, sep = ',')
+
+

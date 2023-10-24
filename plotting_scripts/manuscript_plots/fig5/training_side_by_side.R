@@ -69,7 +69,7 @@ together[fragment == 1, fragment_long := 'gene region 1 (within gag)']
 together[fragment != 1, fragment_long := paste0('gene region ', fragment,' (within pol)')]
 mae[fragment == 1, fragment_long := 'gene region 1 (within gag)']
 mae[fragment != 1, fragment_long := paste0('gene region ', fragment,' (within pol)')]
-
+together = merge(together, mae, by = c('fragment', 'fragment_long', 'model'))
 plot_hist_val = ggplot(together) +
     geom_histogram(aes(x = difference), alpha = 0.7) +
     geom_vline(xintercept = 0, color = 'black', size = 2) +
@@ -82,7 +82,14 @@ plot_hist_val = ggplot(together) +
     ylab('Observation count\n')+
     xlab('\nModel-derived time since infection - true time since infection (months)')
 
-ggsave(paste0('plots/manuscript_figs/side_by_side_training_hist_by_frag.pdf'), plot = plot_hist_val, width = 40, height = 15, units = 'in', dpi = 750, device = cairo_pdf)
+name = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/fig5/training_error_together_panelA.pdf')
+ggsave(name, plot = plot_hist_val, width = 40, height = 15, units = 'in', dpi = 750, device = cairo_pdf)
+
+cols = c('model', 'fragment_long', 'difference', 'mae')
+plot_data = together[, ..cols]
+colnames(plot_data) = c('model', 'gene_region', 'difference', 'mean_absolute_error')
+name = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/fig5/training_error_together_panelA.csv')
+fwrite(plot_data, name, sep = ',')
 
 infant_data = configure_data(TRAINING_INFANT_DATA_PATH)
 data = infant_data
@@ -129,9 +136,15 @@ plot2 = ggplot(tog) +
     ylim(-12, 64)+
     panel_border(color = 'gray60', size = 2) 
 
-name2 = paste0('plots/manuscript_figs/error_over_time.pdf')
+name2 = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/fig5/training_error_together_panelB.pdf')
 ggsave(name2, plot = plot2, width = 20, height = 12, units = 'in', dpi = 750, device = cairo_pdf)
-saveRDS(plot2, paste0('plots/manuscript_figs/error_over_time.rds'))
+# saveRDS(plot2, paste0('plots/manuscript_figs/error_over_time.rds'))
+
+cols = c('model', 'fragment_long', 'observed_time_since_infection', 'mean', 'q0.055', 'q0.945')
+plot_data = tog[, ..cols]
+colnames(plot_data) = c('model', 'gene_region', 'observed_time_since_infection', 'model_derived_time_since_infection_mean', 'model_derived_time_since_infection_0.055_quantile', 'model_derived_time_since_infection_0.945_quantile')
+name = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/fig5/training_error_together_panelB.csv')
+fwrite(plot_data, name, sep = ',')
 
 tog[, resid := mean - observed_time_since_infection]
 tog$model = str_replace_all(tog$model, '\n', ' ')
@@ -153,13 +166,22 @@ plot3 = ggplot(tog2[order(observed_time_since_infection)], aes(x = observed_time
     scale_color_brewer(palette = 'Dark2') +
     scale_fill_brewer(palette = 'Dark2')
 
+cols = c('model', 'observed_time_since_infection', 'V1')
+plot_data = tog2[, ..cols]
+colnames(plot_data) = c('model', 'observed_time_since_infection', 'model_residual')
+name = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/fig5/training_error_together_panelC.csv')
+fwrite(plot_data, name, sep = ',')
+
+
 all = align_plots(plot2,plot_hist_val,plot3,  align = 'vh', axis = 'lr')
 
 grid = plot_grid(all[[2]], NULL, all[[1]], NULL, all[[3]], nrow = 5, rel_heights = c(1.15, 0.05, 1.5, 0.05, 0.75), labels = c('A', '', 'B', '', 'C'), label_size = 40) 
 
-name3 = paste0('plots/manuscript_figs/training_error_together.pdf')
+name3 = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/fig5/training_error_together.pdf')
 ggsave(name3, grid, width = 30, height = 38, units = 'in', dpi = 750, device = cairo_pdf)
-saveRDS(plot3, paste0('plots/manuscript_figs/residual.rds'))
+# saveRDS(plot3, paste0('plots/manuscript_figs/residual.rds'))
 
 print(summary(lm(intervals$mean ~ intervals$observed_time_since_infection)))
 print(summary(lm(adult_style_results$mean ~ adult_style_results$observed_time_since_infection)))
+
+

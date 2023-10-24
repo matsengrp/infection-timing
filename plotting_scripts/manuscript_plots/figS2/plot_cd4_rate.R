@@ -110,5 +110,13 @@ plot = ggplot(tog)+
     labs(color = 'Individual') +
     panel_border(color = 'gray60', size = 2) 
 
-name = paste0('plots/manuscript_figs/apd_slope_cd4percent_rate.pdf')
+name = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/figS2/apd_slope_cd4percent_rate.pdf')
 ggsave(name, plot = plot, width = 20, height = 14, units = 'in', dpi = 750, device = cairo_pdf)
+
+cols = c(subject_var, 'infection_status_long', 'fragment_long', 'mean', 'percent_cd4rate')
+plot_data = tog[, ..cols]
+colnames(plot_data) = c('individual', 'mode_of_infection', 'gene_region', 'APD_slope_mean', 'percent_cd4rate')
+name2 = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/figS2/apd_slope_cd4percent_rate.csv')
+
+fwrite(plot_data, name2, sep = ',')
+

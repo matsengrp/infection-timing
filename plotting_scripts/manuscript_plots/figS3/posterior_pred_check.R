@@ -47,7 +47,18 @@ all = align_plots(plot_median, plot_sd, plot_max, plot_min, align = 'vh', axis =
 
 grid = plot_grid(all[[1]], NULL, all[[2]], all[[3]], NULL, all[[4]], nrow = 2, labels = c('A', '', 'B', 'C','', 'D'), rel_widths = c(1, 0.1, 1, 1, 0.1,1), label_size = 35) 
 
-name = paste0('plots/manuscript_figs/all_post_pred_checks.pdf')
+name = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/figS3/all_post_pred_checks.pdf')
+
 ggsave(name, grid, width = 25, height = 20, units = 'in', dpi = 750, device = cairo_pdf, limitsize = FALSE)
+
+map = fread('_ignore/subject_mapping.tsv')
+transformed_posteriors = merge(transformed_posteriors, map, by = 'subject_id')
+subject_var = 'subject_map'
+
+cols = c(subject_var, 'observed_time_since_infection', 'fragment_id', 'apd', 'iteration', 'time_since_infection_posterior_draw')
+plot_data = transformed_posteriors[, ..cols]
+colnames(plot_data) = c('individual', 'observed_time_since_infection', 'gene_region', 'APD', 'iteration', 'time_since_infection_posterior_draw')
+name2 = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/figS3/all_post_pred_checks.csv')
+fwrite(plot_data, name2, sep = ',')
 
 

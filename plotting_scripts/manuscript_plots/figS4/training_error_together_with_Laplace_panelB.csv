@@ -1,0 +1,997 @@
+model,gene_region,observed_time_since_infection,model_derived_time_since_infection_mean,model_derived_time_since_infection_0.055_quantile,model_derived_time_since_infection_0.945_quantile
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),6,2.72229951954013,-0.347572334246429,0.804797887682805
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),6,3.81076515101438,-0.26375486493307,0.894616382425641
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),16,5.67348344072986,-0.163453494784627,1.11776709454336
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),6,5.59073569474808,-0.199443574592867,1.1253298758343
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),21,6.42567379163884,-0.128622092009963,1.1950737870873
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),16,6.78259289972619,-0.142727091369938,1.27461855845331
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),16,8.78271618874528,-0.129363376290273,1.6047129957154
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),21,12.101152379843,0.00203124461621816,2.00104589104453
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),21,12.2815812025597,-0.0562750593440389,2.1219914296896
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),0.93,0.23904696494728,-0.528102505741384,0.559224166214551
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),0.93,13.8161094501218,0.0155316094487092,2.29927584895738
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),3.93,18.3043168598939,0.359357628371543,2.69828843458232
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),0.93,19.3585479563841,0.399022680538953,2.82838186108452
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),3.93,17.8439190043144,0.202245112319861,2.77441403824226
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),9.93,23.2025418548518,0.322258180826329,3.55311087401872
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),9.93,28.6036227482486,0.706164564808753,4.08995278450218
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),3.93,34.0905588572336,0.319654145219315,5.35456172883077
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),9.93,42.489001428298,0.424830795925138,Inf
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),1.51,6.37978388559618,-0.11943770496642,1.18708038040387
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),4.51,10.6588073003609,0.0654152040278485,1.70660083923214
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),1.51,17.2863289865546,0.0930549880259061,2.8074565572305
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),4.51,18.1082893127322,0.0963238977786233,2.9300485059579
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),4.51,20.976263568905,0.304540767203125,3.20606061385317
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),1.51,22.6238244269069,0.351738791863332,3.45050401048147
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),6,3.97363461602611,-0.264330479339687,0.928128222244199
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),6,5.08316057706515,-0.255597226924847,1.1067045649134
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),12,8.04102947901733,-0.0850823993924332,1.41360320073394
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),12,9.56440166951893,-0.133106351730097,1.74496076517501
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),18,11.9250408422092,-0.11201372900072,2.10733324664214
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),18,15.910265043232,0.179841205384088,2.49654554686284
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),3,3.5560818029491,-0.267463754167554,0.853482573428713
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),3,3.32176099963678,-0.295894194665918,0.854461313908593
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),12,5.42009796380576,-0.195227217198445,1.09314437606317
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),12,6.37555520313179,-0.124395441929575,1.18776825290297
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),24,9.68226105464072,0.0163882488292503,1.60044878736262
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),24,9.01234297646525,-0.0717767436142117,1.55977114116012
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),24,13.2351862120901,-0.0394572108478472,2.24154919648242
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),12,16.9028869619918,0.016807348668626,2.82980311478927
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),10.54,0.680309032933517,-0.474889293815456,0.58418134729408
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),1.54,2.77556760975524,-0.332737370340716,0.798712327807386
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),1.54,2.49074826638791,-0.356473291911667,0.772532165700686
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),13.54,7.97432827181016,-0.0733019942177379,1.39987685253235
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),13.54,6.43633237121262,-0.205043625157456,1.27678777501424
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),9,12.2800414808196,0.0723251831450973,1.96945194637899
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),9,9.89338292112167,-0.14438413744381,1.81316165606751
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),9,14.8614978589527,0.0600939139141393,2.40800981286434
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),15,18.6490165980836,0.239957206911664,2.85866560502643
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),15,14.8243494321196,-0.102519252346329,2.56491713029598
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),24,15.0381042998657,-0.0938555388380596,2.61118078206131
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),24,25.5139601909436,0.399003472065724,3.83589749839391
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),15,24.8799999163913,0.239949661257061,3.90433168871724
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),24,29.3153091949095,0.307727344071913,4.57106198220413
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),3,2.38327743485734,-0.370563828894945,0.76459696117504
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),3,2.75372630186114,-0.337228629613661,0.791949274186147
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),3,4.0280608127188,-0.297430528915308,0.970725568756768
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),9,4.44691622021669,-0.279043501841963,1.02408226639018
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),18,5.91431583808644,-0.167018059121109,1.14825282010025
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),9,6.18756824092808,-0.184273756335406,1.21428002242248
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),9,8.8259201473391,-0.0358314422396892,1.51427899643402
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),18,10.7008952872471,-0.0393233254208293,1.83619003888578
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),18,11.2004812633913,-0.101418246058404,1.97275910940942
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),13.06,2.19341416872774,-0.312769437581328,0.678217983135506
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),4.06,2.21338182420617,-0.317037115841666,0.683650711537884
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),19.06,2.9173246583567,-0.287219678252769,0.777921385565012
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),13.06,4.63739798509895,-0.202895547125403,0.967659825248194
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),13.06,5.41910714310127,-0.196427407963219,1.10343179969731
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),4.06,6.04033971783922,-0.152453215747082,1.14473737299451
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),19.06,8.23478025583732,-0.0235748653061671,1.39465573725254
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),19.06,8.11005866072165,-0.0813396562901078,1.43774209687522
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),4.06,20.8646557180168,0.017912226824323,3.49683966846078
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),1,1.20243854636539,-0.455003125469348,0.649012589631998
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),1,2.18465236065146,-0.38322761518212,0.751869401608584
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),1,2.76077662906611,-0.337059033022384,0.795797829135913
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),9,4.57316415271602,-0.242973888189936,0.98390211614533
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),9,6.99866728664259,-0.157482573767272,1.32714351725473
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),15,9.60649661939093,-0.0186682324051987,1.61672949702205
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),9,10.9674002181718,-0.0970762374998643,1.93325011106482
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),15,11.8903400946509,-0.0923214119671772,2.06717703215804
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),6,4.28240240396611,-0.25206246110002,0.962962419435296
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),6,4.97510622354193,-0.269484630140544,1.11021537315878
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),6,5.90344092054384,-0.207136332332077,1.18216850351501
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),12,7.28642304832574,-0.198788605140833,1.41990162312851
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),12,10.9096055544712,-0.0490349016133313,1.86287599449072
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),12,12.4236684387667,0.0737759939418431,1.9961277117794
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),15,10.358407799883,-0.138858443026965,1.87525872235197
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),15,15.124101316772,0.166003616128031,2.35768486789555
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),15,13.4957271975934,0.0114079795186941,2.25215958079895
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),5.94,7.15339698136757,-0.104040842462375,1.29281222730064
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),5.94,6.81715037995771,-0.158544408431117,1.29120846722111
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),11.94,8.14789906401855,-0.0639503045528999,1.42193909706099
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),11.94,7.75184724512967,-0.127686728843345,1.41796929868065
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),17.94,11.4742363785431,-0.031749032010815,1.95565628298693
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),17.94,18.9755957281751,0.260989058746907,2.91195457795981
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),5.94,16.1489492260378,-0.0387456513938818,2.74436168776873
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),17.94,16.1506949733105,-0.0282071651737806,2.7345232616292
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),11.94,18.808641672958,-0.0135917332643453,3.15036890882549
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),6,8.77034476500586,-0.0369473164324349,1.49381136433423
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),1,8.87026337375144,-0.0309691802802261,1.49994178021984
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),12,12.7472884465756,0.11142611163177,2.01538046438291
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),1,14.4740663091856,0.0871444836288837,2.32860624217188
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),1,13.6466785768499,-0.0419361420979187,2.32428205621938
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),12,14.4311281267926,-0.0111986069834675,2.43523625779073
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),6,16.8004886200582,0.127754278648502,2.67338313156584
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),6,17.8632081922362,0.0180178450944933,2.96906425357776
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),12,21.3073017495168,0.224898398666399,3.34401374369695
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),4.49,0.821657887317962,-0.478229552890506,0.609748254865684
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),1.49,2.81347388753051,-0.349755990216576,0.817825276410346
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),1.49,4.37873157978656,-0.252480263569455,0.988318051136737
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),4.49,6.39476023922306,-0.138021957089958,1.20645819921803
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),1.49,7.02607674466009,-0.100369367369053,1.28702504096861
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),4.49,7.2588993254559,-0.182011640248826,1.38880604440888
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),6,12.1976345008745,0.0772827055004343,1.94834872810093
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),12,12.4257763366444,0.0828566751113016,1.98799321515185
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),18,19.2529513871482,0.271686949645839,2.93806790906386
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),12,18.6493669524873,0.141959968946811,2.97096827481548
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),18,19.1218652505971,0.0417519159103353,3.16871503657467
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),6,21.9687868690069,0.206220016330894,3.47372944954452
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),18,25.1439153936422,0.264870741335927,3.94999084089497
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),12,25.1777462898696,0.0840089985661911,4.116172055807
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),6,25.9703946699103,0.103514634066953,4.26313811719156
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),1.06,2.10143735752524,-0.373774077955634,0.731936573863479
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),1.06,5.17574792907045,-0.190235212674853,1.06412710678854
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),1.06,6.92878225350801,-0.193029837921283,1.36194767028887
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),10.06,11.2105577234899,-0.107837888149957,1.98425463949354
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),22.06,21.7402058708209,-0.00870623246126811,3.65721319438595
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),22.06,26.7620851888275,0.264809198747362,4.23662702154407
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),21.96,0.953687873295281,-0.435757562590952,0.59338023734197
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),6.96,1.17801824714985,-0.425451850001412,0.617331148449314
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),6.96,10.6982600585213,0.053447327684684,1.72368459439251
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),12.96,9.15903467916636,-0.0745938057160569,1.59858507268009
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),6.96,11.1885079996211,-0.022611508709137,1.90731588304799
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),12.96,17.3828739574368,0.254872378388249,2.63585030506445
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),12.96,16.7495549568477,-0.0257808705089497,2.83076975780359
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),21.96,22.0997452109589,0.187371994370323,3.51660754478468
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),21.96,32.3903362376864,0.643373776229057,4.75323288414577
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),13.52,5.43950378382717,-0.192919365573555,1.09940314630952
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),19.52,5.05048844019431,-0.225722021773642,1.07628325661602
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),13.52,6.44431071692542,-0.183494374221599,1.25887343160844
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),6.55,5.5522541614097,-0.219173190138709,1.14041925615152
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),6.55,7.88164277723012,-0.106492014522275,1.40937899132555
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),12.55,12.2830829666298,-0.0769010627748111,2.11959082026525
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),1.55,19.9384880724772,0.0116308979045388,3.3279768657146
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),7.06,6.07856176955839,-0.165344130319802,1.18082264198676
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),7.06,7.9391565150513,-0.0600520149482629,1.37977020748385
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),1.06,8.74413914542576,-0.0256697901126827,1.48346303851677
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),1.06,7.94638125444118,-0.0995410555975832,1.43154474207311
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),19.06,14.998311043188,0.172394133611783,2.31970998782086
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),19.06,14.6887439436863,0.0855405481479039,2.37605618994593
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),7.06,13.9152258677239,-0.00619715728961911,2.33166287422277
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),1.06,16.7477437092196,0.0348446682775562,2.74672141708283
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),19.06,48.9202623593411,0.378917528291074,Inf
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),24,1.1279388432876,-0.413996132075212,0.60122552044014
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),12,11.8979592694799,-0.0599871108871932,2.05968778803799
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),12,16.5898077957391,0.242585889183863,2.52192929587396
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),6,20.7585273673282,0.356331084087273,3.12152402053759
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),6,17.8471462558709,0.0180352022229737,2.9795579308982
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),6,22.7964324388258,0.274824940389453,3.56327731694489
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),6,4.01450358098858,-0.25977494528279,0.925443644533344
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),6,4.04576207786188,-0.279350967989352,0.945994412678516
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),6,4.9731714045205,-0.260411209749995,1.09040229213002
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),12,8.60181675265832,-0.160393021667415,1.58901619247644
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),24,15.618437515957,0.160550118425123,2.43013725394087
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),12,13.9036047501304,0.0201918947569476,2.29893778886693
+"infant-trained
+hierarchical
+model (Laplace)",gene region 3 (within pol),12,16.3269024405962,0.17253684689773,2.53547873089965
+"infant-trained
+hierarchical
+model (Laplace)",gene region 2 (within pol),24,20.2394588370379,0.12377120362626,3.25021610932012
+"infant-trained
+hierarchical
+model (Laplace)",gene region 1 (within gag),24,23.4433180560883,-0.00538863935029298,3.91444057392178
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),6,2.49247057167404,-0.597429610397035,1.01388530895007
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),6,3.81281447434028,-0.491400939823803,1.12171948981205
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),16,5.68853269219426,-0.363414567537375,1.31179662447333
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),6,5.45399192235332,-0.409448235692851,1.30703288376839
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),21,6.47282015224871,-0.310421813637761,1.38442753369993
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),16,6.64049689747345,-0.341184424973695,1.43826174081626
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),16,8.08575326498904,-0.317115019091638,1.67163860581001
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),21,11.7686072583591,-0.0981203018607487,2.06026665247505
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),21,11.2801241538295,-0.186735085640769,2.0907665047874
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),0.93,0.231462042505719,-0.77740334378205,0.810999392182647
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),0.93,12.6189971436014,-0.146110089611179,2.27673462748628
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),3.93,18.3388459763441,0.306291284168123,2.7455723580228
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),0.93,19.4220223478419,0.358380125604901,2.87009947256514
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),3.93,17.5211613737035,0.145773316381649,2.77570861968883
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),9.93,22.749842667668,0.323893208211268,3.4903897543868
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),9.93,28.7666752849852,0.753551562752467,4.03991159043796
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),3.93,31.1784499435276,0.285311659665729,4.97384052956123
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),9.93,38.8099882656988,0.435259589886896,Inf
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),1.51,6.36443525504026,-0.316606497421399,1.39217311009999
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),4.51,10.6753025553348,-0.0805326383522051,1.8519484623506
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),1.51,15.8684559032343,-0.0353964819116336,2.70449179390866
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),4.51,16.6163103928809,-0.0196962688041541,2.81200339459437
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),4.51,20.3575010447239,0.26492812358032,3.14659061748377
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),1.51,22.0039857378455,0.334801838506845,3.36403723230296
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),6,3.98158773589081,-0.483278848485369,1.15458787184131
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),6,4.66758325027436,-0.480186135876759,1.26369148137287
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),12,8.04608408699662,-0.249422784913306,1.58732087131755
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),12,8.80053743638896,-0.30750048336943,1.78387699424346
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),18,11.0647073266969,-0.261933340650393,2.098783391304
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),18,16.0368767085601,0.121600520510008,2.54996013992638
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),3,3.6076931152759,-0.490544595567094,1.08283157642494
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),3,3.09297752279236,-0.530201906615853,1.05190650342706
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),12,5.34543238051552,-0.394169836137799,1.28133702686573
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),12,6.41320520924258,-0.310968101828176,1.38594206724865
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),24,9.80251514482109,-0.127543640299072,1.7575741843537
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),24,8.81293169494617,-0.215736273472114,1.68777493827824
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),24,12.4701379471205,-0.180566875298719,2.24798620319073
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),12,15.8695509497485,-0.0933755810304852,2.76311835161923
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),10.54,0.635167126525498,-0.725898905248217,0.822380234980567
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),1.54,2.7430998410317,-0.571318405115411,1.02060380714125
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),1.54,2.29828548186374,-0.59750572558251,0.973877171390202
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),13.54,8.09604048996436,-0.240888419321988,1.58073352404964
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),13.54,5.98600407358115,-0.415850162254134,1.41301950985187
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),9,12.4120541121417,-0.0255066812747922,2.07789378674135
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),9,9.10998309557107,-0.319323754747035,1.84900219013338
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),9,14.4584714005567,-0.0222574243700799,2.43113447304101
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),15,18.772912609985,0.222728854533927,2.91659004777861
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),15,13.6401926741767,-0.218428266197586,2.48850849793388
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),24,13.8487317000008,-0.208109145814165,2.53186424645121
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),24,25.7195859758419,0.469599850673809,3.82123487827077
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),15,24.1761388257449,0.26007873735362,3.80477946044374
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),24,28.5025068548657,0.343304526010753,4.41989594910075
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),3,2.33063642530904,-0.611064473478041,0.991415712038699
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),3,2.74264617354815,-0.571100273293098,1.02902365394322
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),3,3.69579454450561,-0.529094067495984,1.15280276388913
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),9,4.08535534124395,-0.504954157854608,1.1939797661694
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),18,5.91783677918961,-0.367095059055682,1.34041999579495
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),9,6.04315485499853,-0.379652048505781,1.38458349196047
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),9,8.81762011457657,-0.193772482655408,1.65908059847546
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),18,10.4620676780269,-0.166918003028818,1.90603160664652
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),18,10.3607014483871,-0.248181286811363,1.97161046486099
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),13.06,2.22786908099929,-0.527418456502611,0.900939561798637
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),4.06,2.25348303636892,-0.528266729094897,0.904182557592879
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),19.06,2.81004402404866,-0.496811549012599,0.978315374457895
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),13.06,4.60322434122293,-0.39855455975887,1.15916290003168
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),13.06,5.18946603989252,-0.385859852164396,1.25987278435157
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),4.06,5.993937699754,-0.329718565196699,1.31474972594146
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),19.06,8.4255967080908,-0.16248982280971,1.56831952235221
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),19.06,8.09295277363704,-0.23719673845901,1.57790994300328
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),4.06,20.0586978593367,-0.0515206066784833,3.445307005166
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),1,1.20111370435805,-0.700464201163809,0.891736343883173
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),1,1.96106858805934,-0.634822338755997,0.971788315805403
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),1,2.74874913288097,-0.571691927776589,1.03564133842175
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),9,4.57314186745993,-0.462662958068906,1.19711623889102
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),9,6.82332074341218,-0.343947797874024,1.48353857523687
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),15,9.62770277036869,-0.1592189168216,1.76596617796718
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),9,10.0014769486677,-0.27771470331314,1.95407482538774
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),15,10.7911090320499,-0.24805301182847,2.05479493522895
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),6,4.24193136057258,-0.480337200971055,1.17929584826477
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),6,4.60461776174482,-0.493547012461198,1.26671181101301
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),6,5.72806735975796,-0.411209152931779,1.35667347287715
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),12,6.71723027082088,-0.397819315471059,1.52619092622158
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),12,10.6392460783613,-0.18437740278647,1.94902775897252
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),12,12.3012287431218,-0.0350046112295097,2.09249768255441
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),15,9.58588101200523,-0.299800121871513,1.9032879788264
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),15,15.0893620195145,0.079560287671571,2.42514069751373
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),15,13.1550996415837,-0.0940416528317782,2.29439625879104
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),5.94,7.15508577138328,-0.288152098870099,1.47759927226933
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),5.94,6.65334297789104,-0.359794215519597,1.45492560020316
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),11.94,8.15749702725877,-0.237027788461831,1.5890528758423
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),11.94,7.57251239593913,-0.306752852883319,1.56152709415018
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),17.94,11.1582255010016,-0.165485126008812,2.02361346879582
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),17.94,19.055079514519,0.229090830276125,2.95174582628664
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),5.94,14.8903746243043,-0.163420585656856,2.66694988631375
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),17.94,14.8789009145534,-0.150476253083126,2.64902604563077
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),11.94,17.3629598593979,-0.12773670644504,3.0112864327177
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),6,8.76176684152001,-0.194132941018274,1.66492782588504
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),1,8.90137017225368,-0.191654893718922,1.66756211627775
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),12,12.8220427673669,0.00117248640141716,2.13543165225497
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),1,14.1790016474892,-0.0251202208575666,2.37784241936291
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),1,12.51000995884,-0.202523327597379,2.30420903601216
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),12,13.2678080817677,-0.167022514373492,2.39463012497915
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),6,16.4073726240336,0.0472590539954118,2.68998143045594
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),6,16.364013914275,-0.10660409440645,2.85944130734984
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),12,20.8739952313678,0.181738392744195,3.30628945691249
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),4.49,0.801114852417306,-0.72259585844037,0.846668865340593
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),1.49,2.55257967355742,-0.594565124720461,1.0195060876896
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),1.49,4.25119107923405,-0.473509039292158,1.19190285400793
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),4.49,6.39480890225309,-0.333982246337283,1.39712850472104
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),1.49,6.97223352355691,-0.283557590274204,1.4674625829909
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),4.49,6.65863667841919,-0.382726643156909,1.49423484200301
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),6,12.2862899391231,-0.030007130119964,2.0795157955883
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),12,12.474649591628,-0.0264520403130247,2.10873004858996
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),18,19.3736764397032,0.245923761913711,2.98855930061897
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),12,18.2795357832976,0.0979632790351116,2.95811111890847
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),18,17.5699017056629,-0.0879431040951866,3.03150852139391
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),6,21.556038126663,0.203022139766791,3.41796166757654
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),18,24.7000205334817,0.274311063807875,3.87445479358317
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),12,23.1029975729918,-0.00569639172732163,3.88094468811668
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),6,23.8628235737957,0.0104535818444799,4.01271747901651
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),1.06,2.02199833142255,-0.617371573732214,0.969550171121388
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),1.06,5.11438583861041,-0.40349743595427,1.26638780512129
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),1.06,6.35450273195606,-0.400659249474752,1.46067959797963
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),10.06,10.3083851159043,-0.277417136621354,1.99913445659761
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),22.06,19.9750425853586,-0.111215798796914,3.4603105506293
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),22.06,25.9498744770638,0.263937949851916,4.09800879195735
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),21.96,0.88627131838381,-0.66265241989111,0.813421442266693
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),6.96,1.06622316756257,-0.657136381779811,0.834020448603774
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),6.96,10.6986687737225,-0.0788273476464144,1.84443025973134
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),12.96,8.93277666928021,-0.217070916753362,1.69930854442756
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),6.96,10.9105350890057,-0.13632519943772,1.96807114991129
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),12.96,17.3613974676726,0.223959638856837,2.6872416177628
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),12.96,15.3769533672447,-0.134830424502028,2.7226454196842
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),21.96,21.5739009611611,0.185642031847956,3.43078865462556
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),21.96,32.4622425567403,0.723925810473113,4.70707740307255
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),13.52,5.37854202607568,-0.399962565890831,1.28575763205432
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),19.52,4.66113749723934,-0.447818208555135,1.23478915050289
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),13.52,5.97903250346946,-0.393302397382241,1.38395647473905
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),6.55,5.20715111304821,-0.436047428057664,1.29227489100265
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),6.55,7.74174684989024,-0.280245077824942,1.55974098136569
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),12.55,11.444764727184,-0.20252274893844,2.11181249619742
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),1.55,18.538515134321,-0.061612851749374,3.16944818164689
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),7.06,5.8585030370955,-0.374705837546008,1.35350958537231
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),7.06,7.88281161450876,-0.244536969593756,1.55380208757498
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),1.06,8.65048150968288,-0.207689713965916,1.63310595905162
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),1.06,7.6837096946311,-0.286463926257463,1.57301237649204
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),19.06,14.8048959776204,0.079077128208752,2.3984473762062
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),19.06,14.1957736065112,-0.0190785055269338,2.39249257048754
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),7.06,12.8805455932262,-0.152849192506666,2.32018766806646
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),1.06,15.5113041374552,-0.0739621954471437,2.67611553700993
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),19.06,45.4448050633437,0.376199063359464,Inf
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),24,1.13105233505467,-0.629057277064302,0.821234766364421
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),12,11.0393380292861,-0.203580823076643,2.04281274031647
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),12,16.7277032962558,0.193553301158291,2.59748515587913
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),6,20.9894610847123,0.362583614503228,3.1551497495313
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),6,16.489044602051,-0.0878008432370924,2.84762330769663
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),6,22.4324936210987,0.265612889532215,3.50594024090524
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),6,3.96760165598915,-0.490960839709102,1.14610608463038
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),6,3.94192174788164,-0.50738426421266,1.15143088887906
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),6,4.52645369511481,-0.492392189622487,1.25202376728802
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),12,7.81828415408341,-0.351867395844362,1.65217622034725
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),24,15.5253942797557,0.106434362530582,2.49288808611516
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),12,13.477087536977,-0.0765520305788436,2.32417952015006
+"infant-trained
+hierarchical
+model (Normal)",gene region 3 (within pol),12,16.1895245792696,0.123506798686903,2.59147980521229
+"infant-trained
+hierarchical
+model (Normal)",gene region 2 (within pol),24,19.521462691634,0.0913829741121972,3.17691593403741
+"infant-trained
+hierarchical
+model (Normal)",gene region 1 (within gag),24,21.3397177824517,-0.0764587575014513,3.6672661552766

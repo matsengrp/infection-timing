@@ -74,7 +74,7 @@ together[fragment == 1, fragment_long := 'gene region 1 (within gag)']
 together[fragment != 1, fragment_long := paste0('gene region ', fragment,' (within pol)')]
 mae[fragment == 1, fragment_long := 'gene region 1 (within gag)']
 mae[fragment != 1, fragment_long := paste0('gene region ', fragment,' (within pol)')]
-
+together = merge(together, mae, by = c('fragment', 'fragment_long', 'model'))
 plot = ggplot(together)+
     facet_grid(cols = vars(fragment_long), rows = vars(model))+
     geom_histogram(data = together, aes(x = difference), alpha = 0.7) +
@@ -87,4 +87,13 @@ plot = ggplot(together)+
     xlab('Model-derived time since infection - true time since infection (months)')+
     panel_border(color = 'gray60', size = 2)
 
-ggsave(paste0('plots/manuscript_figs/side_by_side_testing_hist_by_frag.pdf'), plot = plot, width = 30, height = 14, units = 'in', dpi = 750, device = cairo_pdf)
+name = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/fig7/side_by_side_testing_hist_by_frag.pdf')
+ggsave(name, plot = plot, width = 30, height = 14, units = 'in', dpi = 750, device = cairo_pdf)
+
+cols = c('model', 'fragment_long', 'difference', 'mae')
+plot_data = together[, ..cols]
+colnames(plot_data) = c('model', 'gene_region', 'difference', 'mean_absolute_error')
+name = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/fig7/side_by_side_testing_hist_by_frag.csv')
+fwrite(plot_data, name, sep = ',')
+
+

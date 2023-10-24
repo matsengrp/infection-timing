@@ -1,0 +1,1163 @@
+model,gene_region,difference,mean_absolute_error
+"adult-trained
+linear models",gene region 1 (within gag),26.0886312564415,64.017
+"adult-trained
+linear models",gene region 1 (within gag),71.6309410398544,64.017
+"adult-trained
+linear models",gene region 1 (within gag),99.9915559689671,64.017
+"adult-trained
+linear models",gene region 1 (within gag),62.8786513571538,64.017
+"adult-trained
+linear models",gene region 1 (within gag),81.1169222323312,64.017
+"adult-trained
+linear models",gene region 1 (within gag),94.757889753983,64.017
+"adult-trained
+linear models",gene region 1 (within gag),150.30217750958,64.017
+"adult-trained
+linear models",gene region 1 (within gag),152.875661478153,64.017
+"adult-trained
+linear models",gene region 1 (within gag),8.77707526634431,64.017
+"adult-trained
+linear models",gene region 1 (within gag),14.2373319667657,64.017
+"adult-trained
+linear models",gene region 1 (within gag),51.7829379063864,64.017
+"adult-trained
+linear models",gene region 1 (within gag),39.0237668202701,64.017
+"adult-trained
+linear models",gene region 1 (within gag),146.252578932456,64.017
+"adult-trained
+linear models",gene region 1 (within gag),100.93739634813,64.017
+"adult-trained
+linear models",gene region 1 (within gag),6.6543205663401,64.017
+"adult-trained
+linear models",gene region 1 (within gag),-7.2486760609845,64.017
+"adult-trained
+linear models",gene region 1 (within gag),5.04352587053659,64.017
+"adult-trained
+linear models",gene region 1 (within gag),86.8000728422026,64.017
+"adult-trained
+linear models",gene region 1 (within gag),121.884288832496,64.017
+"adult-trained
+linear models",gene region 1 (within gag),96.1359766087297,64.017
+"adult-trained
+linear models",gene region 1 (within gag),29.0736413777364,64.017
+"adult-trained
+linear models",gene region 1 (within gag),14.3352561853389,64.017
+"adult-trained
+linear models",gene region 1 (within gag),12.955674517475,64.017
+"adult-trained
+linear models",gene region 1 (within gag),81.9916554507316,64.017
+"adult-trained
+linear models",gene region 1 (within gag),40.5295898544471,64.017
+"adult-trained
+linear models",gene region 1 (within gag),14.1670074738184,64.017
+"adult-trained
+linear models",gene region 1 (within gag),24.6820815929499,64.017
+"adult-trained
+linear models",gene region 1 (within gag),92.1285917857083,64.017
+"adult-trained
+linear models",gene region 1 (within gag),121.706393085359,64.017
+"adult-trained
+linear models",gene region 1 (within gag),30.0750966989032,64.017
+"adult-trained
+linear models",gene region 1 (within gag),8.50213439063913,64.017
+"adult-trained
+linear models",gene region 1 (within gag),16.2733153723219,64.017
+"adult-trained
+linear models",gene region 1 (within gag),136.344601536291,64.017
+"adult-trained
+linear models",gene region 1 (within gag),154.090424303336,64.017
+"adult-trained
+linear models",gene region 1 (within gag),126.779609477298,64.017
+"adult-trained
+linear models",gene region 1 (within gag),114.868768876718,64.017
+"adult-trained
+linear models",gene region 1 (within gag),143.731600766742,64.017
+"adult-trained
+linear models",gene region 1 (within gag),109.12792859704,64.017
+"adult-trained
+linear models",gene region 1 (within gag),30.2164781534963,64.017
+"adult-trained
+linear models",gene region 1 (within gag),62.2605955548421,64.017
+"adult-trained
+linear models",gene region 1 (within gag),63.2748174108265,64.017
+"adult-trained
+linear models",gene region 1 (within gag),54.4073741941926,64.017
+"adult-trained
+linear models",gene region 1 (within gag),33.8175527013911,64.017
+"adult-trained
+linear models",gene region 1 (within gag),18.2174392262955,64.017
+"adult-trained
+linear models",gene region 1 (within gag),19.7611747252564,64.017
+"adult-trained
+linear models",gene region 1 (within gag),90.737065567397,64.017
+"adult-trained
+linear models",gene region 1 (within gag),0.73210336414012,64.017
+"adult-trained
+linear models",gene region 1 (within gag),29.9431580042586,64.017
+"adult-trained
+linear models",gene region 1 (within gag),-12.3829102554283,64.017
+"adult-trained
+linear models",gene region 1 (within gag),8.19317534863518,64.017
+"adult-trained
+linear models",gene region 1 (within gag),-2.50591090389327,64.017
+"adult-trained
+linear models",gene region 1 (within gag),94.94322712425,64.017
+"adult-trained
+linear models",gene region 1 (within gag),48.3597335943615,64.017
+"adult-trained
+linear models",gene region 1 (within gag),97.8892933093234,64.017
+"adult-trained
+linear models",gene region 1 (within gag),100.882677052739,64.017
+"adult-trained
+linear models",gene region 1 (within gag),29.6117597884038,64.017
+"adult-trained
+linear models",gene region 1 (within gag),74.6218668855096,64.017
+"adult-trained
+linear models",gene region 1 (within gag),154.27129660852,64.017
+"adult-trained
+linear models",gene region 1 (within gag),91.3668569553148,64.017
+"adult-trained
+linear models",gene region 1 (within gag),44.6898160141814,64.017
+"adult-trained
+linear models",gene region 1 (within gag),69.0651154773069,64.017
+"adult-trained
+linear models",gene region 1 (within gag),41.1412630080213,64.017
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-3.50752942832596,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-7.91424673501096,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-9.71987584617051,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),11.6889971436014,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),27.2484499435276,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),28.8799882656988,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),14.3584559032343,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),12.1063103928809,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-1.33241674972564,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-3.19946256361104,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-6.93529267330308,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),0.0929775227923626,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-11.5298620528795,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),3.86955094974852,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-9.9048328734745,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),0.758285481863739,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-7.55399592641885,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),0.109983095571073,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-1.35980732582334,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-10.1512682999992,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),0.695794544505606,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-4.91464465875605,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-7.63929855161291,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-16.2499559759513,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-7.87053396010748,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),15.9986978593367,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),0.961068588059336,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),1.0014769486677,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-4.2088909679501,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-1.39538223825518,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-5.28276972917912,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-5.41411898799477,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),8.95037462430432,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-3.06109908544656,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),5.42295985939794,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),11.51000995884,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),1.26780808176774,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),10.364013914275,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),1.06257967355742,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),2.16863667841919,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-0.430098294337078,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),11.1029975729918,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),17.8628235737957,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),5.29450273195606,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),0.248385115904265,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-2.08495741464142,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-21.0737286816162,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-5.89377683243743,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),2.4169533672447,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-14.8588625027607,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-7.54096749653055,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-1.34284888695179,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-1.10523527281598,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),16.988515134321,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),5.82054559322624,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),14.4513041374552,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),26.3848050633437,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-0.960661970713902,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),10.489044602051,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-1.47354630488519,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-4.18171584591659,7.457
+"infant-trained
+hierarchical
+model",gene region 1 (within gag),-2.66028221754834,7.457
+"infant-trained
+linear models",gene region 1 (within gag),2.72660029363757,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-6.29333083748309,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-10.7363931094394,5.938
+"infant-trained
+linear models",gene region 1 (within gag),9.7639096709137,5.938
+"infant-trained
+linear models",gene region 1 (within gag),11.6970128777891,5.938
+"infant-trained
+linear models",gene region 1 (within gag),7.71779999547612,5.938
+"infant-trained
+linear models",gene region 1 (within gag),10.0735602576636,5.938
+"infant-trained
+linear models",gene region 1 (within gag),7.23597061178719,5.938
+"infant-trained
+linear models",gene region 1 (within gag),3.09173914060808,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-2.21891690566308,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-7.8394836196502,5.938
+"infant-trained
+linear models",gene region 1 (within gag),5.81212426372172,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-1.05193344965496,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-13.6336449591872,5.938
+"infant-trained
+linear models",gene region 1 (within gag),6.36522074534202,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-3.11730256307041,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-4.60037108260561,5.938
+"infant-trained
+linear models",gene region 1 (within gag),0.819829924789811,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-4.41854240965847,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-13.3783111604489,5.938
+"infant-trained
+linear models",gene region 1 (within gag),6.03866651760367,5.938
+"infant-trained
+linear models",gene region 1 (within gag),0.107945786107056,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-7.8727960592619,5.938
+"infant-trained
+linear models",gene region 1 (within gag),8.50844087550873,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-4.42757207315742,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-11.0645519092629,5.938
+"infant-trained
+linear models",gene region 1 (within gag),7.74871861061634,5.938
+"infant-trained
+linear models",gene region 1 (within gag),1.03337998969717,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-4.82592464291664,5.938
+"infant-trained
+linear models",gene region 1 (within gag),3.07650694264562,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-2.53396693546406,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-5.02069370043835,5.938
+"infant-trained
+linear models",gene region 1 (within gag),4.75966996132716,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-0.848453705286095,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-7.23762074786058,5.938
+"infant-trained
+linear models",gene region 1 (within gag),9.83824701363798,5.938
+"infant-trained
+linear models",gene region 1 (within gag),5.7165620648533,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-0.99506391947544,5.938
+"infant-trained
+linear models",gene region 1 (within gag),9.1795913845884,5.938
+"infant-trained
+linear models",gene region 1 (within gag),6.44720000995295,5.938
+"infant-trained
+linear models",gene region 1 (within gag),7.63504893710628,5.938
+"infant-trained
+linear models",gene region 1 (within gag),1.43147340585612,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-6.0288806669582,5.938
+"infant-trained
+linear models",gene region 1 (within gag),8.28545337148588,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-0.072410407813825,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-10.465789582649,5.938
+"infant-trained
+linear models",gene region 1 (within gag),1.50650855337145,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-2.1566330013201,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-13.5323417936534,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-5.06509458897811,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-11.4483707225171,5.938
+"infant-trained
+linear models",gene region 1 (within gag),10.6487130535397,5.938
+"infant-trained
+linear models",gene region 1 (within gag),2.62224251306048,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-1.97657941453744,5.938
+"infant-trained
+linear models",gene region 1 (within gag),10.428688368204,5.938
+"infant-trained
+linear models",gene region 1 (within gag),4.26140838383306,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-5.67221761140036,5.938
+"infant-trained
+linear models",gene region 1 (within gag),5.66941487695367,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-1.80283550351335,5.938
+"infant-trained
+linear models",gene region 1 (within gag),3.04962424521017,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-2.39341296951577,5.938
+"infant-trained
+linear models",gene region 1 (within gag),-12.1193100909258,5.938
+"adult-trained
+linear models",gene region 2 (within pol),9.11530874921914,24.02
+"adult-trained
+linear models",gene region 2 (within pol),2.06340172823925,24.02
+"adult-trained
+linear models",gene region 2 (within pol),9.77799484162488,24.02
+"adult-trained
+linear models",gene region 2 (within pol),0.0266732997917301,24.02
+"adult-trained
+linear models",gene region 2 (within pol),37.5557085374102,24.02
+"adult-trained
+linear models",gene region 2 (within pol),44.5220447195234,24.02
+"adult-trained
+linear models",gene region 2 (within pol),49.9035605971818,24.02
+"adult-trained
+linear models",gene region 2 (within pol),42.7723808520706,24.02
+"adult-trained
+linear models",gene region 2 (within pol),2.43039460284023,24.02
+"adult-trained
+linear models",gene region 2 (within pol),-0.771446106255475,24.02
+"adult-trained
+linear models",gene region 2 (within pol),6.68773936074196,24.02
+"adult-trained
+linear models",gene region 2 (within pol),25.5160580353566,24.02
+"adult-trained
+linear models",gene region 2 (within pol),41.6622550276241,24.02
+"adult-trained
+linear models",gene region 2 (within pol),42.6972461389946,24.02
+"adult-trained
+linear models",gene region 2 (within pol),4.31335351056836,24.02
+"adult-trained
+linear models",gene region 2 (within pol),7.47991651631638,24.02
+"adult-trained
+linear models",gene region 2 (within pol),74.1672096169999,24.02
+"adult-trained
+linear models",gene region 2 (within pol),12.0057776423593,24.02
+"adult-trained
+linear models",gene region 2 (within pol),2.35062723016259,24.02
+"adult-trained
+linear models",gene region 2 (within pol),0.95847185134463,24.02
+"adult-trained
+linear models",gene region 2 (within pol),3.63285469522331,24.02
+"adult-trained
+linear models",gene region 2 (within pol),9.01727503333218,24.02
+"adult-trained
+linear models",gene region 2 (within pol),9.12301995537108,24.02
+"adult-trained
+linear models",gene region 2 (within pol),14.8413817883174,24.02
+"adult-trained
+linear models",gene region 2 (within pol),18.6769652508836,24.02
+"adult-trained
+linear models",gene region 2 (within pol),11.3782795120037,24.02
+"adult-trained
+linear models",gene region 2 (within pol),7.50811022834064,24.02
+"adult-trained
+linear models",gene region 2 (within pol),10.2054725944876,24.02
+"adult-trained
+linear models",gene region 2 (within pol),32.9128773621176,24.02
+"adult-trained
+linear models",gene region 2 (within pol),33.3513733511137,24.02
+"adult-trained
+linear models",gene region 2 (within pol),36.9436455978823,24.02
+"adult-trained
+linear models",gene region 2 (within pol),9.69205187725163,24.02
+"adult-trained
+linear models",gene region 2 (within pol),1.35827394102402,24.02
+"adult-trained
+linear models",gene region 2 (within pol),44.7645774197806,24.02
+"adult-trained
+linear models",gene region 2 (within pol),31.426981405443,24.02
+"adult-trained
+linear models",gene region 2 (within pol),40.0521069891607,24.02
+"adult-trained
+linear models",gene region 2 (within pol),5.32661807295172,24.02
+"adult-trained
+linear models",gene region 2 (within pol),178.111179403199,24.02
+"adult-trained
+linear models",gene region 2 (within pol),20.4915284262732,24.02
+"adult-trained
+linear models",gene region 2 (within pol),80.4536552181498,24.02
+"adult-trained
+linear models",gene region 2 (within pol),30.3132373226594,24.02
+"adult-trained
+linear models",gene region 2 (within pol),1.70596113816073,24.02
+"adult-trained
+linear models",gene region 2 (within pol),12.5509476490595,24.02
+"adult-trained
+linear models",gene region 2 (within pol),18.6150512109221,24.02
+"adult-trained
+linear models",gene region 2 (within pol),8.30444790538342,24.02
+"adult-trained
+linear models",gene region 2 (within pol),16.0483155163234,24.02
+"adult-trained
+linear models",gene region 2 (within pol),45.9357400085431,24.02
+"adult-trained
+linear models",gene region 2 (within pol),5.05972509380381,24.02
+"adult-trained
+linear models",gene region 2 (within pol),22.2726901090993,24.02
+"adult-trained
+linear models",gene region 2 (within pol),24.1372256429558,24.02
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),-0.546008077646683,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),-9.35950310252655,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),-9.23139274164094,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),-0.698537957494281,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),13.5911613737035,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),12.819842667668,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),15.8475010447239,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),20.4939857378455,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),-6.65456761948448,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),-15.1870683050538,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),1.2030998410317,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),5.45847140055666,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),9.17613882574488,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),4.50250685486574,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),-0.669363574690962,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),-2.95684514500147,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),-7.53793232197314,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),-8.45677565877707,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),1.933937699754,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),-10.967047226363,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),0.201113704358048,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),-2.17667925658782,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),-0.271932640242042,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),-1.36075392163875,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),-1.84490035841634,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),0.713342977891039,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),-4.36748760406087,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),-6.78177449899839,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),13.1790016474892,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),10.4073726240336,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),8.87399523136782,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),-3.68888514758269,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),2.76119107923405,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),6.27953578329762,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),15.556038126663,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),6.70002053348172,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),0.961998331422548,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),3.88987447706384,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),-4.02722333071979,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),3.95053508900574,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),-0.386099038838943,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),-8.14145797392432,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),1.19174684989025,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),-1.2014969629045,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),6.6237096946311,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),-4.86422639348884,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),16.4324936210987,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),-2.05807825211836,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),1.47708753697698,6.043
+"infant-trained
+hierarchical
+model",gene region 2 (within pol),-4.47853730836596,6.043
+"infant-trained
+linear models",gene region 2 (within pol),-0.0398146041459722,5.571
+"infant-trained
+linear models",gene region 2 (within pol),-9.42265719440709,5.571
+"infant-trained
+linear models",gene region 2 (within pol),-11.6139934440768,5.571
+"infant-trained
+linear models",gene region 2 (within pol),2.83783972358489,5.571
+"infant-trained
+linear models",gene region 2 (within pol),9.86559760000512,5.571
+"infant-trained
+linear models",gene region 2 (within pol),6.96074377004988,5.571
+"infant-trained
+linear models",gene region 2 (within pol),14.6615948468808,5.571
+"infant-trained
+linear models",gene region 2 (within pol),10.7435200093084,5.571
+"infant-trained
+linear models",gene region 2 (within pol),-6.14261519520443,5.571
+"infant-trained
+linear models",gene region 2 (within pol),-16.2444003574841,5.571
+"infant-trained
+linear models",gene region 2 (within pol),3.87691818972018,5.571
+"infant-trained
+linear models",gene region 2 (within pol),2.60889580810509,5.571
+"infant-trained
+linear models",gene region 2 (within pol),1.8810327159516,5.571
+"infant-trained
+linear models",gene region 2 (within pol),-4.75690084525272,5.571
+"infant-trained
+linear models",gene region 2 (within pol),1.30997673015947,5.571
+"infant-trained
+linear models",gene region 2 (within pol),-2.73401912019376,5.571
+"infant-trained
+linear models",gene region 2 (within pol),-9.39941170183706,5.571
+"infant-trained
+linear models",gene region 2 (within pol),2.06599600225376,5.571
+"infant-trained
+linear models",gene region 2 (within pol),-7.64825774243273,5.571
+"infant-trained
+linear models",gene region 2 (within pol),-11.8585646261311,5.571
+"infant-trained
+linear models",gene region 2 (within pol),3.66154888473601,5.571
+"infant-trained
+linear models",gene region 2 (within pol),-1.63487612360782,5.571
+"infant-trained
+linear models",gene region 2 (within pol),0.825535313508912,5.571
+"infant-trained
+linear models",gene region 2 (within pol),-2.87807440730706,5.571
+"infant-trained
+linear models",gene region 2 (within pol),-4.67257618254841,5.571
+"infant-trained
+linear models",gene region 2 (within pol),0.534663427368312,5.571
+"infant-trained
+linear models",gene region 2 (within pol),-5.00086655666344,5.571
+"infant-trained
+linear models",gene region 2 (within pol),-9.13153731265779,5.571
+"infant-trained
+linear models",gene region 2 (within pol),10.7523704453672,5.571
+"infant-trained
+linear models",gene region 2 (within pol),7.07067512931888,5.571
+"infant-trained
+linear models",gene region 2 (within pol),3.66255292391664,5.571
+"infant-trained
+linear models",gene region 2 (within pol),4.59630174999022,5.571
+"infant-trained
+linear models",gene region 2 (within pol),0.0355539140961003,5.571
+"infant-trained
+linear models",gene region 2 (within pol),10.7193240179944,5.571
+"infant-trained
+linear models",gene region 2 (within pol),2.6815960159752,5.571
+"infant-trained
+linear models",gene region 2 (within pol),0.6754606851954,5.571
+"infant-trained
+linear models",gene region 2 (within pol),3.99202721605971,5.571
+"infant-trained
+linear models",gene region 2 (within pol),-5.98662010453104,5.571
+"infant-trained
+linear models",gene region 2 (within pol),2.19452312870626,5.571
+"infant-trained
+linear models",gene region 2 (within pol),-4.73197283226147,5.571
+"infant-trained
+linear models",gene region 2 (within pol),-7.90022134807092,5.571
+"infant-trained
+linear models",gene region 2 (within pol),-7.57455959126099,5.571
+"infant-trained
+linear models",gene region 2 (within pol),1.15687904555732,5.571
+"infant-trained
+linear models",gene region 2 (within pol),5.91419172294491,5.571
+"infant-trained
+linear models",gene region 2 (within pol),-0.994440780866629,5.571
+"infant-trained
+linear models",gene region 2 (within pol),-8.78792202496085,5.571
+"infant-trained
+linear models",gene region 2 (within pol),10.3996251184649,5.571
+"infant-trained
+linear models",gene region 2 (within pol),-0.898749474425544,5.571
+"infant-trained
+linear models",gene region 2 (within pol),-1.97967517448784,5.571
+"infant-trained
+linear models",gene region 2 (within pol),-10.828023191301,5.571
+"adult-trained
+linear models",gene region 3 (within pol),5.08308972400509,20.252
+"adult-trained
+linear models",gene region 3 (within pol),-2.26422970888003,20.252
+"adult-trained
+linear models",gene region 3 (within pol),-5.65732080980505,20.252
+"adult-trained
+linear models",gene region 3 (within pol),32.5645774641249,20.252
+"adult-trained
+linear models",gene region 3 (within pol),119.423320837828,20.252
+"adult-trained
+linear models",gene region 3 (within pol),37.1181153695131,20.252
+"adult-trained
+linear models",gene region 3 (within pol),12.321997579735,20.252
+"adult-trained
+linear models",gene region 3 (within pol),16.4891052301743,20.252
+"adult-trained
+linear models",gene region 3 (within pol),5.10023201418301,20.252
+"adult-trained
+linear models",gene region 3 (within pol),5.62696495409216,20.252
+"adult-trained
+linear models",gene region 3 (within pol),12.1937310611613,20.252
+"adult-trained
+linear models",gene region 3 (within pol),33.8702631223989,20.252
+"adult-trained
+linear models",gene region 3 (within pol),3.2042543527676,20.252
+"adult-trained
+linear models",gene region 3 (within pol),-3.66288538457361,20.252
+"adult-trained
+linear models",gene region 3 (within pol),4.16644888305497,20.252
+"adult-trained
+linear models",gene region 3 (within pol),14.9457988742104,20.252
+"adult-trained
+linear models",gene region 3 (within pol),18.6172512212323,20.252
+"adult-trained
+linear models",gene region 3 (within pol),130.629209165699,20.252
+"adult-trained
+linear models",gene region 3 (within pol),6.49343675566333,20.252
+"adult-trained
+linear models",gene region 3 (within pol),10.1981569537564,20.252
+"adult-trained
+linear models",gene region 3 (within pol),-4.08108799772082,20.252
+"adult-trained
+linear models",gene region 3 (within pol),13.7864360055905,20.252
+"adult-trained
+linear models",gene region 3 (within pol),9.4677959449652,20.252
+"adult-trained
+linear models",gene region 3 (within pol),-1.10384837672507,20.252
+"adult-trained
+linear models",gene region 3 (within pol),7.55591431695332,20.252
+"adult-trained
+linear models",gene region 3 (within pol),3.14936436078665,20.252
+"adult-trained
+linear models",gene region 3 (within pol),5.07129968172984,20.252
+"adult-trained
+linear models",gene region 3 (within pol),25.6168969611665,20.252
+"adult-trained
+linear models",gene region 3 (within pol),12.2103375931856,20.252
+"adult-trained
+linear models",gene region 3 (within pol),13.4891841476244,20.252
+"adult-trained
+linear models",gene region 3 (within pol),34.7439650209642,20.252
+"adult-trained
+linear models",gene region 3 (within pol),9.51898713741559,20.252
+"adult-trained
+linear models",gene region 3 (within pol),16.5333505296411,20.252
+"adult-trained
+linear models",gene region 3 (within pol),17.1099892037962,20.252
+"adult-trained
+linear models",gene region 3 (within pol),12.317034801414,20.252
+"adult-trained
+linear models",gene region 3 (within pol),11.657921528408,20.252
+"adult-trained
+linear models",gene region 3 (within pol),14.1486504895279,20.252
+"adult-trained
+linear models",gene region 3 (within pol),9.33927598513174,20.252
+"adult-trained
+linear models",gene region 3 (within pol),73.4164353328799,20.252
+"adult-trained
+linear models",gene region 3 (within pol),12.1086669972047,20.252
+"adult-trained
+linear models",gene region 3 (within pol),16.5726795621493,20.252
+"adult-trained
+linear models",gene region 3 (within pol),36.8042077398146,20.252
+"adult-trained
+linear models",gene region 3 (within pol),12.9888763115919,20.252
+"adult-trained
+linear models",gene region 3 (within pol),21.7707322925046,20.252
+"adult-trained
+linear models",gene region 3 (within pol),29.6049566411061,20.252
+"adult-trained
+linear models",gene region 3 (within pol),17.0717998438623,20.252
+"adult-trained
+linear models",gene region 3 (within pol),9.12966206781692,20.252
+"adult-trained
+linear models",gene region 3 (within pol),8.99132293444492,20.252
+"adult-trained
+linear models",gene region 3 (within pol),30.3453101075189,20.252
+"adult-trained
+linear models",gene region 3 (within pol),92.6033529249263,20.252
+"adult-trained
+linear models",gene region 3 (within pol),-2.70743322074288,20.252
+"adult-trained
+linear models",gene region 3 (within pol),5.18941701191881,20.252
+"adult-trained
+linear models",gene region 3 (within pol),18.5135003855264,20.252
+"adult-trained
+linear models",gene region 3 (within pol),5.23892540713219,20.252
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),-2.18718552565972,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),-10.3114673078057,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),-14.5271798477513,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),14.4088459763441,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),18.4920223478419,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),18.8366752849852,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),4.85443525504026,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),6.16530255533481,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),-2.01841226410919,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),-3.95391591300338,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),-1.96312329143994,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),0.607693115275902,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),-5.58679479075742,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),-14.1974848551789,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),-5.44395951003565,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),3.4120541121417,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),3.77291260998504,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),1.71958597584186,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),-0.257353826451846,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),-12.0821632208104,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),-0.182379885423432,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),-10.8321309190007,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),-1.80651696363108,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),-10.6344032919092,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),1.74874913288097,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),-4.42685813254007,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),-5.37229722963132,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),-1.75806863942742,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),0.301228743121799,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),0.0893620195145388,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),1.21508577138328,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),-3.78250297274123,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),1.11507951451896,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),2.76176684152001,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),7.90137017225368,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),0.822042767366881,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),1.90480890225309,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),5.48223352355691,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),6.2862899391231,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),0.474649591628038,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),1.37367643970316,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),4.05438583861041,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),3.73866877372246,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),4.4013974676726,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),10.5022425567403,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),0.82281161450876,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),7.59048150968288,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),-4.25510402237962,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),-22.8689476649453,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),4.72770329625576,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),14.9894610847123,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),-2.03239834401085,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),-8.47460572024434,5.698
+"infant-trained
+hierarchical
+model",gene region 3 (within pol),4.18952457926958,5.698
+"infant-trained
+linear models",gene region 3 (within pol),-0.148373704342584,5.031
+"infant-trained
+linear models",gene region 3 (within pol),-8.95693714271141,5.031
+"infant-trained
+linear models",gene region 3 (within pol),-13.5331806608869,5.031
+"infant-trained
+linear models",gene region 3 (within pol),15.1482412231682,5.031
+"infant-trained
+linear models",gene region 3 (within pol),11.4118141176692,5.031
+"infant-trained
+linear models",gene region 3 (within pol),12.2936658107536,5.031
+"infant-trained
+linear models",gene region 3 (within pol),5.75899869797654,5.031
+"infant-trained
+linear models",gene region 3 (within pol),5.21750535227767,5.031
+"infant-trained
+linear models",gene region 3 (within pol),-0.164984013354,5.031
+"infant-trained
+linear models",gene region 3 (within pol),-3.68097915150131,5.031
+"infant-trained
+linear models",gene region 3 (within pol),-4.83666819119304,5.031
+"infant-trained
+linear models",gene region 3 (within pol),2.77114690075556,5.031
+"infant-trained
+linear models",gene region 3 (within pol),-4.42430876914494,5.031
+"infant-trained
+linear models",gene region 3 (within pol),-14.4316433639697,5.031
+"infant-trained
+linear models",gene region 3 (within pol),-5.06154956017074,5.031
+"infant-trained
+linear models",gene region 3 (within pol),1.83989226759037,5.031
+"infant-trained
+linear models",gene region 3 (within pol),-0.440020361934121,5.031
+"infant-trained
+linear models",gene region 3 (within pol),-5.39831807831364,5.031
+"infant-trained
+linear models",gene region 3 (within pol),2.28178713881111,5.031
+"infant-trained
+linear models",gene region 3 (within pol),0.00196274251897144,5.031
+"infant-trained
+linear models",gene region 3 (within pol),-10.7898051547437,5.031
+"infant-trained
+linear models",gene region 3 (within pol),0.881150806225285,5.031
+"infant-trained
+linear models",gene region 3 (within pol),-8.12529684661505,5.031
+"infant-trained
+linear models",gene region 3 (within pol),-10.4970532261942,5.031
+"infant-trained
+linear models",gene region 3 (within pol),4.26948813733527,5.031
+"infant-trained
+linear models",gene region 3 (within pol),-2.66841798835474,5.031
+"infant-trained
+linear models",gene region 3 (within pol),-5.62045095162246,5.031
+"infant-trained
+linear models",gene region 3 (within pol),0.140606392821601,5.031
+"infant-trained
+linear models",gene region 3 (within pol),-1.04031090838987,5.031
+"infant-trained
+linear models",gene region 3 (within pol),-2.47273930814628,5.031
+"infant-trained
+linear models",gene region 3 (within pol),1.9028966648727,5.031
+"infant-trained
+linear models",gene region 3 (within pol),-3.49536746825897,5.031
+"infant-trained
+linear models",gene region 3 (within pol),-3.10352435972844,5.031
+"infant-trained
+linear models",gene region 3 (within pol),7.81611139128319,5.031
+"infant-trained
+linear models",gene region 3 (within pol),2.76074003952887,5.031
+"infant-trained
+linear models",gene region 3 (within pol),-0.940458706706725,5.031
+"infant-trained
+linear models",gene region 3 (within pol),6.19526020419955,5.031
+"infant-trained
+linear models",gene region 3 (within pol),2.83056036581118,5.031
+"infant-trained
+linear models",gene region 3 (within pol),4.87385554236063,5.031
+"infant-trained
+linear models",gene region 3 (within pol),-0.975225642790654,5.031
+"infant-trained
+linear models",gene region 3 (within pol),-2.93908813786068,5.031
+"infant-trained
+linear models",gene region 3 (within pol),5.55545591718057,5.031
+"infant-trained
+linear models",gene region 3 (within pol),2.86111422089436,5.031
+"infant-trained
+linear models",gene region 3 (within pol),0.85982906573124,5.031
+"infant-trained
+linear models",gene region 3 (within pol),0.820413747859799,5.031
+"infant-trained
+linear models",gene region 3 (within pol),7.68972392487501,5.031
+"infant-trained
+linear models",gene region 3 (within pol),1.21667296758797,5.031
+"infant-trained
+linear models",gene region 3 (within pol),-6.61790437113276,5.031
+"infant-trained
+linear models",gene region 3 (within pol),10.0843192790538,5.031
+"infant-trained
+linear models",gene region 3 (within pol),1.53293764839456,5.031
+"infant-trained
+linear models",gene region 3 (within pol),-19.846359725644,5.031
+"infant-trained
+linear models",gene region 3 (within pol),-0.00241744717818015,5.031
+"infant-trained
+linear models",gene region 3 (within pol),1.33620303157488,5.031
+"infant-trained
+linear models",gene region 3 (within pol),-11.1159712272784,5.031

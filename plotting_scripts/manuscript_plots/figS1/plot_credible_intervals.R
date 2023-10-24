@@ -88,7 +88,13 @@ plot = ggplot(subset2) +
     # scale_color_brewer(palette = 'Dark2') 
     scale_color_manual(values = color_palette)
 
-name = paste0('plots/manuscript_figs/credible_intervals.pdf')
+name = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/figS1/credible_intervals.pdf')
 ggsave(name, plot = plot, width = 14, height = 20, units = 'in', dpi = 750, device = cairo_pdf)
 
+cols = c(subject_var, 'infection_status_long', 'fragment_long', 'mean', 'cred_int_5', 'cred_int_95')
+plot_data = subset2[, ..cols]
+colnames(plot_data) = c('individual', 'mode_of_infection', 'gene_region', 'APD_slope_mean', 'APD_slope_0.055_quantile', 'APD_slope_0.945_quantile')
+name2 = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/figS1/credible_intervals.csv')
+
+fwrite(plot_data, name2, sep = ',')
 

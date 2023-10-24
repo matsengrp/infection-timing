@@ -65,6 +65,7 @@ subset2$converted_cred_int_5 = 1/subset2$cred_int_5
 subset2$converted_cred_int_95 = 1/subset2$cred_int_95
 
 subset2[[subject_var]] = factor(subset2[[subject_var]])
+
 subset2$infection_status_long = factor(subset2$infection_status_long, levels = c('in-utero', 'after birth'))
 require(RColorBrewer)
 it = unique(subset2$infection_status_long)
@@ -104,10 +105,15 @@ subj_to_status = subj_to_status[order(subj_to_status)]
 subj_to_palette = subj_to_palette[!duplicated(data[, ..p_cols])]
 subj_to_palette = subj_to_palette[order(subj_to_palette)]
 
+cols = c(subject_var, 'observed_time_since_infection', 'infection_status_long', 'fragment_long', 'apd')
+cols2 = c(subject_var, 'fragment_long', 'mean', 'infection_status_long')
+data[[subject_var]] = factor(data[[subject_var]])
+tog = merge(unique(data[, ..cols]), unique(subset2[, ..cols2]), by = c(subject_var, 'fragment_long', 'infection_status_long'))
+
 plot3 = ggplot()+
-    geom_point(data = data[infection_status_long == 'in-utero'], aes(x = apd, y = observed_time_since_infection, color = as.factor(get(subject_var))), shape = 16, size = 5, alpha = 0.8) +
-    geom_point(data = data[infection_status_long == 'after birth'], aes(x = apd, y = observed_time_since_infection, color = as.factor(get(subject_var))), shape = 17, size = 5, alpha = 0.8) +
-    geom_abline(data = subset2, aes(intercept = 0, slope = mean, color = as.factor(get(subject_var)), linetype = infection_status_long), linewidth = 1.5, alpha = 0.8)+
+    geom_point(data = tog[infection_status_long == 'in-utero'], aes(x = apd, y = observed_time_since_infection, color = as.factor(get(subject_var))), shape = 16, size = 5, alpha = 0.8) +
+    geom_point(data = tog[infection_status_long == 'after birth'], aes(x = apd, y = observed_time_since_infection, color = as.factor(get(subject_var))), shape = 17, size = 5, alpha = 0.8) +
+    geom_abline(data = tog, aes(intercept = 0, slope = mean, color = as.factor(get(subject_var)), linetype = infection_status_long), linewidth = 1.5, alpha = 0.8)+
     facet_grid(cols = vars(fragment_long), rows = vars(infection_status_long)) +
     # facet_grid(cols = vars(fragment_long)) +
     scale_color_manual(breaks = names(subj_to_status), guide  = guide_legend(ncol = 10, override.aes = list(linetype = status2line[subj_to_status], shape = status2shape[subj_to_status])), values = subj_to_palette[names(subj_to_status)], name = 'Individual') +
@@ -120,5 +126,13 @@ plot3 = ggplot()+
     xlab('\nAverage pairwise diversity\n')+
     panel_border(color = 'gray60', size = 2) 
 
-name3 = paste0('plots/manuscript_figs/apd_time_model_slopes.pdf')
+name3 = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/fig2/apd_time_model_slopes.pdf')
 ggsave(name3, plot = plot3, width = 20, height = 14, units = 'in', dpi = 750, device = cairo_pdf)
+
+cols = c(subject_var, 'observed_time_since_infection', 'fragment_long', 'apd', 'infection_status_long', 'mean')
+plot_data = tog[, ..cols]
+colnames(plot_data) = c('individual', 'observed_time_since_infection', 'gene_region', 'APD', 'mode_of_infection', 'APD_slope')
+name2 = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/fig2/apd_time_model_slopes.csv')
+
+fwrite(plot_data, name2, sep = ',')
+

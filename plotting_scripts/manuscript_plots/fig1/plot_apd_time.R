@@ -85,5 +85,12 @@ plot2 = ggplot(valid) +
     ylab('Average pairwise diversity\n')+
     panel_border(color = 'gray60', size = 2)
 
-name2 = paste0('plots/manuscript_figs/apd_time.pdf')
+name2 = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/fig1/apd_time.pdf')
 ggsave(name2, plot = plot2, width = 22, height = 14, units = 'in', dpi = 750, device = cairo_pdf)
+
+cols = c(subject_var, 'observed_time_since_infection', 'fragment_long', 'apd', 'infection_status_long')
+plot_data = valid[, ..cols]
+colnames(plot_data) = c('individual', 'observed_time_since_infection', 'gene_region', 'APD', 'mode_of_infection')
+name2 = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/fig1/apd_time.csv')
+
+fwrite(plot_data, name2, sep = ',')

@@ -63,7 +63,16 @@ plot_apd = ggplot(together, aes(x = apd, fill = type, group = type)) +
     scale_fill_brewer(palette = 'Dark2')+
     labs(fill = 'Dataset')
 
-ggsave(paste0('plots/manuscript_figs/train_test_apd_hist.pdf'), plot = plot_apd, width = 18, height = 19, units = 'in', dpi = 750, device = cairo_pdf)
+name = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/figS5/train_test_apd_hist.pdf')
+
+ggsave(name, plot = plot_apd, width = 18, height = 19, units = 'in', dpi = 750, device = cairo_pdf)
+
+cols = c('type', 'fragment_long', 'apd')
+plot_data = together[, ..cols]
+colnames(plot_data) = c('data_type', 'gene_region', 'APD')
+name = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/figS5/train_test_apd_hist.csv')
+fwrite(plot_data, name, sep = ',')
+
 
 together_ti = unique(together[, c('subject_id', 'observed_time_since_infection', 'type')])
 plot_ti = ggplot(together_ti, aes(x = observed_time_since_infection, fill = type, group = type)) +
@@ -78,6 +87,14 @@ plot_ti = ggplot(together_ti, aes(x = observed_time_since_infection, fill = type
     scale_fill_brewer(palette = 'Dark2')+
     labs(fill = 'Dataset')
 
-ggsave(paste0('plots/manuscript_figs/train_test_time_hist.pdf'), plot = plot_ti, width = 18, height = 6.5, units = 'in', dpi = 750, device = cairo_pdf)
+name = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/figS5/train_test_time_hist.pdf')
+
+ggsave(name, plot = plot_ti, width = 18, height = 6.5, units = 'in', dpi = 750, device = cairo_pdf)
+
+cols = c('type', 'observed_time_since_infection')
+plot_data = together_ti[, ..cols]
+colnames(plot_data) = c('data_type', 'observed_time_since_infection')
+name = paste0(PROJECT_PATH, '/plotting_scripts/manuscript_plots/figS5/train_test_time_hist.csv')
+fwrite(plot_data, name, sep = ',')
 
 
